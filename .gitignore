@@ -1,16 +1,25 @@
-## Visual Studio / IDE
+# Visual Studio
 .vs/
-.vscode/
-*.suo
 *.user
+*.suo
 
-## Build outputs (Biên dịch)
+# Build output
 bin/
 obj/
-[Dd]ebug/
-[Rr]elease/
+# bỏ qua thư mục
 
-## Files chứa thông tin nhạy cảm
-appsettings*.Secret.json
-*.env
-*.pem
+# ASP.NET Core
+wwwroot/lib/
+#**/          → tìm ở mọi thư mục
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Logs
+*.log 
+# tất cả các file nào có đuôi .log là bỏ qua hết
+#  touch .gitignore là tạo file git .gitignore
+# OS
+.DS_Store
+Thumbs.db
