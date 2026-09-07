@@ -27,5 +27,5 @@ Dự án ứng dụng Web ASP.NET Core MVC kết hợp với **Leaflet Maps API*
 Mở Terminal / Git Bash hoặc PowerShell và chạy lệnh:
 
 ```bash
-git clone [https://github.com/Mrlong8/Tourismanager.git](https://github.com/Mrlong8/Tourismanager.git)
+git clone https://github.com/Mrlong8/Tourismanager.git
 cd Tourismanager

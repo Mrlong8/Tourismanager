@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TourisManager.Models.Entity;
 
-namespace TourisManager.Models
+namespace TourisManager.Models.Data
 {
     public class DbInitializer
     {
@@ -9,15 +10,12 @@ namespace TourisManager.Models
             using (var context = new MyDbContext(serviceProvider.GetRequiredService<DbContextOptions<MyDbContext>>()))
             {
                 // Tự động tạo DB và bảng nếu chưa tồn tại
-                context.Database.EnsureCreated();
+                //context.Database.EnsureCreated();
 
-                if (context.Destinations.Any())
+                if (!context.Destinations.Any())
                 {
-                    return; // Đã có dữ liệu, không chèn lại
-                }
-
-                var destinations = new Destination[]
-                {
+                    var destinations = new Destination[]
+                    {
                     new Destination
                     {
                         Name = "Hồ Hoàn Kiếm",
@@ -128,11 +126,45 @@ namespace TourisManager.Models
                         CustomIconUrl = "https://example.com/icons/bridge.png",
                         CreatedAt = DateTime.Now
                     }
+                    };
+                    context.Destinations.AddRange(destinations);
+                    context.SaveChanges();
+                }
+
+                if (!context.Users.Any())
+                {
+                    var users = new User[] {
+                    new User
+                    {
+                        UserId = "001",
+                        Username = "admin",
+                        Email = "admin@.com",
+                        Password = "123",
+                        Role = "admin"
+                    },
+                     new User
+                    {
+                        UserId = "002",
+                        Username = "user1",
+                        Email = "user1n@.com",
+                        Password = "123",
+                        Role = "user"
+                    },
+                      new User
+                    {
+                        UserId = "003",
+                        Username = "user2",
+                        Email = "user2@.com",
+                        Password = "123",
+                        Role = "user"
+                    }
                 };
 
-          
-                context.Destinations.AddRange(destinations);
-                context.SaveChanges();
+                    context.Users.AddRange(users);
+                    context.SaveChanges();
+                }
+            
+
             }
         }
     }

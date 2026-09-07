@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TourisManager.Models
+namespace TourisManager.Models.Entity
 {
     public class Destination
     {

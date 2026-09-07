@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TourisManager.Models;
+using TourisManager.Models.Data;
 
 
 namespace TourisManager
@@ -15,7 +15,8 @@ namespace TourisManager
 
             //Add MyDbContext to Dependency Injection 
             builder.Services.AddDbContext<MyDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("TourisManager")));
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("TourisManager")));
 
             var app = builder.Build();
 
