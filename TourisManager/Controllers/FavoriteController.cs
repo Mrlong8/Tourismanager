@@ -2,7 +2,7 @@
 
 namespace TourisManager.Controllers
 {
-    public class LoginController : Controller
+    public class FavoriteController : Controller
     {
         public IActionResult Index()
         {

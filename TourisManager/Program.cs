@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TourisManager.Models.Data;
+using Microsoft.EntityFrameworkCore.Internal;
+using TourisManager.Data;
+using TourisManager.Data.Seed;
 
 
 namespace TourisManager
@@ -13,22 +15,34 @@ namespace TourisManager
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            //Add MyDbContext to Dependency Injection 
-            builder.Services.AddDbContext<MyDbContext>(options =>
+            //AppDbContext to Dependency Injection
+            builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("TourisManager")));
+                    builder.Configuration.GetConnectionString("TourisManagerDb")));
 
             var app = builder.Build();
 
-            // Initialize the database
+            //Initialize the database
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                DbInitializer.Initialize(services);
+                try
+                {
+                    // Lấy DbContext từ hệ thống DI
+                    var context = services.GetRequiredService<AppDbContext>();
+
+                    // Gọi hàm nạp dữ liệu mẫu
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Đã xảy ra lỗi trong quá trình khởi tạo dữ liệu mẫu.");
+                }
             }
 
-                // Configure the HTTP request pipeline.
-                if (!app.Environment.IsDevelopment())
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
                 {
                     app.UseExceptionHandler("/Home/Error");
                     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

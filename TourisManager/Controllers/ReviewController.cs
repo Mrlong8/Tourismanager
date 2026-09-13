@@ -2,7 +2,7 @@
 
 namespace TourisManager.Controllers
 {
-    public class MapController : Controller
+    public class ReviewController : Controller
     {
         public IActionResult Index()
         {

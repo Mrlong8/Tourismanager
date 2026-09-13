@@ -9,11 +9,27 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TourisManager.Core\TourisManager.Core.csproj" />
+    <ProjectReference Include="..\TourisManager.Data\TourisManager.Data.csproj" />
+    <ProjectReference Include="..\TourisManager.Services\TourisManager.Services.csproj" />
+    <ProjectReference Include="..\TourisManager.Test\TourisManager.Test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\" />
+    <Folder Include="Areas\Seller\" />
+    <Folder Include="ControllersApi\" />
+    <Folder Include="wwwroot\Image\Loacaltion\" />
+    <Folder Include="wwwroot\Image\Upload\" />
+    <Folder Include="wwwroot\Image\Restaurant\" />
   </ItemGroup>
 
 </Project>

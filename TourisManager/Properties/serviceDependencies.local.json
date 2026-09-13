@@ -7,7 +7,7 @@
       "secretStore": "LocalSecretsFile",
       "resourceId": null,
       "type": "mssql.onprem",
-      "connectionId": "ConnectionStrings:TourisManager"
+      "connectionId": "ConnectionStrings:TourisManagerDb"
     }
   }
 }

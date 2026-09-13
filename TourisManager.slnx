@@ -1,3 +1,8 @@
 <Solution>
+  <Folder Name="/Database/" />
+  <Project Path="TourisManager.Core/TourisManager.Core.csproj" Id="4e04fb41-2d4c-4707-859b-c34087e24a50" />
+  <Project Path="TourisManager.Data/TourisManager.Data.csproj" Id="117cf24f-77e4-4b40-a96f-9b0b81c35f13" />
+  <Project Path="TourisManager.Services/TourisManager.Services.csproj" Id="3c7ddb2b-aa53-4c1d-be99-d493b5f381c6" />
+  <Project Path="TourisManager.Test/TourisManager.Test.csproj" Id="7d99b19a-21c2-4a07-9f27-8ddb7b1a9952" />
   <Project Path="TourisManager/TourisManager.csproj" />
 </Solution>
