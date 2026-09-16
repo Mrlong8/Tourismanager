@@ -27,6 +27,7 @@
     <Folder Include="Areas\Admin\" />
     <Folder Include="Areas\Seller\" />
     <Folder Include="ControllersApi\" />
+    <Folder Include="ViewComponents\" />
     <Folder Include="wwwroot\Image\Loacaltion\" />
     <Folder Include="wwwroot\Image\Upload\" />
     <Folder Include="wwwroot\Image\Restaurant\" />
