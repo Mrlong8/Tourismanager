@@ -1,16 +1,16 @@
 ﻿@model TourisManager.Core.Entities.User
-
+@TempData["Msg"]
 <section style="background-color: #eee;">
     <div class="container py-5">
-        <!-- BỌC FORM Ở ĐÂY -->
-        <form asp-controller="Account" asp-action="Edit" method="post">
+
+        <form asp-controller="Account" asp-action="Profile" method="post">
             <div class="row">
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
                             <img src="@Model?.AvataUrl" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
                             <h5 class="my-3">@Model?.Name</h5>
-                            <p class="text-muted mb-1">Thành viên</p
+                            <p class="text-muted mb-1">@Model.Role</p
                         </div>
                     </div>
                 </div>
