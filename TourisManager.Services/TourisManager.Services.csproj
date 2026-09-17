@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TourisManager.Core\TourisManager.Core.csproj" />
+    <ProjectReference Include="..\TourisManager.Data\TourisManager.Data.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,26 +1,22 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
+@model TourisManager.Core.Entities.User
 @{
 }
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<form>
+<h1>Sign up</h1>
+@TempData["Msg"]
+<form asp-controller="Account" asp-action="Signup" method="post">
     <div class="form-group">
         <label for="fullName">Full Name</label>
-        <input type="text" class="form-control" id="fullName" aria-describedby="emailHelp">
+        <input asp-for="Name" type="text" class="form-control" id="fullName">
     </div>
     <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1">
       
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
+        <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
     </div>
     <div class="form-group">
         <label for="exampleInputPassword2">Confirm Password</label>
@@ -30,5 +26,8 @@
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
         <label class="form-check-label" for="exampleCheck1">Tôi đồng ý với các điều khoản</label>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div>
+        <button type="submit" class="btn btn-primary">Signup</button>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-warning">Log In</a>
+    </div>
 </form>

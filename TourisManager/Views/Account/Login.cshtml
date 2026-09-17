@@ -4,18 +4,22 @@
 {
     <div class="alert alert-danger">@ViewBag.Error</div>
 }
+<h1>Log in</h1>
+@TempData["Msg"]
 <form asp-controller="Account" asp-action="Login" method="post">
     <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
-        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-      
+        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"> 
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
         <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
     </div>
     <div class="form-group form-check">
-        <label  class="form-check-label" for="exampleCheck1">Quên Mật khẩu</label>
+        <a  class="form-check-label">Quên Mật khẩu</a>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <a asp-controller="Account" asp-action="Signup" class="btn btn-warning">Bạn chưa có tìa khoản</a>
+    </div>
 </form>
