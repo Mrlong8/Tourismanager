@@ -1,33 +1,61 @@
-﻿
-@model TourisManager.Core.Entities.User
+﻿@model TourisManager.Core.Entities.Account
 @{
+    ViewData["Title"] = "Sign Up";
 }
-<h1>Sign up</h1>
-@TempData["Msg"]
-<form asp-controller="Account" asp-action="Signup" method="post">
-    <div class="form-group">
-        <label for="fullName">Full Name</label>
-        <input asp-for="Name" type="text" class="form-control" id="fullName">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1">
-      
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword2">Confirm Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword2">
-    </div>
-    <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Tôi đồng ý với các điều khoản</label>
-    </div>
-    <div>
-        <button type="submit" class="btn btn-primary">Signup</button>
-        <a asp-controller="Account" asp-action="Login" class="btn btn-warning">Log In</a>
-    </div>
-</form>
+
+<div class="container my-5" style="max-width: 500px;">
+    <h1 class="mb-4 text-center">Sign Up</h1>
+
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Msg"]</div>
+    }
+
+    <form asp-controller="Account" asp-action="Signup" method="post">
+        <!-- Ô nhập Username -->
+        <div class="form-group mb-3">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" type="text" class="form-control" id="username" placeholder="Nhập tên tài khoản" required />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <!-- Ô nhập Full Name -->
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="form-label">Full Name</label>
+            <input asp-for="Name" type="text" class="form-control" id="fullName" placeholder="Nhập họ và tên" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Ô nhập Email -->
+        <div class="form-group mb-3">
+            <label asp-for="Email" class="form-label">Email Address</label>
+            <input asp-for="Email" type="email" class="form-control" id="email" placeholder="name@example.com" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Ô nhập Password -->
+        <div class="form-group mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" id="password" required />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <!-- Ô nhập Confirm Password -->
+        <div class="form-group mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" required />
+        </div>
+
+        <!-- Checkbox điều khoản -->
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="acceptTerms" name="acceptTerms" required />
+            <label class="form-check-label" for="acceptTerms">Tôi đồng ý với các điều khoản</label>
+        </div>
+
+        <!-- Nút Submit / Navigation -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Signup</button>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-warning">Log In</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,15 @@
+﻿/* Độ rộng của Sidebar khi trượt ra */
+.custom-offcanvas-sidebar {
+    width: 300px !important;
+}
+
+/* Hiệu ứng hover các dòng menu trong Sidebar */
+.custom-sidebar-link {
+    transition: all 0.2s ease-in-out;
+}
+
+    .custom-sidebar-link:hover {
+        background-color: #e8f5e9 !important; /* Xanh lá nhạt */
+        color: #198754 !important;
+        transform: translateX(5px); /* Hiệu ứng đẩy nhẹ sang phải khi hover */
+    }

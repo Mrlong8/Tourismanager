@@ -18,6 +18,6 @@ namespace TourisManager.Core.Entities
 
         // Navigation Properties
         public Category? Category { get; set; }
-        public User? Creator { get; set; }
+        public Account? Creator { get; set; }
     }
 }

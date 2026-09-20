@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using TourisManager.Data;
@@ -25,9 +26,23 @@ namespace TourisManager
             // đăng ký dịch vụ (Dependency Injection - DI)
             builder.Services.AddScoped<AccountService, AccountServiceImpl>();
 
+            // Cấu hình ASP.NET Core Cookie Authentication
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/account/login";// chưa đăng nhập chuyển về trang login
+                    options.LogoutPath = "/account/logout";// đăng xuất
+                    options.AccessDeniedPath = "/account/access-denied"; // đăng nhập nhưng không đủ quyền
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7); // thời gian lưu cookie
+                    options.SlidingExpiration = true;//Nếu user tiếp tục sử dụng hệ thống, thời hạn cookie có thể được gia hạn theo cơ chế sliding expiration.
+                });
+
+
             var app = builder.Build();
 
-            app.UseSession(); // tác dụng là lưu thoong tin đăng nhập và phân quyền sau khi người dùng đăng nhập
+            app.UseSession(); // Session dùng để lưu dữ liệu tạm thời giữa các request.
+                              // Ví dụ: giỏ hàng, trạng thái tạm thời,...
 
             //Initialize the database
             using (var scope = app.Services.CreateScope())
@@ -59,7 +74,8 @@ namespace TourisManager
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();//Đọc authentication information từ request và xác định "User này là ai?"
+            app.UseAuthorization();// thực hiện phân quyền
 
             app.MapStaticAssets();
             app.MapControllerRoute(
