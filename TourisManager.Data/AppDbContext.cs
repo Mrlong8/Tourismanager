@@ -9,7 +9,8 @@ namespace TourisManager.Data
             // gọi constructer của lớp cha DbContext với các tùy chọn được cung cấp
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+
         public DbSet<Category> Categories { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationImage> LocationImages { get; set; }

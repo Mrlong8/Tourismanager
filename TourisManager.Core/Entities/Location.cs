@@ -21,7 +21,7 @@ namespace TourisManager.Core.Entities
 
         // Navigation Properties
         public Category? Category { get; set; }
-        public User? Creator { get; set; }
+        public Account? Creator { get; set; }
         public ICollection<LocationImage> LocationImages { get; set; } = new List<LocationImage>();
     }
 }
