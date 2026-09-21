@@ -5,21 +5,38 @@
     <div class="alert alert-danger">@ViewBag.Error</div>
 }
 <h1>Log in</h1>
-@TempData["Msg"]
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-danger">@TempData["Msg"]</div>
+}
 <form asp-controller="Account" asp-action="Login" method="post">
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input asp-for="UsernameOrEmail" type="ttext" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"> 
+    <!-- Hiển thị tổng hợp lỗi ở đầu form (nếu muốn) -->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group mb-3">
+        <label asp-for="UsernameOrEmail" class="form-label"></label>
+        <input asp-for="UsernameOrEmail" class="form-control" />
+        
+        <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
+
+    <div class="form-group mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-    <div class="form-group form-check">
-        <a  class="form-check-label">Quên Mật khẩu</a>
+
+    <div class="form-group form-check mb-3">
+        <a class="form-check-label" href="#">Quên Mật khẩu</a>
     </div>
+
     <div>
         <button type="submit" class="btn btn-primary">Login</button>
-        <a asp-controller="Account" asp-action="Signup" class="btn btn-warning">Bạn chưa có tìa khoản</a>
+        <a asp-controller="Account" asp-action="Signup" class="btn btn-warning">Bạn chưa có tài khoản</a>
     </div>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
