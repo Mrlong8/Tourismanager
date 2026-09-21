@@ -16,6 +16,8 @@ namespace TourisManager.Core.Entities
         public decimal Longitude { get; set; }
         public string? ImageUrl { get; set; }
         public string? IconUrl { get; set; }
+
+        [ForeignKey(nameof(Creator))]
         public string CreateBy { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
 

@@ -1,0 +1,30 @@
+﻿@model TourisManager.Core.Entities.Restaurant
+
+@{
+    ViewData["Title"] = "Chi tiết Nhà hàng";
+}
+
+<h2>Chi tiết Nhà hàng</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Mã nhà hàng:</dt>
+        <dd class="col-sm-10">@Model.RestaurantId</dd>
+
+        <dt class="col-sm-2">Tên nhà hàng:</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Mô tả:</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Địa chỉ:</dt>
+        <dd class="col-sm-10">@Model.Address</dd>
+
+        <dt class="col-sm-2">Tọa độ:</dt>
+        <dd class="col-sm-10">@Model.Latitude, @Model.Longitude</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.RestaurantId" class="btn btn-warning">Sửa</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

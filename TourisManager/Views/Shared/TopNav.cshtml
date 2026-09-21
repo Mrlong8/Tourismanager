@@ -23,6 +23,17 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark fw-medium" asp-area="" asp-controller="Map" asp-action="Index">Map</a>
                     </li>
+                       <!-- Menu Dropdown Quản lý Chức năng -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Quản lý Chức năng
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">Quản lý Người dùng</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Location" asp-action="Index">Quản lý Địa điểm</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Restaurant" asp-action="Index">Quản lý Nhà hàng</a></li>
+                            </ul>
+                        </li>
                 </ul>
 
                 <!-- Auth Status Menu Bên Phải -->
