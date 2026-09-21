@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TourisManager.Core.Entities;
@@ -97,17 +98,43 @@ namespace TourisManager.Controllers
         [Route("signup")]
         public IActionResult Signup()
         {
-            return View(new Account());
+            return View(new SignupViewModel());
         }
 
         [HttpPost]
         [Route("signup")]
-        public IActionResult Signup(Account account)
+        public IActionResult Signup(SignupViewModel model)
         {
-            if (!string.IsNullOrEmpty(account.Password))
+            if (!ModelState.IsValid)
             {
-                account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
+                return View(model);
             }
+            //  KIỂM TRA TRÙNG username  TRONG DATABASE
+            if (_accountService.IsUserNameExists(model.Username))
+            {
+                ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
+            }
+
+            // KIỂM TRA TRÙNG EMAIL TRONG DATABASE
+            if (_accountService.IsUserEmailExists(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email này đã được đăng ký.");
+            }
+
+         
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var account = new Account
+            {
+                Username = model.Username,
+                Name = model.FullName,
+                Email = model.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+            };
+
 
             if (_accountService.Create(account))
             {
@@ -115,7 +142,7 @@ namespace TourisManager.Controllers
             }
 
             TempData["Msg"] = "Đăng ký thất bại!";
-            return RedirectToAction("signup");
+            return RedirectToAction("login");
         }
         [Authorize]
         [HttpGet]

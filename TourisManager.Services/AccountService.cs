@@ -9,5 +9,8 @@ namespace TourisManager.Services
         Account FindByUsernameOrEmail(string usernameOrEmail); 
         bool Update(Account account);
         Account? FindById(string accountId);
+
+        bool IsUserNameExists(string UserName);
+        bool IsUserEmailExists(string Email);
     }
 }

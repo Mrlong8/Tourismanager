@@ -76,6 +76,32 @@ namespace TourisManager.Services
             return db.Accounts.AsNoTracking().FirstOrDefault(a => a.Username == usernameOrEmail || a.Email == usernameOrEmail);
         }
 
+        // tìm kiếm username bị trùng
+        public bool IsUserNameExists(string UserName)
+        {
+            var userName = db.Accounts.FirstOrDefault(a => a.Username == UserName);
+            if (userName != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        // kiểm tra email bị trùng
+        public bool IsUserEmailExists(string Email)
+        {
+            var userName = db.Accounts.FirstOrDefault(a => a.Email == Email);
+            if (userName != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public bool Update(Account account)
         {
             try
@@ -88,5 +114,8 @@ namespace TourisManager.Services
                 return false;
             }
         }
+
+        
+
     }
 }
