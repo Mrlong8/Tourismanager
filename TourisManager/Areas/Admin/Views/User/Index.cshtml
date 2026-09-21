@@ -1,0 +1,57 @@
+﻿@model IEnumerable<TourisManager.Core.Entities.Account>
+@{
+    ViewData["Title"] = "Quản lý User";
+}
+<h1>Quản lý User</h1>
+<p>
+    <a href="/Admin/User/Create" class="btn btn-primary">
+        Thêm User
+    </a>
+</p>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Account ID</th>
+            <th>Username</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Auth Provider</th>
+            <th>Ngày tạo</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.AccountId</td>
+                <td>@user.Username</td>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>@user.AuthProvider</td>
+                <td>@user.CreateAt</td>
+                <td>
+                 
+                    <a asp-area="Admin"
+                       asp-controller="User"
+                       asp-action="Edit"
+                       asp-route-id="@user.AccountId"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a asp-area="Admin"
+                       asp-controller="User"
+                       asp-action="Delete"
+                       asp-route-id="@user.AccountId"
+                       class="btn btn-danger btn-sm">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
