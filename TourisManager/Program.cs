@@ -25,7 +25,7 @@ namespace TourisManager
 
             // đăng ký dịch vụ (Dependency Injection - DI)
             builder.Services.AddScoped<AccountService, AccountServiceImpl>();
-
+            builder.Services.AddScoped<LocationService, LocationServiceImpl>();
             // Cấu hình ASP.NET Core Cookie Authentication
             builder.Services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
