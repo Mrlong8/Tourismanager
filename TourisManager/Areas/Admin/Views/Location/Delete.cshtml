@@ -1,0 +1,28 @@
+﻿@model TourisManager.Core.Entities.Location
+
+@{
+    ViewData["Title"] = "Xóa Địa điểm";
+}
+
+<h2>Xác nhận xóa Địa điểm</h2>
+
+<div>
+    <h4>Bạn có chắc chắn muốn xóa địa điểm này?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Mã địa điểm:</dt>
+        <dd class="col-sm-10">@Model.LocationId</dd>
+
+        <dt class="col-sm-2">Tên địa điểm:</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Địa chỉ:</dt>
+        <dd class="col-sm-10">@Model.Address</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="LocationId" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>

@@ -22,7 +22,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.854167m,
                     ImageUrl = "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                    CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 1, 8, 0, 0)
                 },
                 // 2. Hoàng Thành Thăng Long
@@ -37,7 +37,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.839815m,
                     ImageUrl = "https://images.unsplash.com/photo-1627918571827-010e9791497a?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 2, 8, 0, 0)
                 },
                 // 3. Văn Miếu - Quốc Tử Giám
@@ -52,7 +52,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.835974m,
                     ImageUrl = "https://images.unsplash.com/photo-1590059207002-368297b69a83?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 3, 8, 0, 0)
                 },
                 // 4. Lăng Chủ tịch Hồ Chí Minh
@@ -67,7 +67,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.834641m,
                     ImageUrl = "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 4, 8, 0, 0)
                 },
                 // 5. Chùa Trấn Quốc
@@ -82,7 +82,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.836814m,
                     ImageUrl = "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 5, 8, 0, 0)
                 },
                 // 6. Nhà thờ Lớn Hà Nội
@@ -97,7 +97,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.849015m,
                     ImageUrl = "https://images.unsplash.com/photo-1509030450996-939a26353926?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                     CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 6, 8, 0, 0)
                 },
                 // 7. Chợ Đồng Xuân
@@ -112,7 +112,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.849646m,
                     ImageUrl = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                     CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 7, 8, 0, 0)
                 },
                 // 8. Cầu Long Biên
@@ -127,7 +127,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.857317m,
                     ImageUrl = "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                     CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 8, 8, 0, 0)
                 },
                 // 9. Bảo tàng Dân tộc học Việt Nam
@@ -142,7 +142,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.798606m,
                     ImageUrl = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 9, 8, 0, 0)
                 },
                 // 10. Phố Cổ Hà Nội (Hà Nội Old Quarter)
@@ -157,7 +157,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.850974m,
                     ImageUrl = "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 10, 8, 0, 0)
                 },
                 // 11. Vườn Quốc gia Ba Vì
@@ -172,7 +172,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.362500m,
                     ImageUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 11, 8, 0, 0)
                 },
                 // 12. Làng cổ Đường Lâm
@@ -187,7 +187,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.473056m,
                     ImageUrl = "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 12, 8, 0, 0)
                 },
                 // 13. Vịnh Hạ Long (Quảng Ninh)
@@ -202,7 +202,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 107.183902m,
                     ImageUrl = "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                     CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 13, 8, 0, 0)
                 },
                 // 14. Quần thể Danh thắng Tràng An (Ninh Bình)
@@ -217,7 +217,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.908056m,
                     ImageUrl = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                     CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 14, 8, 0, 0)
                 },
                 // 15. Đỉnh Fansipan - Sapa
@@ -232,7 +232,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 103.775000m,
                     ImageUrl = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                     CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 15, 8, 0, 0)
                 },
                 // 16. Phố cổ Hội An (Quảng Nam)
@@ -247,7 +247,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 108.338047m,
                     ImageUrl = "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 16, 8, 0, 0)
                 },
                 // 17. Cầu Vàng - Bà Nà Hills (Đà Nẵng)
@@ -262,7 +262,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 107.986500m,
                     ImageUrl = "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 17, 8, 0, 0)
                 },
                 // 18. Cố đô Huế
@@ -277,7 +277,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 107.577778m,
                     ImageUrl = "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-01",
+                    CreateBy= "acc-01",
                     CreateAt = new DateTime(2026, 1, 18, 8, 0, 0)
                 },
                 // 19. Bãi biển Sao - Phú Quốc
@@ -292,7 +292,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 104.032608m,
                     ImageUrl = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-02",
+                   CreateBy= "acc-02",
                     CreateAt = new DateTime(2026, 1, 19, 8, 0, 0)
                 },
                 // 20. Chợ nổi Cái Răng (Cần Thơ)
@@ -307,7 +307,7 @@ namespace TourisManager.Data.Seed
                     Longitude = 105.746111m,
                     ImageUrl = "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80",
                     IconUrl = "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-                    CreateBy = "usr-03",
+                     CreateBy= "acc-03",
                     CreateAt = new DateTime(2026, 1, 20, 8, 0, 0)
                 }
             };

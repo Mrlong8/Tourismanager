@@ -1,0 +1,27 @@
+﻿@model TourisManager.Core.Entities.Location
+
+@{
+    ViewData["Title"] = "Chi tiết Địa điểm";
+}
+
+<h2>Chi tiết Địa điểm</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Mã địa điểm:</dt>
+        <dd class="col-sm-10">@Model.LocationId</dd>
+
+        <dt class="col-sm-2">Tên địa điểm:</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Mô tả:</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Địa chỉ:</dt>
+        <dd class="col-sm-10">@Model.Address</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.LocationId" class="btn btn-warning">Sửa</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>
