@@ -1,33 +1,125 @@
 ﻿@model TourisManager.Core.Entities.Location
 
 @{
-    ViewData["Title"] = "Sửa Địa điểm";
+    ViewData["Title"] = "Chỉnh sửa Địa điểm";
 }
 
-<h2>Chỉnh sửa Địa điểm</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
 
-<form asp-action="Edit" method="post">
-    <!-- Thẻ ẩn lưu giữ khóa chính và thuộc tính khóa ngoại -->
-    <input type="hidden" asp-for="LocationId" />
-    <input type="hidden" asp-for="CreateBy" />
-    <input type="hidden" asp-for="CategoryId" />
-
-    <div class="form-group">
-        <label>Tên địa điểm</label>
-        <input asp-for="Name" class="form-control" required />
+<div class="container-fluid py-4" style="max-width: 1100px;">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h3 class="fw-bold text-success mb-1">
+                <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa Địa điểm
+            </h3>
+            <p class="text-muted mb-0 small">Cập nhật thông tin chi tiết địa điểm du lịch trong hệ thống</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 fs-6">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+        </a>
     </div>
 
-    <div class="form-group">
-        <label>Mô tả</label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-    </div>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-4 p-md-5">
+            <!-- QUAN TRỌNG: enctype="multipart/form-data" -->
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="LocationId" />
+                <input type="hidden" asp-for="CreateBy" />
+                <input type="hidden" asp-for="CreateAt" />
 
-    <div class="form-group">
-        <label>Địa chỉ</label>
-        <input asp-for="Address" class="form-control" />
-    </div>
+                <div class="row g-4">
+                    <!-- Cột trái: Ảnh địa điểm & Upload file -->
+                    <div class="col-lg-4 text-center border-end pe-lg-4">
+                        <label class="form-label fw-bold text-dark mb-2 d-block text-start">Ảnh địa điểm hiện tại</label>
+                        <div class="position-relative d-inline-block w-100 mb-3">
+                            <img id="imgPreview" 
+                                 src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/Image/Upload/avatadefault.jpg" : Model.ImageUrl)" 
+                                 onerror="this.onerror=null; this.src='/Image/Upload/avatadefault.jpg';"
+                                 class="img-fluid rounded-4 shadow-sm object-fit-cover w-100 border" 
+                                 style="height: 220px;" 
+                                 alt="@Model.Name" />
+                        </div>
 
-    <br />
-    <button type="submit" class="btn btn-primary">Cập nhật</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+                        <!-- Ô Chọn File Ảnh từ máy tính -->
+                        <div class="text-start mb-3">
+                            <label class="form-label fw-semibold small text-muted">Tải ảnh mới từ máy tính</label>
+                            <input type="file" name="imageFile" id="imageFileInput" class="form-control form-control-sm rounded-3" accept="image/*" />
+                        </div>
+
+                        <!-- Khung đường dẫn cũ/URL -->
+                        <div class="text-start">
+                            <label asp-for="ImageUrl" class="form-label fw-semibold small text-muted">Đường dẫn ảnh (URL / Relative Path)</label>
+                            <input asp-for="ImageUrl" id="imageUrlInput" class="form-control form-control-sm rounded-3" readonly />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải: Thông tin chi tiết -->
+                    <div class="col-lg-8">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="LocationId" class="form-label fw-semibold">Mã địa điểm</label>
+                                <input asp-for="LocationId" class="form-control rounded-3 bg-light" disabled />
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label fw-semibold">Tên địa điểm <span class="text-danger">*</span></label>
+                                <input asp-for="Name" class="form-control rounded-3" required />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="CategoryId" class="form-label fw-semibold">Danh mục <span class="text-danger">*</span></label>
+                                <select asp-for="CategoryId" class="form-select rounded-3" asp-items="ViewBag.CategoryId" required>
+                                    <option value="">-- Chọn danh mục địa điểm --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Address" class="form-label fw-semibold">Địa chỉ <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-geo-alt text-danger"></i></span>
+                                    <input asp-for="Address" class="form-control border-start-0 rounded-end-3" required />
+                                </div>
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-semibold">Mô tả chi tiết</label>
+                                <textarea asp-for="Description" class="form-control rounded-3" rows="4"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 pt-3 mt-4 border-top d-flex gap-2 justify-content-end">
+                                <a asp-action="Index" class="btn btn-light text-secondary border px-4 rounded-3">Hủy bỏ</a>
+                                <button type="submit" class="btn btn-success px-4 rounded-3 fw-semibold shadow-sm">
+                                    <i class="bi bi-check-lg me-1"></i>Lưu thay đổi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Hiển thị ngay ảnh vừa chọn từ máy tính
+        document.getElementById('imageFileInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById('imgPreview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

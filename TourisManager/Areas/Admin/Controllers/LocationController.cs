@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TourisManager.Data;
 using TourisManager.Core.Entities;
+using TourisManager.Data;
 
 namespace TourisManager.Areas.Admin.Controllers
 {
@@ -16,10 +17,30 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Location
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string categoryId)
         {
-            var locations = await _context.Locations.ToListAsync();
-            return View(locations);
+            // 1. Lấy danh sách địa điểm bao gồm thông tin Danh mục (Category)
+            var query = _context.Locations.Include(l => l.Category).AsQueryable();
+
+            // 2. Lọc theo từ khóa tìm kiếm (Tên địa điểm hoặc Địa chỉ)
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(l => l.Name.Contains(searchString) || l.Address.Contains(searchString));
+            }
+
+            // 3. Lọc theo Danh mục
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                query = query.Where(l => l.CategoryId == categoryId);
+            }
+
+            // 4. Truyền danh sách Categories ra View để hiển thị trong thẻ <select>
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.CurrentSearch = searchString;
+            ViewBag.CurrentCategory = categoryId;
+
+            var result = await query.ToListAsync();
+            return View(result);
         }
 
         // GET: /Admin/Location/Details/id
@@ -41,88 +62,134 @@ namespace TourisManager.Areas.Admin.Controllers
             return View(location);
         }
 
-        // GET: /Admin/Location/Create
-        public IActionResult Create()
+        // GET: Admin/Location/Create
+        public async Task<IActionResult> Create()
         {
+            // Đảm bảo value field là "CategoryId" (kiểu string) và display field là "Name"
+            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
             return View();
         }
-        //Post: /Admin/Location/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Location location)
+        public async Task<IActionResult> Create(Location location, IFormFile? imageFile)
         {
-            // 1. Tự sinh LocationId nếu chưa có
-            if (string.IsNullOrEmpty(location.LocationId))
-            {
-                location.LocationId = "loc-" + Guid.NewGuid().ToString().Substring(0, 5);
-            }
-
-            // 2. Gán CreateBy bằng AccountId hợp lệ ĐÃ CÓ sẵn trong bảng Account
-            // Kiểm tra trong trang User của bạn, ví dụ "acc-01" hoặc id của tài khoản admin
-            if (string.IsNullOrEmpty(location.CreateBy))
-            {
-                location.CreateBy = "acc-01"; // Thay "acc-01" bằng một AccountId có trong CSDL của bạn
-            }
-
-            // 3. Gán CategoryId bằng mã Category hợp lệ đã có trong bảng Category (nếu có khóa ngoại)
-            if (string.IsNullOrEmpty(location.CategoryId))
-            {
-                // Nhớ thay bằng mã CategoryId thực tế đã tồn tại trong DB của bạn (ví dụ: "cat-01" hoặc "1")
-                location.CategoryId = "cat-01";
-            }
-
-            // 4. Bỏ qua Validate cho các trường đã tự gán
-            ModelState.Remove(nameof(Location.LocationId));
-            ModelState.Remove(nameof(Location.CreateBy));
-            ModelState.Remove(nameof(Location.CategoryId));
+            ModelState.Remove("CreateBy");
+            ModelState.Remove("Category");
+            ModelState.Remove("Creator");
+            ModelState.Remove("LocationImages");
 
             if (ModelState.IsValid)
             {
-                _context.Locations.Add(location);
-                await _context.SaveChangesAsync();
+                // 1. Tự động lấy AccountId đầu tiên tồn tại trong CSDL để tránh lỗi Foreign Key
+                var defaultAccount = await _context.Accounts.FirstOrDefaultAsync();
+                if (defaultAccount != null)
+                {
+                    location.CreateBy = defaultAccount.AccountId; // Hoặc Username tùy tên khóa chính bảng Account
+                }
+                else
+                {
+                    // Trường hợp bảng Account chưa có tài khoản nào
+                    ModelState.AddModelError("", "Hệ thống chưa có tài khoản người dùng trong bảng Account!");
+                    ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
+                    return View(location);
+                }
+
+                location.CreateAt = DateTime.Now;
+
+                // 2. Xử lý upload ảnh
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    string uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/Location");
+
+                    if (!Directory.Exists(uploadDir))
+                    {
+                        Directory.CreateDirectory(uploadDir);
+                    }
+
+                    string filePath = Path.Combine(uploadDir, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+                    location.ImageUrl = "/Image/Location/" + fileName;
+                }
+
+                _context.Add(location);
+                await _context.SaveChangesAsync(); // Sẽ lưu thành công[cite: 16]
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
             return View(location);
         }
-
         // GET: /Admin/Location/Edit/id
+     
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
             var location = await _context.Locations.FindAsync(id);
-
             if (location == null)
             {
                 return NotFound();
             }
 
+            // Nạp danh sách Category vào ViewBag và chọn sẵn CategoryId hiện tại của Location
+            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
+
             return View(location);
         }
 
         // POST: /Admin/Location/Edit/id
-        // POST: /Admin/Location/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Location location)
+        public async Task<IActionResult> Edit(string id, Location location, IFormFile? imageFile)
         {
             if (id != location.LocationId)
             {
                 return NotFound();
             }
 
-            // 1. Lấy dữ liệu cũ trong CSDL để giữ nguyên các thông tin không sửa (như CreateBy, CategoryId, Ngày tạo)
+            // 1. Lấy dữ liệu cũ trong CSDL để giữ lại các thông tin không sửa
             var oldLocation = await _context.Locations.AsNoTracking().FirstOrDefaultAsync(x => x.LocationId == id);
             if (oldLocation == null)
             {
                 return NotFound();
             }
 
-            // 2. Gán lại các thuộc tính bắt buộc nếu form không truyền về
+            // 2. Xử lý lưu ảnh
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                // TH1: Người dùng chọn tệp ảnh mới -> Lưu file vào máy chủ & gán đường dẫn mới
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                string uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/Location");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }
+
+                string filePath = Path.Combine(uploadDir, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                location.ImageUrl = "/Image/Location/" + fileName;
+            }
+            else
+            {
+                // TH2: Người dùng không chọn ảnh mới -> Giữ nguyên đường dẫn ảnh cũ
+                location.ImageUrl = oldLocation.ImageUrl;
+            }
+
+            // 3. Gán lại các thuộc tính bắt buộc nếu form không truyền về
             if (string.IsNullOrEmpty(location.CreateBy))
             {
                 location.CreateBy = oldLocation.CreateBy;
@@ -132,16 +199,19 @@ namespace TourisManager.Areas.Admin.Controllers
                 location.CategoryId = oldLocation.CategoryId;
             }
 
-            // 3. Bỏ qua kiểm tra validate cho các trường này
+            // 4. Bỏ qua kiểm tra validate cho các thuộc tính Navigation/Bắt buộc
             ModelState.Remove(nameof(Location.CreateBy));
             ModelState.Remove(nameof(Location.CategoryId));
+            ModelState.Remove(nameof(Location.Category));
+            ModelState.Remove(nameof(Location.Creator));
+            ModelState.Remove(nameof(Location.LocationImages));
 
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Locations.Update(location);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // Lưu dữ liệu mới (bao gồm ImageUrl) vào Database
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -157,14 +227,15 @@ namespace TourisManager.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Nếu validation không hợp lệ, nạp lại ViewBag Danh mục để View hiển thị đúng Dropdown
+            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
             return View(location);
+          
         }
-
         private bool LocationExists(string id)
         {
             return _context.Locations.Any(e => e.LocationId == id);
         }
-
         // GET: /Admin/Location/Delete/id
         public async Task<IActionResult> Delete(string id)
         {
