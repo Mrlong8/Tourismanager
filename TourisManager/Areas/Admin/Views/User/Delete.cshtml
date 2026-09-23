@@ -1,81 +1,86 @@
 ﻿@model TourisManager.Core.Entities.Account
 
 @{
-    ViewData["Title"] = "Xóa User";
+    ViewData["Title"] = "Xóa người dùng";
 }
 
-<h1>Xóa User</h1>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
 
-<h3>Bạn có chắc chắn muốn xóa User này không?</h3>
+<div class="container-fluid py-4" style="max-width: 750px;">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h3 class="fw-bold text-danger mb-1">
+                <i class="bi bi-trash3-fill me-2"></i>Xóa người dùng
+            </h3>
+            <p class="text-muted mb-0 small">Xác nhận thao tác xóa tài khoản khỏi hệ thống</p>
+        </div>
+        <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 fs-6">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+        </a>
+    </div>
 
-<div>
-    <hr />
+    <!-- Alert Warning -->
+    <div class="alert alert-warning border-0 shadow-sm rounded-3 d-flex align-items-center mb-4 p-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-3 text-warning me-3"></i>
+        <div>
+            <h6 class="fw-bold mb-1">Cảnh báo hành động!</h6>
+            <div class="small text-muted">Bạn có chắc chắn muốn xóa tài khoản này không? Hành động này không thể hoàn tác.</div>
+        </div>
+    </div>
 
-    <dl class="row">
+    <!-- User Information Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-light border-0 py-3 px-4">
+            <h6 class="fw-bold mb-0 text-secondary">
+                <i class="bi bi-person-badge me-2"></i>Thông tin tài khoản sẽ xóa
+            </h6>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Account ID</span>
+                    <span class="fw-semibold text-dark fs-6">#@Model.AccountId</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Username</span>
+                    <span class="fw-bold text-primary fs-6">@@Model.Username</span>
+                </div>
 
-        <dt class="col-sm-2">
-            Account ID
-        </dt>
-        <dd class="col-sm-10">
-            @Model.AccountId
-        </dd>
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Họ và tên</span>
+                    <span class="fw-semibold text-dark">@(string.IsNullOrEmpty(Model.Name) ? "Chưa cập nhật" : Model.Name)</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Email</span>
+                    <span class="fw-semibold text-dark">@Model.Email</span>
+                </div>
 
-        <dt class="col-sm-2">
-            Username
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Username
-        </dd>
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Role (Vai trò)</span>
+                    <span class="badge bg-info text-dark px-2 py-1">@Model.Role</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="text-muted small d-block mb-1">Phương thức xác thực</span>
+                    <span class="badge bg-secondary px-2 py-1">@Model.AuthProvider</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt class="col-sm-2">
-            Họ tên
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Name
-        </dd>
-
-        <dt class="col-sm-2">
-            Email
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Email
-        </dd>
-
-        <dt class="col-sm-2">
-            Role
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Role
-        </dd>
-
-        <dt class="col-sm-2">
-            Auth Provider
-        </dt>
-        <dd class="col-sm-10">
-            @Model.AuthProvider
-        </dd>
-
-    </dl>
-
-    <form asp-area="Admin"
-          asp-controller="User"
-          asp-action="Delete"
-          method="post">
-
+    <!-- Action Form -->
+    <form asp-area="Admin" asp-controller="User" asp-action="Delete" method="post">
         @Html.AntiForgeryToken()
-
         <input type="hidden" asp-for="AccountId" />
 
-        <button type="submit" class="btn btn-danger">
-            Xác nhận xóa
-        </button>
-
-        <a asp-area="Admin"
-           asp-controller="User"
-           asp-action="Index"
-           class="btn btn-secondary">
-            Quay lại
-        </a>
-
+        <div class="d-flex gap-2 justify-content-end">
+            <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-light text-secondary border px-4 rounded-3">
+                Hủy bỏ
+            </a>
+            <button type="submit" class="btn btn-danger px-4 rounded-3 fw-semibold shadow-sm">
+                <i class="bi bi-trash me-1"></i>Xác nhận xóa
+            </button>
+        </div>
     </form>
 </div>
