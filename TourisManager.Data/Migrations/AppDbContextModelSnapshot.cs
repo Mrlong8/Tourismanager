@@ -22,6 +22,47 @@ namespace TourisManager.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("TourisManager.Core.Entities.Account", b =>
+                {
+                    b.Property<string>("AccountId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AuthProvider")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AvataUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AccountId");
+
+                    b.ToTable("Account");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.Category", b =>
                 {
                     b.Property<string>("CategoryId")
@@ -45,6 +86,9 @@ namespace TourisManager.Data.Migrations
                     b.Property<string>("FavoriteId")
                         .HasColumnType("varchar(36)");
 
+                    b.Property<string>("AccountId")
+                        .HasColumnType("varchar(36)");
+
                     b.Property<string>("TargetId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
@@ -59,7 +103,7 @@ namespace TourisManager.Data.Migrations
 
                     b.HasKey("FavoriteId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Favorite");
                 });
@@ -80,10 +124,6 @@ namespace TourisManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreateBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatorUserId")
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Description")
@@ -96,10 +136,12 @@ namespace TourisManager.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Latitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -109,7 +151,7 @@ namespace TourisManager.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CreatorUserId");
+                    b.HasIndex("CreateBy");
 
                     b.ToTable("Location");
                 });
@@ -153,17 +195,19 @@ namespace TourisManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorUserId")
+                    b.Property<string>("CreatorAccountId")
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Latitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<decimal>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -173,7 +217,7 @@ namespace TourisManager.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CreatorUserId");
+                    b.HasIndex("CreatorAccountId");
 
                     b.ToTable("Restaurant");
                 });
@@ -181,6 +225,9 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
                 {
                     b.Property<string>("ReviewId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountId")
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Content")
@@ -206,7 +253,7 @@ namespace TourisManager.Data.Migrations
 
                     b.HasKey("ReviewId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Review");
                 });
@@ -231,53 +278,13 @@ namespace TourisManager.Data.Migrations
                     b.ToTable("ReviewContent");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.User", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(36)");
-
-                    b.Property<string>("AuthProvider")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AvataUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("TourisManager.Core.Entities.Favorite", b =>
                 {
-                    b.HasOne("TourisManager.Core.Entities.User", "User")
+                    b.HasOne("TourisManager.Core.Entities.Account", "account")
                         .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
-                    b.Navigation("User");
+                    b.Navigation("account");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Location", b =>
@@ -288,9 +295,10 @@ namespace TourisManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TourisManager.Core.Entities.User", "Creator")
+                    b.HasOne("TourisManager.Core.Entities.Account", "Creator")
                         .WithMany("Locations")
-                        .HasForeignKey("CreatorUserId");
+                        .HasForeignKey("CreateBy")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Category");
 
@@ -316,9 +324,9 @@ namespace TourisManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TourisManager.Core.Entities.User", "Creator")
+                    b.HasOne("TourisManager.Core.Entities.Account", "Creator")
                         .WithMany("Restaurants")
-                        .HasForeignKey("CreatorUserId");
+                        .HasForeignKey("CreatorAccountId");
 
                     b.Navigation("Category");
 
@@ -327,13 +335,11 @@ namespace TourisManager.Data.Migrations
 
             modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
                 {
-                    b.HasOne("TourisManager.Core.Entities.User", "User")
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
-                    b.Navigation("User");
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.ReviewContent", b =>
@@ -345,6 +351,17 @@ namespace TourisManager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Review");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Account", b =>
+                {
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Locations");
+
+                    b.Navigation("Restaurants");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Category", b =>
@@ -362,17 +379,6 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
                 {
                     b.Navigation("ReviewContents");
-                });
-
-            modelBuilder.Entity("TourisManager.Core.Entities.User", b =>
-                {
-                    b.Navigation("Favorites");
-
-                    b.Navigation("Locations");
-
-                    b.Navigation("Restaurants");
-
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

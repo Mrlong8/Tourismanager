@@ -1,0 +1,75 @@
+﻿@using System.Security.Claims
+
+<!-- Offcanvas Sidebar trượt từ bên trái ra (muốn trượt từ bên phải thì đổi offcanvas-start thành offcanvas-end) -->
+<div class="offcanvas offcanvas-start custom-offcanvas-sidebar" tabindex="-1" id="profileSidebar" aria-labelledby="profileSidebarLabel">
+    
+    <!-- Header của Sidebar -->
+    <div class="offcanvas-header bg-success text-white">
+        <h5 class="offcanvas-title fw-bold d-flex align-items-center gap-2" id="profileSidebarLabel">
+            <i class="bi bi-person-bounding-box"></i> Trang cá nhân
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <!-- Body của Sidebar -->
+    <div class="offcanvas-body d-flex flex-column justify-content-between p-4">
+        <div>
+            <!-- Phần thông tin User tóm tắt -->
+            <div class="text-center mb-4">
+               <img id="avatarPreview"
+                             src="@(string.IsNullOrEmpty(Model?.AvataUrl) ? "/Image/Upload/avatadefault.jpg" : Model.AvataUrl)"
+                             alt="Avatar"
+                             class="rounded-circle img-fluid mb-3"
+                             style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #198754;">
+                <h5 class="fw-bold mb-1">@User.Identity?.Name</h5>
+                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill">
+                    @User.FindFirstValue(ClaimTypes.Role)
+                </span>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Các Menu chức năng trong Sidebar -->
+            <ul class="nav nav-pills flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark custom-sidebar-link d-flex align-items-center gap-3 p-3 rounded-3" 
+                       asp-area="" asp-controller="Account" asp-action="Profile">
+                        <i class="bi bi-person-gear fs-5 text-success"></i>
+                        <span class="fw-medium">Quản lý thông tin</span>
+                    </a>
+                </li>
+
+                <!-- Nếu là Admin thì hiển thị thêm lối vào trang-->
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark custom-sidebar-link d-flex align-items-center gap-3 p-3 rounded-3" 
+                           asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                            <i class="bi bi-speedometer2 fs-5 text-danger"></i>
+                            <span class="fw-medium">Trang Quản trị Admin</span>
+                        </a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark custom-sidebar-link d-flex align-items-center gap-3 p-3 rounded-3" 
+                       asp-area="" asp-controller="Home" asp-action="Privacy">
+                        <i class="bi bi-shield-check fs-5 text-success"></i>
+                        <span class="fw-medium">Cài đặt bảo mật</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nút Đăng xuất ở dưới cùng Sidebar -->
+        <div class="pt-3 border-top">
+            <form asp-controller="Account" asp-action="Logout" method="post" class="w-100">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-danger w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2 rounded-3">
+                    <i class="bi bi-box-arrow-right fs-5"></i>
+                    <span>Đăng xuất</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

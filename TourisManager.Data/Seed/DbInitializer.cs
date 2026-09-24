@@ -21,10 +21,11 @@ namespace TourisManager.Data.Seed
             }
 
             // 2. Seed Users (Nếu chưa có)
-            if (!context.Users.Any())
+           
+            if (!context.Accounts.Any())
             {
-                var users = UserData.GetUsers();
-                context.Users.AddRange(users);
+                var accounts = AccountData.GetAccounts();
+                context.Accounts.AddRange(accounts);
                 context.SaveChanges();
             }
 

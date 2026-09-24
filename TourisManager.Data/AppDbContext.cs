@@ -9,7 +9,8 @@ namespace TourisManager.Data
             // gọi constructer của lớp cha DbContext với các tùy chọn được cung cấp
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+
         public DbSet<Category> Categories { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationImage> LocationImages { get; set; }
@@ -33,6 +34,28 @@ namespace TourisManager.Data
                     }
                 }
             }
+            // Location → Account
+            modelBuilder.Entity<Location>()
+                .HasOne(l => l.Creator)
+                .WithMany(a => a.Locations)
+                .HasForeignKey(l => l.CreateBy)
+                .HasPrincipalKey(a => a.AccountId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Location>()
+                .Property(l => l.Latitude)
+                .HasPrecision(18, 6);
+
+            modelBuilder.Entity<Location>()
+                .Property(l => l.Longitude)
+                .HasPrecision(18, 6);
+
+            modelBuilder.Entity<Restaurant>()
+                .Property(r => r.Latitude)
+                .HasPrecision(18, 6);
+
+            modelBuilder.Entity<Restaurant>()
+                .Property(r => r.Longitude)
+                .HasPrecision(18, 6);
         }
     }
 

@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using TourisManager.Data;
 using TourisManager.Data.Seed;
 using TourisManager.Services;
-
 
 namespace TourisManager
 {
@@ -17,28 +17,50 @@ namespace TourisManager
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
 
-            //AppDbContext to Dependency Injection (xây dựng csdl)
+            // AppDbContext to Dependency Injection
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("TourisManagerDb")));
 
-            // đăng ký dịch vụ (Dependency Injection - DI)
+            // Đăng ký dịch vụ (Dependency Injection - DI)
             builder.Services.AddScoped<AccountService, AccountServiceImpl>();
+            builder.Services.AddScoped<LocationService, LocationServiceImpl>();
+
+            // CẤU HÌNH AUTHENTICATION (Gộp chung Cookie + Google vào 1 chuỗi liên tục)
+
+            builder.Services
+                 .AddAuthentication(options =>
+                 {
+                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                 })
+                 .AddCookie(options =>
+                 {
+                     options.LoginPath = "/account/login";
+                     options.LogoutPath = "/account/logout";
+                     options.AccessDeniedPath = "/account/login";
+                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                     options.SlidingExpiration = true;
+                 })
+                 .AddGoogle(options =>
+                 {
+                     options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
+                     options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
+
+                     //options.CallbackPath = "/signin-google";
+                 });
 
             var app = builder.Build();
 
-            app.UseSession(); // tác dụng là lưu thoong tin đăng nhập và phân quyền sau khi người dùng đăng nhập
+          
 
-            //Initialize the database
+            // Initialize the database
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                    // Lấy DbContext từ hệ thống DI
                     var context = services.GetRequiredService<AppDbContext>();
-
-                    // Gọi hàm nạp dữ liệu mẫu
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
@@ -50,18 +72,52 @@ namespace TourisManager
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
-                {
-                    app.UseExceptionHandler("/Home/Error");
-                    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                    app.UseHsts();
-                }
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            //------------------
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); // hoặc app.MapStaticAssets();
+
             app.UseRouting();
 
+            app.UseSession();
+
+            // DEBUG GOOGLE LOGIN
+            //app.Use(async (context, next) =>
+            //{
+            //    if (context.Request.Path.StartsWithSegments("/signin-google"))
+            //    {
+            //        Console.WriteLine("========== GOOGLE CALLBACK ==========");
+            //        Console.WriteLine($"URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+
+            //        Console.WriteLine("Cookies received by ASP.NET:");
+
+            //        foreach (var cookie in context.Request.Cookies)
+            //        {
+            //            Console.WriteLine($"  {cookie.Key} = {cookie.Value}");
+            //        }
+
+            //        Console.WriteLine("=====================================");
+            //    }
+
+            //    await next();
+            //});
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
+            //------------------
+
             app.MapStaticAssets();
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")

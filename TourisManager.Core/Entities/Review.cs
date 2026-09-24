@@ -16,7 +16,7 @@ namespace TourisManager.Core.Entities
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
         // Navigation Properties
-        public User? User { get; set; }
+        public Account? Account { get; set; }
         public ICollection<ReviewContent> ReviewContents { get; set; } = new List<ReviewContent>();
     }
 }

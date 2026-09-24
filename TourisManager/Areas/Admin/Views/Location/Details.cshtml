@@ -1,0 +1,83 @@
+﻿@model TourisManager.Core.Entities.Location
+
+@{
+    ViewData["Title"] = "Chi tiết Địa điểm";
+}
+
+<!-- Link Bootstrap 5 & Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+
+<div class="container-fluid py-4" style="max-width: 1100px;">
+    <!-- Header Page -->
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h3 class="fw-bold text-success mb-1">
+                <i class="bi bi-geo-alt-fill me-2"></i>Chi tiết Địa điểm
+            </h3>
+            <p class="text-muted mb-0 small">Xem thông tin chi tiết địa điểm trong hệ thống</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 fs-6">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+        </a>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-4 p-md-5">
+            <div class="row g-4 align-items-center">
+                <!-- Cột trái: Ảnh địa điểm -->
+                <div class="col-lg-5 text-center pe-lg-4 border-end">
+                    <div class="position-relative d-inline-block w-100">
+                        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/Image/Upload/avatadefault.jpg" : Model.ImageUrl)" 
+                             onerror="this.onerror=null; this.src='/Image/Upload/avatadefault.jpg';"
+                             class="img-fluid rounded-4 shadow-sm object-fit-cover w-100 border" 
+                             style="max-height: 320px;" 
+                             alt="@Model.Name" />
+                    </div>
+                </div>
+
+                <!-- Cột phải: Thông tin chi tiết -->
+                <div class="col-lg-7">
+                    <!-- Badge ID -->
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold px-3 py-2 rounded-pill fs-6">
+                            ID: @Model.LocationId
+                        </span>
+                    </div>
+
+                    <!-- Tên địa điểm -->
+                    <h2 class="fw-bold text-dark mb-3">@Model.Name</h2>
+
+                    <!-- Địa chỉ -->
+                    <div class="mb-4 d-flex align-items-start gap-2 text-secondary">
+                        <i class="bi bi-geo-alt-fill text-danger fs-5 flex-shrink-0"></i>
+                        <span class="fs-6 fw-medium">
+                            @(string.IsNullOrEmpty(Model.Address) ? "Chưa cập nhật địa chỉ" : Model.Address)
+                        </span>
+                    </div>
+
+                    <!-- Mô tả -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2">
+                            <i class="bi bi-info-circle me-1 text-success"></i>Mô tả chi tiết:
+                        </h6>
+                        <div class="text-secondary lh-base bg-light p-3 rounded-3 border">
+                            @(string.IsNullOrEmpty(Model.Description) ? "Chưa có mô tả cho địa điểm này." : Model.Description)
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 pt-3 border-top">
+                        <a asp-action="Edit" asp-route-id="@Model.LocationId" class="btn btn-success px-4 rounded-3 fw-semibold shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i>Chỉnh sửa
+                        </a>
+                        <a asp-action="Index" class="btn btn-light text-secondary border px-4 rounded-3">
+                            Danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

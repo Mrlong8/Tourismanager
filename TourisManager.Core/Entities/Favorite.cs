@@ -11,6 +11,6 @@ namespace TourisManager.Core.Entities
         public string TargetId { get; set; } // LocationId hoặc RestaurantId tương ứng
 
         // Navigation Property
-        public User? User { get; set; }
+        public Account? account { get; set; }
     }
 }

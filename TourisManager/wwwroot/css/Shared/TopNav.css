@@ -1,0 +1,34 @@
+﻿/* Tông màu xanh lá chủ đạo */
+:root {
+    --main-green: #198754;
+    --main-green-hover: #146c43;
+}
+
+/* Custom nút Profile */
+.custom-profile-btn {
+    border: 1.5px solid var(--main-green) !important;
+    transition: all 0.3s ease;
+}
+
+    .custom-profile-btn:hover {
+        background-color: var(--main-green) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 10px rgba(25, 135, 84, 0.25);
+    }
+
+/* Custom nút Logout */
+.btn-logout-custom {
+    background-color: var(--main-green) !important;
+    border: none !important;
+    transition: all 0.3s ease;
+}
+
+    .btn-logout-custom:hover {
+        background-color: var(--main-green-hover) !important;
+        box-shadow: 0 4px 10px rgba(20, 108, 67, 0.3);
+    }
+
+/* Hiệu ứng hover cho link Menu */
+.navbar-nav .nav-link:hover {
+    color: var(--main-green) !important;
+}
