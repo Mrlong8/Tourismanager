@@ -39,12 +39,12 @@
                     </a>
                 </li>
 
-                <!-- Nếu là Admin thì hiển thị thêm lối vào trang Dashboard -->
+                <!-- Nếu là Admin thì hiển thị thêm lối vào trang-->
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="nav-item">
                         <a class="nav-link text-dark custom-sidebar-link d-flex align-items-center gap-3 p-3 rounded-3" 
-                           asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                           asp-area="Admin" asp-controller="Admin" asp-action="Index">
                             <i class="bi bi-speedometer2 fs-5 text-danger"></i>
                             <span class="fw-medium">Trang Quản trị Admin</span>
                         </a>

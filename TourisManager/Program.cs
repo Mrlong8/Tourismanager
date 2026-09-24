@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using TourisManager.Data;
 using TourisManager.Data.Seed;
 using TourisManager.Services;
-
 
 namespace TourisManager
 {
@@ -18,42 +17,50 @@ namespace TourisManager
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
 
-            //AppDbContext to Dependency Injection (xây dựng csdl)
+            // AppDbContext to Dependency Injection
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("TourisManagerDb")));
 
-            // đăng ký dịch vụ (Dependency Injection - DI)
+            // Đăng ký dịch vụ (Dependency Injection - DI)
             builder.Services.AddScoped<AccountService, AccountServiceImpl>();
             builder.Services.AddScoped<LocationService, LocationServiceImpl>();
-            // Cấu hình ASP.NET Core Cookie Authentication
-            builder.Services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/account/login";// chưa đăng nhập chuyển về trang login
-                    options.LogoutPath = "/account/logout";// đăng xuất
-                    options.AccessDeniedPath = "/account/access-denied"; // đăng nhập nhưng không đủ quyền
-                    options.ExpireTimeSpan = TimeSpan.FromDays(7); // thời gian lưu cookie
-                    options.SlidingExpiration = true;//Nếu user tiếp tục sử dụng hệ thống, thời hạn cookie có thể được gia hạn theo cơ chế sliding expiration.
-                });
 
+            // CẤU HÌNH AUTHENTICATION (Gộp chung Cookie + Google vào 1 chuỗi liên tục)
+
+            builder.Services
+                 .AddAuthentication(options =>
+                 {
+                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                 })
+                 .AddCookie(options =>
+                 {
+                     options.LoginPath = "/account/login";
+                     options.LogoutPath = "/account/logout";
+                     options.AccessDeniedPath = "/account/login";
+                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                     options.SlidingExpiration = true;
+                 })
+                 .AddGoogle(options =>
+                 {
+                     options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
+                     options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
+
+                     //options.CallbackPath = "/signin-google";
+                 });
 
             var app = builder.Build();
 
-            app.UseSession(); // Session dùng để lưu dữ liệu tạm thời giữa các request.
-                              // Ví dụ: giỏ hàng, trạng thái tạm thời,...
+          
 
-            //Initialize the database
+            // Initialize the database
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                    // Lấy DbContext từ hệ thống DI
                     var context = services.GetRequiredService<AppDbContext>();
-
-                    // Gọi hàm nạp dữ liệu mẫu
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
@@ -65,19 +72,52 @@ namespace TourisManager
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
-                {
-                    app.UseExceptionHandler("/Home/Error");
-                    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                    app.UseHsts();
-                }
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            //------------------
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles(); // hoặc app.MapStaticAssets();
+
             app.UseRouting();
 
-            app.UseAuthentication();//Đọc authentication information từ request và xác định "User này là ai?"
-            app.UseAuthorization();// thực hiện phân quyền
+            app.UseSession();
+
+            // DEBUG GOOGLE LOGIN
+            //app.Use(async (context, next) =>
+            //{
+            //    if (context.Request.Path.StartsWithSegments("/signin-google"))
+            //    {
+            //        Console.WriteLine("========== GOOGLE CALLBACK ==========");
+            //        Console.WriteLine($"URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
+
+            //        Console.WriteLine("Cookies received by ASP.NET:");
+
+            //        foreach (var cookie in context.Request.Cookies)
+            //        {
+            //            Console.WriteLine($"  {cookie.Key} = {cookie.Value}");
+            //        }
+
+            //        Console.WriteLine("=====================================");
+            //    }
+
+            //    await next();
+            //});
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            //------------------
 
             app.MapStaticAssets();
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
             app.MapControllerRoute(
                 name: "areas",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

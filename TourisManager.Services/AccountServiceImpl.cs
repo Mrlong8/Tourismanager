@@ -32,8 +32,16 @@ namespace TourisManager.Services
                 }
 
                 account.AccountId = $"acc-{nextId:D2}";
-                account.Role = "User";
-                account.AuthProvider = "Local";
+               // Chỉ gán mặc định nếu đối tượng truyền vào chưa có giá trị
+                if (string.IsNullOrEmpty(account.Role))
+                {
+                    account.Role = "User";
+                }
+
+                if (string.IsNullOrEmpty(account.AuthProvider))
+                {
+                    account.AuthProvider = "Local"; // Nếu đăng nhập thường thì mới là Local
+                }
                 account.CreateAt = DateTime.Now;
 
                 db.Accounts.Add(account);
@@ -43,6 +51,10 @@ namespace TourisManager.Services
             {
                 System.Diagnostics.Debug.WriteLine("=== LỖI THÊM ACCOUNT ===");
                 System.Diagnostics.Debug.WriteLine(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Chi tiết: " + ex.InnerException.Message);
+                }
                 return false;
             }
         }
