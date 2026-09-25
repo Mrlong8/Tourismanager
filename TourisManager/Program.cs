@@ -86,27 +86,6 @@ namespace TourisManager
 
             app.UseSession();
 
-            // DEBUG GOOGLE LOGIN
-            //app.Use(async (context, next) =>
-            //{
-            //    if (context.Request.Path.StartsWithSegments("/signin-google"))
-            //    {
-            //        Console.WriteLine("========== GOOGLE CALLBACK ==========");
-            //        Console.WriteLine($"URL: {context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}");
-
-            //        Console.WriteLine("Cookies received by ASP.NET:");
-
-            //        foreach (var cookie in context.Request.Cookies)
-            //        {
-            //            Console.WriteLine($"  {cookie.Key} = {cookie.Value}");
-            //        }
-
-            //        Console.WriteLine("=====================================");
-            //    }
-
-            //    await next();
-            //});
-
             app.UseAuthentication();
             app.UseAuthorization();
 
