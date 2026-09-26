@@ -63,36 +63,39 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: Admin/Location/Create
-        public async Task<IActionResult> Create()
-        {
-            // Đảm bảo value field là "CategoryId" (kiểu string) và display field là "Name"
-            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
-            return View();
-        }
-
+        // POST: /Admin/Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Location location, IFormFile? imageFile)
         {
-            ModelState.Remove("CreateBy");
-            ModelState.Remove("Category");
-            ModelState.Remove("Creator");
-            ModelState.Remove("LocationImages");
+            // Bỏ qua validate các navigation properties
+            ModelState.Remove(nameof(Location.CreateBy));
+            ModelState.Remove(nameof(Location.Category));
+            ModelState.Remove(nameof(Location.Creator));
+            ModelState.Remove(nameof(Location.LocationImages));
 
             if (ModelState.IsValid)
             {
-                // 1. Tự động lấy AccountId đầu tiên tồn tại trong CSDL để tránh lỗi Foreign Key
-                var defaultAccount = await _context.Accounts.FirstOrDefaultAsync();
-                if (defaultAccount != null)
+                // 1. Ưu tiên lấy AccountId từ Session/User đang đăng nhập, nếu không có mới lấy tài khoản đầu tiên
+                var currentUserId = HttpContext.Session.GetString("AccountId"); // Hoặc User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    location.CreateBy = defaultAccount.AccountId; // Hoặc Username tùy tên khóa chính bảng Account
+                    location.CreateBy = currentUserId;
                 }
                 else
                 {
-                    // Trường hợp bảng Account chưa có tài khoản nào
-                    ModelState.AddModelError("", "Hệ thống chưa có tài khoản người dùng trong bảng Account!");
-                    ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
-                    return View(location);
+                    var defaultAccount = await _context.Accounts.FirstOrDefaultAsync();
+                    if (defaultAccount != null)
+                    {
+                        location.CreateBy = defaultAccount.AccountId;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Hệ thống chưa có tài khoản người dùng trong bảng Account!");
+                        ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
+                        return View(location);
+                    }
                 }
 
                 location.CreateAt = DateTime.Now;
@@ -118,15 +121,15 @@ namespace TourisManager.Areas.Admin.Controllers
                 }
 
                 _context.Add(location);
-                await _context.SaveChangesAsync(); // Sẽ lưu thành công[cite: 16]
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
             return View(location);
         }
+
         // GET: /Admin/Location/Edit/id
-     
         public async Task<IActionResult> Edit(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -140,9 +143,7 @@ namespace TourisManager.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Nạp danh sách Category vào ViewBag và chọn sẵn CategoryId hiện tại của Location
             ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
-
             return View(location);
         }
 
@@ -156,7 +157,7 @@ namespace TourisManager.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // 1. Lấy dữ liệu cũ trong CSDL để giữ lại các thông tin không sửa
+            // 1. Lấy dữ liệu cũ thực tế từ CSDL
             var oldLocation = await _context.Locations.AsNoTracking().FirstOrDefaultAsync(x => x.LocationId == id);
             if (oldLocation == null)
             {
@@ -166,7 +167,6 @@ namespace TourisManager.Areas.Admin.Controllers
             // 2. Xử lý lưu ảnh
             if (imageFile != null && imageFile.Length > 0)
             {
-                // TH1: Người dùng chọn tệp ảnh mới -> Lưu file vào máy chủ & gán đường dẫn mới
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
                 string uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/Location");
 
@@ -185,21 +185,20 @@ namespace TourisManager.Areas.Admin.Controllers
             }
             else
             {
-                // TH2: Người dùng không chọn ảnh mới -> Giữ nguyên đường dẫn ảnh cũ
-                location.ImageUrl = oldLocation.ImageUrl;
+                location.ImageUrl = oldLocation.ImageUrl; // Giữ nguyên đường dẫn ảnh cũ
             }
 
-            // 3. Gán lại các thuộc tính bắt buộc nếu form không truyền về
-            if (string.IsNullOrEmpty(location.CreateBy))
-            {
-                location.CreateBy = oldLocation.CreateBy;
-            }
+            // 3. Bảo toàn các dữ liệu lịch sử và thông tin bắt buộc không sửa ở form Edit
+            location.CreateBy = oldLocation.CreateBy;
+            location.CreateAt = oldLocation.CreateAt; // Giữ nguyên ngày tạo ban đầu
+            location.IconUrl = oldLocation.IconUrl;   // Giữ nguyên IconUrl nếu có
+
             if (string.IsNullOrEmpty(location.CategoryId))
             {
                 location.CategoryId = oldLocation.CategoryId;
             }
 
-            // 4. Bỏ qua kiểm tra validate cho các thuộc tính Navigation/Bắt buộc
+            // 4. Bỏ qua kiểm tra validate cho các thuộc tính Navigation / Lịch sử
             ModelState.Remove(nameof(Location.CreateBy));
             ModelState.Remove(nameof(Location.CategoryId));
             ModelState.Remove(nameof(Location.Category));
@@ -211,7 +210,7 @@ namespace TourisManager.Areas.Admin.Controllers
                 try
                 {
                     _context.Locations.Update(location);
-                    await _context.SaveChangesAsync(); // Lưu dữ liệu mới (bao gồm ImageUrl) vào Database
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -227,11 +226,10 @@ namespace TourisManager.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Nếu validation không hợp lệ, nạp lại ViewBag Danh mục để View hiển thị đúng Dropdown
             ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name", location.CategoryId);
             return View(location);
-          
         }
+
         private bool LocationExists(string id)
         {
             return _context.Locations.Any(e => e.LocationId == id);
