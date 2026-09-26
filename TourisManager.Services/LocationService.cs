@@ -1,12 +1,25 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TourisManager.Core.Entities;
+using TourisManager.Data;
 
 namespace TourisManager.Services
 {
-    public interface LocationService
+    public class LocationService : ILocationService
     {
-        List<Location> GetDataAll(); 
+        private readonly AppDbContext _db;
+
+        public LocationService(AppDbContext db)
+        {
+            _db = db;
+        }
+
+        public List<Location> GetDataAll()
+        {
+            return _db.Locations.AsNoTracking().ToList();
+        }
+
     }
 }

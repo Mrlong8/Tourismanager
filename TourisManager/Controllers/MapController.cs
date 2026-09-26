@@ -5,9 +5,9 @@ namespace TourisManager.Controllers
 {
     public class MapController : Controller
     {
-        private readonly LocationService _locationService;
+        private readonly ILocationService _locationService;
 
-        public MapController(LocationService locationService)
+        public MapController(ILocationService locationService)
         {
             _locationService = locationService;
         }

@@ -1,0 +1,63 @@
+﻿/* =========================================================
+   BẢNG MÀU DỄ CHỈNH SỬA (LIGHT THEME)
+   ========================================================= */
+:root {
+    /* Nút bấm Xanh lá Gradient */
+    --btn-green-start: #10b981; /* Xanh lá tươi */
+    --btn-green-end: #059669; /* Xanh lá đậm */
+    /* Khung Menu xổ xuống màu Trắng */
+    --menu-bg-color: #ffffff; /* Nền trắng sạch */
+    --menu-text-color: #334155; /* Chữ xám đen dễ đọc */
+    --menu-hover-bg: #f1f5f9; /* Nền màu xám nhẹ khi hover */
+}
+
+/* 1. STYLES NÚT BẤM (Màu xanh lá chuyển tiếp) */
+.btn-account-dropdown {
+    background: linear-gradient(135deg, var(--btn-green-start), var(--btn-green-end)) !important;
+    color: #ffffff !important;
+    border-radius: 50px !important;
+    font-weight: 600;
+    border: none !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+    .btn-account-dropdown:hover,
+    .btn-account-dropdown:focus {
+        background: linear-gradient(135deg, #059669, #047857) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+    }
+
+/* 2. STYLES MENU TRẮNG */
+.custom-dropdown-menu {
+    background-color: var(--menu-bg-color) !important;
+    border-radius: 10px !important;
+    min-width: 190px;
+    padding: 6px !important;
+    /*box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;*/ /* Đổ bóng nhẹ nhàng */
+}
+
+    .custom-dropdown-menu .dropdown-item {
+        color: var(--menu-text-color);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        transition: background-color 0.15s ease;
+    }
+
+        /* Hiệu ứng di chuột vào mục */
+        .custom-dropdown-menu .dropdown-item:hover {
+            background-color: var(--menu-hover-bg) !important;
+            color: #0f172a !important;
+        }
+
+        .custom-dropdown-menu .dropdown-item i {
+            font-size: 1.1rem;
+        }
+
+/* Bắt buộc căn lề menu sát lề phải */
+.navbar-nav .dropdown-menu-end {
+    right: 0 !important;
+    left: auto !important;
+}

@@ -28,9 +28,12 @@
   <ItemGroup>
     <Folder Include="Areas\Seller\" />
     <Folder Include="ControllersApi\" />
+    <Folder Include="ViewComponents\" />
+    <Folder Include="Views\Shared\Components\" />
     <Folder Include="wwwroot\Image\Loacaltion\" />
     <Folder Include="wwwroot\Image\Location\" />
     <Folder Include="wwwroot\Image\Restaurant\" />
+    <Folder Include="wwwroot\js\Accounts\" />
   </ItemGroup>
 
 </Project>
