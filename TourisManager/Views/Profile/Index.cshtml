@@ -1,0 +1,70 @@
+﻿@model TourisManager.Core.Entities.Account
+
+@{
+    Layout = "_ProfileLayout";
+    ViewData["Title"] = "Profile";
+}
+@if (TempData["Msg"] != null)
+{
+
+<div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+<i class="bi bi-check-circle-fill me-2"></i> @TempData["Msg"]
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+}
+<h3 class="fw-bold mb-1">Profile</h3>
+<p class="text-muted mb-4">Quản lý thông tin cá nhân của bạn.</p>
+
+<!-- KHU VỰC AVATAR -->
+<div class="mb-4">
+    <label class="form-label text-muted small fw-semibold">Profile picture</label>
+    <div class="d-flex align-items-center gap-3">
+        <img id="avatarPreview"
+             src="@(string.IsNullOrEmpty(Model?.AvataUrl) ? "/Image/Upload/avatadefault.jpg" : Model.AvataUrl)"
+             alt="Avatar"
+             class="rounded-circle object-fit-cover shadow-sm"
+             style="width: 85px; height: 85px; border: 1px solid #e2e8f0;">
+
+        <input type="file" id="avatarFile" name="avatarFile" class="d-none" accept="image/*" onchange="previewAvatar(this)">
+
+        <div id="defaultAvatarActions">
+            <button type="button" class="btn btn-sm btn-secondary bg-opacity-75 text-white rounded-pill px-3" onclick="document.getElementById('avatarFile').click()">
+                Edit
+            </button>
+        </div>
+
+        <div id="uploadAvatarActions" class="d-none gap-2">
+            <button type="button" class="btn btn-sm btn-outline-danger px-4 rounded-pill fw-medium" onclick="cancelAvatarUpload()">Cancel</button>
+            <button type="button" class="btn btn-sm btn-outline-dark px-4 rounded-pill fw-medium" onclick="submitAvatarAjax()">Upload</button>
+        </div>
+    </div>
+    <div id="uploadStatus" class="small mt-2"></div>
+</div>
+
+<!-- FORM THÔNG TIN -->
+<form asp-controller="Profile" asp-action="Index" method="post" class="mt-4" style="max-width: 600px;">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-4">
+        <label asp-for="Name" class="form-label fw-medium">Name <span class="text-danger">*</span></label>
+        <input asp-for="Name" class="form-control py-2 shadow-none border-secondary-subtle" placeholder="Nhập họ và tên..." />
+        <span asp-validation-for="Name" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-2">
+            <label class="form-label fw-medium mb-0">Email <span class="text-danger">*</span></label>
+            <a href="#" class="text-decoration-none small" style="color: #6366f1;">Visit settings page to change email</a>
+        </div>
+        <input type="email" class="form-control py-2 bg-light text-muted border-secondary-subtle" value="@Model?.Email" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-success px-4 py-2 fw-medium rounded-3">
+        Save Profile
+    </button>
+</form>
+
+@section Scripts {
+    <script src="~/js/Profile/Index.js" asp-append-version="true"></script>
+}

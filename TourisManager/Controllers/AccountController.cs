@@ -18,10 +18,10 @@ namespace TourisManager.Controllers
     [Route("account")]
     public class AccountController : Controller
     {
-        private readonly AccountService _accountService;
+        private readonly IAccountService _accountService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(AccountService accountService, IWebHostEnvironment webHostEnvironment)
+        public AccountController(IAccountService accountService, IWebHostEnvironment webHostEnvironment)
         {
             _accountService = accountService;
             _webHostEnvironment = webHostEnvironment;
@@ -41,13 +41,13 @@ namespace TourisManager.Controllers
             if (User.Identity?.IsAuthenticated == true)
             {
                 // Lấy Id từ Cookie
-                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string? userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 // Kiểm tra xem Id này có tồn tại trong CSDL không
-                var account = _accountService.FindById(userId);
+                var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {
-                    return RedirectToAction("profile"); // Có trong CSDL thì vào Profile
+                    return RedirectToAction("index","profile"); // Có trong CSDL thì vào Profile
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace TourisManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            var account = _accountService.Login(model.UsernameOrEmail, model.Password);
+            var account = await _accountService.LoginAsync(model.UsernameOrEmail, model.Password);
             if (account == null)
             {
                 TempData["Msg"] = "Đăng Nhập thất bại";
@@ -94,7 +94,7 @@ namespace TourisManager.Controllers
                     //"Hãy duy trì đăng nhập sau khi trình duyệt đóng/mở lại, theo thời hạn cookie."
                 }
                 );
-            return RedirectToAction("profile");
+            return RedirectToAction("index", "profile");
         }
         [HttpPost]
         [Route("logout")]
@@ -144,7 +144,7 @@ namespace TourisManager.Controllers
                 return RedirectToAction("Login", new { error = "Không lấy được Email từ Google!" });
             }
             //  Kiểm tra trong CSDL xem Email này đã tồn tại trong hệ thống chưa
-            var account = _accountService.FindByUsernameOrEmail(email);
+            var account = await _accountService.FindByUsernameOrEmailAsync(email);
             if (account == null)
             {
                 // TRƯỜNG HỢP 1: Tài khoản chưa từng tồn tại -> Khởi tạo một Account mới
@@ -160,7 +160,7 @@ namespace TourisManager.Controllers
                 };
 
                 // Gọi Service lưu Account mới vào Database (AccountServiceImpl sẽ tự gán AccountId = acc-xx)
-                bool isCreated = _accountService.Create(account);
+                bool isCreated = await _accountService.CreateAsync(account);
                 Console.Write(isCreated);
                 if (!isCreated)
                 {
@@ -183,7 +183,7 @@ namespace TourisManager.Controllers
                 // Nếu có sự thay đổi thì gọi Service để lưu bản ghi cập nhật vào Database
                 if (needUpdate)
                 {
-                    _accountService.Update(account);
+                    await _accountService.UpdateAsync(account);
                 }
             }
             // BƯỚC 4: Tạo Cookie xác thực đăng nhập phiên làm việc cho ứng dụng của bạn
@@ -206,7 +206,7 @@ namespace TourisManager.Controllers
                 new ClaimsPrincipal(claimsIdentity));
 
             // BƯỚC 5: Đăng nhập hoàn tất, chuyển hướng người dùng về trang chủ (Home/Index)
-            return RedirectToAction("Profile", "Account");
+            return RedirectToAction("index", "profile");
         }
 
         [HttpGet]
@@ -218,20 +218,20 @@ namespace TourisManager.Controllers
 
         [HttpPost]
         [Route("signup")]
-        public IActionResult Signup(SignupViewModel model)
+        public async Task<IActionResult> Signup(SignupViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
             //  KIỂM TRA TRÙNG username  TRONG DATABASE
-            if (_accountService.IsUserNameExists(model.Username))
+            if (await _accountService.IsUserNameExistsAsync(model.Username))
             {
                 ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
             }
 
             // KIỂM TRA TRÙNG EMAIL TRONG DATABASE
-            if (_accountService.IsUserEmailExists(model.Email))
+            if (await _accountService.IsUserEmailExistsAsync(model.Email))
             {
                 ModelState.AddModelError("Email", "Email này đã được đăng ký.");
             }
@@ -251,7 +251,7 @@ namespace TourisManager.Controllers
             };
 
 
-            if (_accountService.Create(account))
+            if (await _accountService.CreateAsync(account))
             {
                 return RedirectToAction("login");
             }
@@ -259,121 +259,7 @@ namespace TourisManager.Controllers
             TempData["Msg"] = "Đăng ký thất bại!";
             return RedirectToAction("login");
         }
-        [Authorize]
-        [HttpGet]
-        [Route("profile")]
-        public IActionResult Profile()
-        {
-            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);// lấy Id ra Hàm này sẽ tìm thẻ Claim đầu tiên có kiểu là X và trả về giá trị (dạng string) lưu bên trong thẻ đó.
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("login");
-            }
-
-            var account = _accountService.FindById(userId);
-
-            if (account == null)
-            {
-                return RedirectToAction("login");
-            }
-
-            return View(account);
-        }
-
-        [Authorize]//Middleware bảo vệ Route. Nếu chưa đăng nhập, người dùng sẽ tự động bị chặn và đẩy về trang
-        [HttpPost]
-        [Route("profile")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Profile(Account account)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var currentAccount = _accountService.FindById(userId);
-
-            if (currentAccount == null)
-            {
-                return RedirectToAction("login");
-            }
-            currentAccount.Name = account.Name;
-            if (_accountService.Update(currentAccount))
-            {
-                TempData["Msg"] = "Success";
-            }
-            else
-            {
-                TempData["Msg"] = "Failed";
-            }
-
-            return RedirectToAction("profile");
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("upload-avatar")]
-        public async Task<IActionResult> UploadAvataAjax(IFormFile avatarFile)
-        {
-            // xử lý file ảnh đầu vào có tồn tại không
-            if (avatarFile == null || avatarFile.Length == 0)
-            {
-                return Json(new
-                {
-                    success = false,message = "Vui lòng chọn file ảnh hợp lệ"
-                });
-            }
-
-            // chỉ cho chọn file ảnh
-            var extension = Path.GetExtension(avatarFile.FileName).ToLower();   // lấy đuôi file 
-            var allowExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };// chỉ cho phép file ảnh
-
-            if (Array.IndexOf(allowExtensions, extension) < 0) // so sánh trả về số đuôi trùng hợp
-            {
-                return Json(new { success = false, message = "Định dạng file không được hỗ trợ!" });
-            }
-
-            // kiểm tra và xóa file cũ
-            string? userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currenAccound = _accountService.FindById(userID);
-            if (currenAccound == null)
-            {
-                return Json(new { success = false, message = "Không tìm thấy thông tin tài khoản!" });
-            }
-
-            // xóa ảnh cũ 
-            if (!string.IsNullOrEmpty(currenAccound.AvataUrl))
-            {
-                // Loại bỏ dấu '/' ở đầu đường dẫn tương đối (vd: /Image/Upload/abc.jpg -> Image/Upload/abc.jpg)
-                string oldRelativePath = currenAccound.AvataUrl.TrimStart('/');
-                string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, oldRelativePath);
-                // Kiểm tra đường dẫn và đảm bảo không xóa nhầm ảnh đại diện mặc định (avatadefault.jpg)
-                if (!oldRelativePath.Contains("avatadefault.jpg") && System.IO.File.Exists(oldFilePath))
-                {
-                    System.IO.File.Delete(oldFilePath);
-                }
-            }
-
-            // taojk anhr moiws
-            // Tạo tên file ngẫu nhiên bằng Guid để tránh bị trùng tên file trên Server
-            string fileName = Guid.NewGuid().ToString() + extension;
-                    // Đường dẫn vật lý đến thư mục wwwroot/Image/Upload
-            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Image", "Upload");
-                    // nối đường dẫn
-            string filePath = Path.Combine(uploadFolder, fileName); // noois file
-
-            // ghi file vào ổ cứng
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await avatarFile.CopyToAsync(stream);
-            }
-
-            // Lưu đường đẫn tường đối vào database
-            string newAvataUrl = $"/Image/Upload/{fileName}";
-            currenAccound.AvataUrl = newAvataUrl;
-            _accountService.Update(currenAccound);
-
-            return Json(new { success = true, avatarUrl = newAvataUrl });
-
-        }
+     
 
     }
 }

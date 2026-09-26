@@ -23,8 +23,8 @@ namespace TourisManager
                     builder.Configuration.GetConnectionString("TourisManagerDb")));
 
             // Đăng ký dịch vụ (Dependency Injection - DI)
-            builder.Services.AddScoped<AccountService, AccountServiceImpl>();
-            builder.Services.AddScoped<LocationService, LocationServiceImpl>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<ILocationService, LocationService>();
 
             // CẤU HÌNH AUTHENTICATION (Gộp chung Cookie + Google vào 1 chuỗi liên tục)
 
