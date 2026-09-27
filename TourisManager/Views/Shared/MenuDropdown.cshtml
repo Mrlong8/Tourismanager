@@ -1,26 +1,38 @@
-﻿<div class="dropdown">
-    <!-- Nút bấm hiển thị màu xanh lá chuyển tiếp Gradient -->
-    <button class="btn btn-account-dropdown dropdown-toggle d-flex align-items-center gap-2 px-3 py-1 rounded-pill fw-semibold shadow-sm" 
+﻿<!-- =========================================================================
+     MenuDropdown.cshtml - Partial View Menu Tài khoản
+     Đường dẫn: ~/Views/Shared/MenuDropdown.cshtml
+     ========================================================================= -->
+ 
+<div class="dropdown">
+    <!-- Nút bấm màu xanh lá chuyển tiếp Gradient (Đã tối ưu data-bs-display="static") -->
+    <button class="btn btn-account-dropdown dropdown-toggle d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fw-semibold shadow-sm" 
             type="button" 
             id="userMenuDropdown" 
             data-bs-toggle="dropdown" 
+            data-bs-display="static"
+            data-bs-auto-close="true"
             aria-expanded="false">
         <i class="bi bi-person-circle fs-5"></i>
         <span>@(User.Identity?.Name ?? "Account")</span>
     </button>
-
-    <!-- Menu xổ xuống màu trắng (Light Theme) -->
+ 
+    <!-- Menu xổ xuống màu trắng (Light Theme) căn lề phải chuẩn xác -->
     <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu shadow-lg border-0 mt-2" 
         aria-labelledby="userMenuDropdown">
-
-        <!-- THÊM DÒNG NÀY ĐỂ VÀO TRANG ADMIN -->
-        @if (User.IsInRole("Admin") )
+ 
+        <!-- MỤC DÀNH CHO ADMIN (Chỉ hiển thị khi có Role Admin) -->
+        @if (User.IsInRole("Admin"))
         {
-             <a class="dropdown-item" asp-area="Admin" asp-controller="Admin" asp-action="Index">
-             <i class="bi bi-speedometer2 me-2"></i>Trang quản lý
-             </a>
-          
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 text-primary fw-semibold" 
+                   asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Trang quản lý</span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider my-1 border-light-subtle"></li>
         }
+ 
         <!-- Trang cá nhân -->
         <li>
             <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
@@ -28,24 +40,32 @@
                 <span>Trang cá nhân</span>
             </a>
         </li>
-
-        <!-- Quản lý địa điểm (Trực tiếp) -->
+ 
+        <!-- Đổi mật khẩu / Cài đặt tài khoản -->
         <li>
-            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
-                <i class="bi bi-gear text-secondary"></i>
-                <span>Cài đặt tài khoản</span>
+            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="ChangePassword">
+                <i class="bi bi-shield-lock text-secondary"></i>
+                <span>Đổi mật khẩu</span>
             </a>
         </li>
-
+ 
+        <!-- Địa điểm & chuyến đi đã lưu -->
+        <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
+                <i class="bi bi-heart text-danger"></i>
+                <span>Địa điểm đã lưu</span>
+            </a>
+        </li>
+ 
         <li><hr class="dropdown-divider my-1 border-light-subtle"></li>
-
-        <!-- Đăng xuất -->
+ 
+        <!-- Nút Đăng xuất an toàn có AntiForgeryToken -->
         <li>
             <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 w-100 border-0 bg-transparent">
+                <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 w-100 border-0 bg-transparent py-2">
                     <i class="bi bi-box-arrow-right"></i>
-                    <span>Đăng xuất</span>
+                    <span class="fw-semibold">Đăng xuất</span>
                 </button>
             </form>
         </li>
