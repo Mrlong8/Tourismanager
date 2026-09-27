@@ -1,4 +1,5 @@
 ﻿#map {
     width: 100%;
     height: 600px; /* Bắt buộc có height cụ thể */
+    z-index: 1;
 }

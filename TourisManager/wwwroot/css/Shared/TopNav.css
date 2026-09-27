@@ -32,3 +32,48 @@
 .navbar-nav .nav-link:hover {
     color: var(--main-green) !important;
 }
+/* Custom TopNav */
+.navbar {
+    border-bottom: none !important; /* Bỏ viền xám mặc định */
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.08) !important; /* Thay bằng bóng mờ màu xanh lá */
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px); /* Hiệu ứng kính mờ (nếu trang cuộn) */
+}
+
+/* Hover Menu Items */
+.navbar-nav .nav-link {
+    position: relative;
+    color: #495057 !important;
+    transition: color 0.3s ease;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: var(--main-green) !important;
+    }
+
+    /* Thanh gạch dưới khi hover vào menu */
+    .navbar-nav .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: var(--main-green);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .navbar-nav .nav-link:hover::after {
+        width: 80%;
+    }
+
+/* Làm nổi bật Logo */
+.navbar-brand {
+    color: var(--main-green) !important;
+    transition: transform 0.3s ease;
+}
+
+    .navbar-brand:hover {
+        transform: scale(1.02);
+    }

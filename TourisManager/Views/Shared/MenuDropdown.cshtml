@@ -14,7 +14,7 @@
         aria-labelledby="userMenuDropdown">
 
         <!-- THÊM DÒNG NÀY ĐỂ VÀO TRANG ADMIN -->
-        @if (User.IsInRole("Admin") || User.Identity.IsAuthenticated)
+        @if (User.IsInRole("Admin") )
         {
              <a class="dropdown-item" asp-area="Admin" asp-controller="Admin" asp-action="Index">
              <i class="bi bi-speedometer2 me-2"></i>Trang quản lý
