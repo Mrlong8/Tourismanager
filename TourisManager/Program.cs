@@ -45,12 +45,12 @@ namespace TourisManager
                      options.AccessDeniedPath = "/Profile/Index";
                      options.ExpireTimeSpan = TimeSpan.FromDays(7);
                      options.SlidingExpiration = true;
+                 })
+                 .AddGoogle(options =>
+                 {
+                     options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
+                     options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
-                 //.AddGoogle(options =>
-                 //{
-                 //    options.ClientId = builder.Configuration["GoogleKeys:ClientId"] ?? "";
-                 //    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"] ?? "";
-                 //});
 
             var app = builder.Build();
 
