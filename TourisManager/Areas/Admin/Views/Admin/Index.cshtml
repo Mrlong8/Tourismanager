@@ -1,7 +1,77 @@
 ﻿@{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Trang Quản Trị Admin";
+    Layout = "MyLayout";
 }
 
-<h1>Trang quản trị Admin</h1>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-success display-6 mb-2">
+            BẢNG QUẢN TRỊ HỆ THỐNG
+        </h2>
+       
+    </div>
 
-<p>Chào mừng đến trang Admin Diễn Code phần này thành 1 giao diện tổng thể cho tôi .</p>
+    <!-- Cards danh mục quản lý -->
+    <div class="row g-4 justify-content-center">
+        
+        <!-- Card 1: Quản lý User -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 rounded-4 text-center p-3 transition-hover">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 d-flex align-items-center justify-content-center" style="width: 75px; height: 75px;">
+                        <i class="bi bi-people-fill fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2">Quản lý User</h4>
+                    <p class="text-muted mb-4">Tổng số tài khoản: <strong class="text-success fs-5">@ViewBag.TotalUsers</strong></p>
+                    <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-success mt-auto w-100 rounded-pill py-2 fw-semibold shadow-sm">
+                        Vào quản lý User <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Quản lý Location -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 rounded-4 text-center p-3 transition-hover">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 d-flex align-items-center justify-content-center" style="width: 75px; height: 75px;">
+                        <i class="bi bi-geo-alt-fill fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2">Quản lý Địa điểm</h4>
+                    <p class="text-muted mb-4">Tổng số địa điểm: <strong class="text-success fs-5">@ViewBag.TotalLocations</strong></p>
+                    <a asp-area="Admin" asp-controller="Location" asp-action="Index" class="btn btn-success mt-auto w-100 rounded-pill py-2 fw-semibold shadow-sm">
+                        Vào quản lý Location <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Quản lý Restaurant -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100 rounded-4 text-center p-3 transition-hover">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 d-flex align-items-center justify-content-center" style="width: 75px; height: 75px;">
+                        <i class="bi bi-shop fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2">Quản lý Nhà hàng</h4>
+                    <p class="text-muted mb-4">Tổng số nhà hàng: <strong class="text-success fs-5">@ViewBag.TotalRestaurants</strong></p>
+                    <a asp-area="Admin" asp-controller="Restaurant" asp-action="Index" class="btn btn-success mt-auto w-100 rounded-pill py-2 fw-semibold shadow-sm">
+                        Vào quản lý Restaurant <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1.5rem rgba(25, 135, 84, 0.15) !important;
+    }
+</style>

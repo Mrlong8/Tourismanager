@@ -26,33 +26,33 @@ namespace TourisManager
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
 
-            // CẤU HÌNH AUTHENTICATION (Gộp chung Cookie + Google vào 1 chuỗi liên tục)
-
+            // CẤU HÌNH AUTHENTICATION
             builder.Services
                  .AddAuthentication(options =>
                  {
                      options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                      options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                     // 1. Đổi dòng này từ GoogleDefaults thành Cookie
+                     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+                     // 2. Thêm dòng này để xử lý cấm truy cập (Forbid)
+                     options.DefaultForbidScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                  })
                  .AddCookie(options =>
                  {
                      options.LoginPath = "/account/login";
                      options.LogoutPath = "/account/logout";
-                     options.AccessDeniedPath = "/account/login";
+                     options.AccessDeniedPath = "/Profile/Index";
                      options.ExpireTimeSpan = TimeSpan.FromDays(7);
                      options.SlidingExpiration = true;
-                 })
-                 .AddGoogle(options =>
-                 {
-                     options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
-                     options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
-
-                     //options.CallbackPath = "/signin-google";
                  });
+                 //.AddGoogle(options =>
+                 //{
+                 //    options.ClientId = builder.Configuration["GoogleKeys:ClientId"] ?? "";
+                 //    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"] ?? "";
+                 //});
 
             var app = builder.Build();
-
-          
 
             // Initialize the database
             using (var scope = app.Services.CreateScope())
@@ -77,35 +77,25 @@ namespace TourisManager
                 app.UseHsts();
             }
 
-            //------------------
-
             app.UseHttpsRedirection();
-            app.UseStaticFiles(); // hoặc app.MapStaticAssets();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseSession();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //------------------
-
-            app.MapStaticAssets();
-
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "areas",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-     
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                pattern: "{controller=Home}/{action=Index}/{id?}"); 
 
             app.Run();
         }
