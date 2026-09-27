@@ -1,0 +1,653 @@
+/**
+ * ==========================================================================
+ * TourisManager - Admin Sidebar & Layout Stylesheet
+ * File: ~/css/Admin/SidebarAdmin.css (hoặc wwwroot/css/Admin/SidebarAdmin.css)
+ * 
+ * ĐẶC ĐIỂM THIẾT KẾ:
+ * 1. Tông màu Xanh Nước Biển chuyên dụng cho Trang Quản Lý (Admin Ocean Blue / Azure)
+ * 2. Liền mạch 100% không bị hở trên và dưới (Zero Gap, lấp đầy toàn bộ khoảng trống dưới TopNav)
+ * 3. Cố định TopNav và Sidebar, CUỘN RIÊNG BIỆT:
+ *    - TopNav cố định trên đỉnh
+ *    - Sidebar 1/5 cố định và cuộn riêng nếu danh sách menu dài (overflow-y: auto)
+ *    - Main Content 4/5 cuộn riêng phần danh sách dữ liệu bảng (overflow-y: auto)
+ * 4. Nút bấm thụt vào / thu gọn (Collapse 1/5 xuống 70px icon mode) và mở rộng mượt mà
+ * ==========================================================================
+ */
+
+:root {
+  /* Tông màu Xanh Nước Biển chủ đạo cho Trang Quản Lý */
+  --admin-primary: #0284c7;        /* Sky/Ocean Blue 600 */
+  --admin-primary-hover: #0369a1;  /* Ocean Blue 700 */
+  --admin-primary-dark: #075985;   /* Deep Blue 800 */
+  --admin-primary-light: #38bdf8;  /* Light Blue 400 */
+  --admin-primary-subtle: #f0f9ff; /* Light Sky 50 */
+  --admin-primary-border: #bae6fd; /* Light Sky 200 */
+  
+  --admin-bg-body: #f8fafc;
+  --admin-border-color: #e2e8f0;
+  --admin-border-light: #f1f5f9;
+  
+  --admin-text-main: #0f172a;
+  --admin-text-secondary: #334155;
+  --admin-text-muted: #64748b;
+  
+  /* Kích thước tỷ lệ chuẩn 1/5 và 4/5 */
+  --admin-sidebar-width: 20%;
+  --admin-content-width: 80%;
+  --admin-sidebar-collapsed-width: 70px;
+  --admin-topnav-height: 60px;
+}
+
+/* ==========================================================================
+   1. KHUNG CHỨA TOÀN BỘ BỐ CỤC QUẢN LÝ (LIỀN MẠCH, KHÔNG HỞ TRÊN DƯỚI)
+   ========================================================================== */
+.admin-layout-wrapper {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - var(--admin-topnav-height));
+  max-height: calc(100vh - var(--admin-topnav-height));
+  background-color: var(--admin-bg-body);
+  overflow: hidden !important; /* Không sinh thanh cuộn kép cho cửa sổ */
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   2. CỘT TRÁI: SIDEBAR QUẢN LÝ (CỐ ĐỊNH 1/5 = 20% & CUỘN RIÊNG)
+   ========================================================================== */
+.admin-sidebar {
+  flex: 0 0 var(--admin-sidebar-width);
+  width: var(--admin-sidebar-width);
+  max-width: var(--admin-sidebar-width);
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid var(--admin-border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Phần nội dung cuộn bên trong Sidebar (Cuộn riêng biệt) */
+.admin-sidebar-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.25rem 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.admin-sidebar-scrollable::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin-sidebar-scrollable::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* User Card tóm tắt trên đầu Sidebar */
+.admin-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(145deg, #ffffff 0%, var(--admin-primary-subtle) 100%);
+  border-radius: 14px;
+  border: 1px solid var(--admin-primary-border);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.admin-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--admin-primary) 0%, #0369a1 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.admin-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.admin-user-name {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--admin-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.admin-user-role {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--admin-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.admin-user-role::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--admin-primary);
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+
+/* Nhóm tiêu đề danh mục menu */
+.admin-group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  padding: 0.65rem 0.85rem 0.4rem;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+/* Menu links */
+.admin-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 12px;
+  color: #475569;
+  font-size: 0.925rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.admin-link-item i {
+  font-size: 1.25rem;
+  min-width: 24px;
+  text-align: center;
+  color: #64748b;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-link-item:hover {
+  background-color: var(--admin-primary-subtle);
+  color: var(--admin-primary-hover);
+  border-color: rgba(2, 132, 199, 0.15);
+}
+
+.admin-link-item:hover i {
+  color: var(--admin-primary);
+  transform: translateX(2px);
+}
+
+/* Active item phong cách Xanh Nước Biển sang trọng */
+.admin-link-item.active {
+  background: linear-gradient(135deg, var(--admin-primary) 0%, #0369a1 100%);
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  border-color: transparent;
+}
+
+.admin-link-item.active i {
+  color: #ffffff !important;
+}
+
+.admin-link-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background-color: #ffffff;
+}
+
+/* Badge số lượng bên trong menu item */
+.admin-item-badge {
+  margin-left: auto;
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 50px;
+  background-color: var(--admin-primary-subtle);
+  color: var(--admin-primary);
+  border: 1px solid var(--admin-primary-border);
+}
+
+.admin-link-item.active .admin-item-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Phần footer ở chân sidebar */
+.admin-sidebar-footer {
+  padding: 1rem 0.85rem;
+  border-top: 1px solid var(--admin-border-color);
+  background-color: #ffffff;
+}
+
+.admin-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.7rem 0.95rem;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-logout-btn i {
+  font-size: 1.25rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.admin-logout-btn:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+/* ==========================================================================
+   3. TRẠNG THÁI THỤT VÀO (COLLAPSED 70px) - BẢO LƯU HOÀN TOÀN CỐ ĐỊNH
+   ========================================================================== */
+.admin-layout-wrapper.is-collapsed .admin-sidebar {
+  flex: 0 0 var(--admin-sidebar-collapsed-width);
+  width: var(--admin-sidebar-collapsed-width);
+  max-width: var(--admin-sidebar-collapsed-width);
+}
+
+.admin-layout-wrapper.is-collapsed .admin-sidebar-scrollable {
+  padding: 1rem 0.4rem;
+}
+
+.admin-layout-wrapper.is-collapsed .admin-user-card {
+  padding: 0.4rem;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  margin-bottom: 0.75rem;
+}
+
+.admin-layout-wrapper.is-collapsed .admin-user-info,
+.admin-layout-wrapper.is-collapsed .admin-group-label,
+.admin-layout-wrapper.is-collapsed .admin-item-text,
+.admin-layout-wrapper.is-collapsed .admin-item-badge {
+  display: none !important;
+}
+
+.admin-layout-wrapper.is-collapsed .admin-link-item,
+.admin-layout-wrapper.is-collapsed .admin-logout-btn {
+  justify-content: center;
+  padding: 0.75rem 0;
+}
+
+.admin-layout-wrapper.is-collapsed .admin-link-item i,
+.admin-layout-wrapper.is-collapsed .admin-logout-btn i {
+  margin: 0 !important;
+}
+
+/* Tooltip hiển thị khi rê chuột trên trạng thái thu gọn */
+.admin-layout-wrapper.is-collapsed .admin-link-item:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 1050;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   4. CỘT PHẢI: NỘI DUNG CHÍNH (4/5 = 80% & LIỀN MẠCH, CUỘN RIÊNG)
+   ========================================================================== */
+.admin-main-content {
+  flex: 0 0 var(--admin-content-width);
+  width: var(--admin-content-width);
+  max-width: var(--admin-content-width);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden; /* Giữ SubHeader cố định, thân viewport cuộn riêng */
+  background-color: var(--admin-bg-body);
+}
+
+.admin-layout-wrapper.is-collapsed .admin-main-content {
+  flex: 0 0 calc(100% - var(--admin-sidebar-collapsed-width));
+  width: calc(100% - var(--admin-sidebar-collapsed-width));
+  max-width: calc(100% - var(--admin-sidebar-collapsed-width));
+}
+
+/* Sub-Header điều hướng (Cố định ở đầu cột nội dung) */
+.admin-sub-header {
+  height: 56px;
+  min-height: 56px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--admin-border-color);
+  padding: 0 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.btn-toggle-admin-sidebar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border-color);
+  background-color: #ffffff;
+  color: var(--admin-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle-admin-sidebar:hover {
+  background-color: var(--admin-primary-subtle);
+  color: var(--admin-primary);
+  border-color: var(--admin-primary-border);
+}
+
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.admin-breadcrumb-parent {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.admin-breadcrumb-separator {
+  color: #cbd5e1;
+  font-size: 0.75rem;
+}
+
+.admin-breadcrumb-current {
+  color: var(--admin-text-main);
+  font-weight: 700;
+}
+
+.admin-header-clock {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+  background-color: var(--admin-primary-subtle);
+  border: 1px solid var(--admin-primary-border);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+/* ==========================================================================
+   5. KHU VỰC RENDER TOÀN BỘ PHẦN TRỐNG & CUỘN RIÊNG BIỆT (DATA AREA)
+   ========================================================================== */
+.admin-content-viewport {
+  flex: 1;
+  overflow-y: auto; /* CUỘN RIÊNG PHẦN DANH SÁCH */
+  overflow-x: hidden;
+  padding: 1.5rem 1.75rem 2.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.admin-content-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-content-viewport::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* Khung Card bọc toàn bộ danh sách (Render toàn bộ diện tích) */
+.admin-full-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--admin-border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  padding: 1.75rem 2rem;
+  width: 100%;
+}
+
+/* Tiêu đề trang quản lý và nút thêm */
+.admin-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--admin-border-light);
+}
+
+.admin-title-box h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--admin-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.25rem;
+}
+
+.admin-title-box p {
+  color: var(--admin-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+/* Nút thêm mới màu Xanh Nước Biển chuyên nghiệp */
+.btn-admin-add {
+  background: linear-gradient(135deg, var(--admin-primary) 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 700;
+  font-size: 0.925rem;
+  border-radius: 12px;
+  padding: 0.65rem 1.45rem;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-admin-add:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Bảng dữ liệu người dùng (Theme Xanh Nước Biển) */
+.admin-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--admin-border-color);
+}
+
+.admin-table {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-table thead th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.95rem 1.15rem;
+  border-bottom: 1px solid var(--admin-border-color);
+  white-space: nowrap;
+}
+
+.admin-table tbody td {
+  padding: 1rem 1.15rem;
+  font-size: 0.9rem;
+  color: var(--admin-text-main);
+  border-bottom: 1px solid var(--admin-border-light);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background-color: var(--admin-primary-subtle);
+}
+
+/* Role Badges */
+.badge-role-admin {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-weight: 700;
+  font-size: 0.775rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-role-seller {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
+  font-weight: 700;
+  font-size: 0.775rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-role-user {
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border: 1px solid #bae6fd;
+  font-weight: 700;
+  font-size: 0.775rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Action Buttons */
+.btn-action-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border-color);
+  background-color: #ffffff;
+  color: var(--admin-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.btn-action-sm:hover {
+  background-color: var(--admin-primary-subtle);
+  color: var(--admin-primary);
+  border-color: var(--admin-primary-border);
+}
+
+.btn-action-sm.danger:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE CHO MOBILE (< 768px)
+   ========================================================================== */
+@media (max-width: 767.98px) {
+  .admin-sidebar {
+    display: none !important;
+  }
+
+  .admin-main-content {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .admin-content-viewport {
+    padding: 1rem;
+  }
+
+  .admin-full-card {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+
+  .admin-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
