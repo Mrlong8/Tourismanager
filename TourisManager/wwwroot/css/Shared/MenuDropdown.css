@@ -10,6 +10,7 @@
     --menu-text-color: #334155; /* Chữ xám đen dễ đọc */
     --menu-hover-bg: #f1f5f9; /* Nền màu xám nhẹ khi hover */
 }
+
 .dropdown-menu.show {
     display: block !important;
     opacity: 1 !important;
