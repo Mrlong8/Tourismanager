@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Entities;
 using TourisManager.Data;
+using TourisManager.Helpers;    
 
 namespace TourisManager.Areas.Admin.Controllers
 {
@@ -17,30 +18,36 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Location
-        public async Task<IActionResult> Index(string searchString, string categoryId)
+        public async Task<IActionResult> Index(string searchString, string categoryId, int? pageIndex)
         {
-            // 1. Lấy danh sách địa điểm bao gồm thông tin Danh mục (Category)
+            // 1. Tạo Query bao gồm cả thông tin Category
             var query = _context.Locations.Include(l => l.Category).AsQueryable();
 
             // 2. Lọc theo từ khóa tìm kiếm (Tên địa điểm hoặc Địa chỉ)
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                query = query.Where(l => l.Name.Contains(searchString) || l.Address.Contains(searchString));
+                string keyword = searchString.Trim().ToLower();
+                query = query.Where(l => l.Name.ToLower().Contains(keyword) ||
+                                         (l.Address != null && l.Address.ToLower().Contains(keyword)));
             }
 
             // 3. Lọc theo Danh mục
-            if (!string.IsNullOrEmpty(categoryId))
+            if (!string.IsNullOrWhiteSpace(categoryId))
             {
-                query = query.Where(l => l.CategoryId == categoryId);
+                query = query.Where(l => l.CategoryId.ToString() == categoryId);
             }
 
-            // 4. Truyền danh sách Categories ra View để hiển thị trong thẻ <select>
+            // 4. Lưu lại giá trị bộ lọc ra ViewBag để View hiển thị lại
             ViewBag.Categories = await _context.Categories.ToListAsync();
             ViewBag.CurrentSearch = searchString;
             ViewBag.CurrentCategory = categoryId;
 
-            var result = await query.ToListAsync();
-            return View(result);
+            // 5. Phân trang
+            int pageSize = 8;
+            int pageNumber = pageIndex ?? 1;
+
+            var pagedData = await PaginatedList<Location>.CreateAsync(query.AsNoTracking(), pageNumber, pageSize);
+            return View(pagedData);
         }
 
         // GET: /Admin/Location/Details/id
@@ -63,6 +70,13 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: Admin/Location/Create
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            // Load danh sách Categories để hiển thị trong thẻ <select> ngoài View Create
+            ViewBag.CategoryId = new SelectList(await _context.Categories.ToListAsync(), "CategoryId", "Name");
+            return View();
+        }
         // POST: /Admin/Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]

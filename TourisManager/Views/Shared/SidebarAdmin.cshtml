@@ -24,7 +24,20 @@
                 </div>
                 <div class="admin-user-info">
                     <span class="admin-user-name">@(User.Identity?.Name ?? "Quản trị viên")</span>
-                    <span class="admin-user-role">Hệ thống Admin</span>
+                    <span class="admin-user-role">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @:Hệ thống Admin
+                        }
+                        else if (User.IsInRole("Seller"))
+                        {
+                            @: Tài khoản Khách hàng
+                        }
+                        else
+                        {
+                            @:Tài khoản Người dùng
+                        }
+                    </span>
                 </div>
             </div>
  

@@ -1,5 +1,6 @@
-﻿@model IEnumerable<TourisManager.Core.Entities.Account>
-
+﻿@using TourisManager.Helpers
+@using TourisManager.Core.Entities
+@model PaginatedList<Account>
 @{
     Layout = "SidebarAdmin";
     ViewData["Title"] = "Quản lý User";
@@ -132,6 +133,64 @@
                         }
                     </tbody>
                 </table>
+                <!-- THANH PHÂN TRANG -->
+                <!-- Card Footer: Thanh Phân Trang Bootstrap (Đồng bộ với Location) -->
+                @if (Model != null)
+                {
+                    <div class="card-footer bg-white border-top py-3 px-4 d-flex align-items-center justify-content-between">
+                        <!-- 1. Hiển thị thông tin tổng số trang / bản ghi -->
+                        <div class="text-muted small">
+                            Hiển thị trang <b>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</b> / <b>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</b> (Tổng <b>@Model.TotalCount</b> người dùng)
+                        </div>
+
+                        <!-- 2. Điều hướng phân trang -->
+                        @if (Model.TotalPages > 1)
+                        {
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0">
+                                    <!-- Nút Trang trước -->
+                                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                                        <a class="page-link rounded-pill px-3 me-1"
+                                           asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="Index"
+                                           asp-route-pageIndex="@(Model.PageIndex - 1)"
+                                           asp-route-searchString="@ViewBag.CurrentSearch">
+                                            <i class="bi bi-chevron-left me-1"></i> Trước
+                                        </a>
+                                    </li>
+
+                                    <!-- Danh sách các số trang -->
+                                    @for (int i = 1; i <= Model.TotalPages; i++)
+                                    {
+                                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                            <a class="page-link rounded-circle mx-1"
+                                               asp-area="Admin"
+                                               asp-controller="User"
+                                               asp-action="Index"
+                                               asp-route-pageIndex="@i"
+                                               asp-route-searchString="@ViewBag.CurrentSearch">
+                                                @i
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <!-- Nút Trang sau -->
+                                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                                        <a class="page-link rounded-pill px-3 ms-1"
+                                           asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="Index"
+                                           asp-route-pageIndex="@(Model.PageIndex + 1)"
+                                           asp-route-searchString="@ViewBag.CurrentSearch">
+                                            Sau <i class="bi bi-chevron-right ms-1"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
