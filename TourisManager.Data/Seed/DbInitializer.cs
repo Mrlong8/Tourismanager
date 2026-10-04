@@ -12,13 +12,7 @@ namespace TourisManager.Data.Seed
             // Tự động kiểm tra và áp dụng Migration nếu DB chưa được khởi tạo
             context.Database.Migrate();
 
-            // 1. Seed Categories (Nếu chưa có)
-            if (!context.Categories.Any())
-            {
-                var categories = CategoryData.GetCategories();
-                context.Categories.AddRange(categories);
-                context.SaveChanges();
-            }
+     
 
             // 2. Seed Users (Nếu chưa có)
            
@@ -38,12 +32,7 @@ namespace TourisManager.Data.Seed
             }
 
             // 4. Seed Restaurants (Nếu chưa có)
-            if (!context.Restaurants.Any())
-            {
-                var restaurants = RestaurantData.GetRestaurants();
-                context.Restaurants.AddRange(restaurants);
-                context.SaveChanges();
-            }
+          
         }
     }
 }

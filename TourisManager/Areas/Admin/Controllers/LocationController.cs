@@ -21,7 +21,7 @@ namespace TourisManager.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string searchString, string categoryId, int? pageIndex)
         {
             // 1. Tạo Query bao gồm cả thông tin Category
-            var query = _context.Locations.Include(l => l.Category).AsQueryable();
+            var query = _context.Locations.Include(l => l.CategoryId).AsQueryable();
 
             // 2. Lọc theo từ khóa tìm kiếm (Tên địa điểm hoặc Địa chỉ)
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -83,10 +83,10 @@ namespace TourisManager.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Location location, IFormFile? imageFile)
         {
             // Bỏ qua validate các navigation properties
-            ModelState.Remove(nameof(Location.CreateBy));
-            ModelState.Remove(nameof(Location.Category));
-            ModelState.Remove(nameof(Location.Creator));
-            ModelState.Remove(nameof(Location.LocationImages));
+            ModelState.Remove(nameof(Location.AccountId));
+            //ModelState.Remove(nameof(Location.Category));
+            //ModelState.Remove(nameof(Location.Creator));
+            //ModelState.Remove(nameof(Location.LocationImages));
 
             if (ModelState.IsValid)
             {
@@ -95,14 +95,14 @@ namespace TourisManager.Areas.Admin.Controllers
 
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    location.CreateBy = currentUserId;
+                    location.AccountId = currentUserId;
                 }
                 else
                 {
                     var defaultAccount = await _context.Accounts.FirstOrDefaultAsync();
                     if (defaultAccount != null)
                     {
-                        location.CreateBy = defaultAccount.AccountId;
+                        location.AccountId = defaultAccount.AccountId;
                     }
                     else
                     {
@@ -203,7 +203,7 @@ namespace TourisManager.Areas.Admin.Controllers
             }
 
             // 3. Bảo toàn các dữ liệu lịch sử và thông tin bắt buộc không sửa ở form Edit
-            location.CreateBy = oldLocation.CreateBy;
+            location.AccountId = oldLocation.AccountId;
             location.CreateAt = oldLocation.CreateAt; // Giữ nguyên ngày tạo ban đầu
             location.IconUrl = oldLocation.IconUrl;   // Giữ nguyên IconUrl nếu có
 
@@ -213,11 +213,11 @@ namespace TourisManager.Areas.Admin.Controllers
             }
 
             // 4. Bỏ qua kiểm tra validate cho các thuộc tính Navigation / Lịch sử
-            ModelState.Remove(nameof(Location.CreateBy));
+            ModelState.Remove(nameof(Location.AccountId));
             ModelState.Remove(nameof(Location.CategoryId));
-            ModelState.Remove(nameof(Location.Category));
-            ModelState.Remove(nameof(Location.Creator));
-            ModelState.Remove(nameof(Location.LocationImages));
+            //ModelState.Remove(nameof(Location.Categor));
+            //ModelState.Remove(nameof(Location.Creator));
+            //ModelState.Remove(nameof(Location.LocationImages));
 
             if (ModelState.IsValid)
             {
