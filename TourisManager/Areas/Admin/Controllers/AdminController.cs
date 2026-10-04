@@ -22,7 +22,7 @@ namespace TourisManager.Areas.Admin.Controllers
             // Lấy số lượng từ các DbSet khai báo trong AppDbContext
             ViewBag.TotalUsers = await _context.Accounts.CountAsync();
             ViewBag.TotalLocations = await _context.Locations.CountAsync();
-            ViewBag.TotalRestaurants = await _context.Restaurants.CountAsync();
+            //ViewBag.TotalRestaurants = await _context.Restaurants.CountAsync();
 
             return View();
         }

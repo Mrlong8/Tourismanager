@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TourisManager.Core.Entities.Restaurant>
+﻿@model IEnumerable<TourisManager.Core.Entities.Location>
 @{
     ViewData["Title"] = "Quản lý Nhà hàng";
     Layout = "SidebarAdmin";
@@ -46,12 +46,12 @@
                             <!-- Action Buttons -->
                             <div class="pt-3 border-top d-flex justify-content-between align-items-center">
                                 <span class="badge bg-light text-dark fw-normal border">
-                                    <i class="bi bi-person me-1"></i>@item.CreateBy
+                                    <i class="bi bi-person me-1"></i>@item.AccountId
                                 </span>
                                 <div class="btn-group btn-group-sm">
-                                    <a asp-action="Edit" asp-route-id="@item.RestaurantId" class="btn btn-light text-warning" title="Sửa"><i class="bi bi-pencil"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.RestaurantId" class="btn btn-light text-info" title="Xem"><i class="bi bi-eye"></i></a>
-                                    <a asp-action="Delete" asp-route-id="@item.RestaurantId" class="btn btn-light text-danger" title="Xóa"><i class="bi bi-trash"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@item.LocationId" class="btn btn-light text-warning" title="Sửa"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.LocationId" class="btn btn-light text-info" title="Xem"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@item.LocationId" class="btn btn-light text-danger" title="Xóa"><i class="bi bi-trash"></i></a>
                                 </div>
                             </div>
                         </div>

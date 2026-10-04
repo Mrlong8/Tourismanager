@@ -11,7 +11,7 @@
  *    - Sidebar 1/5 cố định và cuộn riêng nếu danh sách menu dài (overflow-y: auto)
  *    - Main Content 4/5 cuộn riêng phần danh sách dữ liệu bảng (overflow-y: auto)
  * 4. Nút bấm thụt vào / thu gọn (Collapse 1/5 xuống 70px icon mode) và mở rộng mượt mà
- * ==========================================================================
+
  */
 
 :root {
