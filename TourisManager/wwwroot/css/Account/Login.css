@@ -1,0 +1,509 @@
+﻿
+:root {
+    --tm-primary: #059669; /* Emerald-600 */
+    --tm-primary-hover: #047857; /* Emerald-700 */
+    --tm-primary-dark: #064e3b; /* Emerald-900 */
+    --tm-primary-light: #10b981; /* Emerald-500 */
+    --tm-primary-subtle: #d1fae5; /* Emerald-100 */
+    --tm-primary-bg: #ecfdf5; /* Emerald-50 */
+    --tm-accent: #34d399; /* Mint accent */
+
+    --tm-gradient-brand: linear-gradient(135deg, #022c22 0%, #064e3b 35%, #059669 75%, #10b981 100%);
+    --tm-gradient-btn: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    --tm-gradient-btn-hover: linear-gradient(135deg, #047857 0%, #059669 100%);
+    --tm-gradient-text: linear-gradient(120deg, #ffffff 30%, #a7f3d0 100%);
+    --tm-text-main: #0f172a;
+    --tm-text-muted: #64748b;
+    --tm-border-color: #e2e8f0;
+    --tm-input-bg: #f8fafc;
+    /* Chiều cao TopNav mặc định trong _Layout.cshtml (khoảng 60px) */
+    --tm-nav-height: 60px;
+}
+
+/* ==========================================================================
+   1. KHỬ CON TRƯỢT NGOÀI CÙNG (BODY & MAIN)
+   ========================================================================== */
+html,
+body.tm-login-body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Triệt tiêu padding/margin mặc định của thẻ main trong ASP.NET Core */
+main[role="main"],
+.container-fluid:has(.login-container),
+.container:has(.login-container) {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+/* ==========================================================================
+   2. KHUNG CHỨA TOÀN TRANG (VỪA VẶN BÊN DƯỚI TOPNAV)
+   ========================================================================== */
+.login-container {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - var(--tm-nav-height));
+    height: calc(100dvh - var(--tm-nav-height));
+    max-height: calc(100vh - var(--tm-nav-height));
+    background-color: #ffffff;
+    overflow: hidden; /* Không bao giờ sinh con trượt trên Desktop */
+}
+
+/* ==========================================================================
+   3. PHÂN NỬA BÊN TRÁI: BRAND SECTION
+   - Ẩn hoàn toàn trên Mobile/Tablet giống trang Đăng ký
+   - Bỏ số liệu thống kê thừa
+   ========================================================================== */
+.brand-section {
+    flex: 1 1 48%;
+    background: var(--tm-gradient-brand);
+    color: #ffffff;
+    padding: 1.75rem 2.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Ẩn Brand trên Mobile để chỉ hiện Form đăng nhập */
+@media (max-width: 991.98px) {
+    .brand-section {
+        display: none !important;
+    }
+}
+
+.brand-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.brand-section::before {
+    content: "";
+    position: absolute;
+    top: -15%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52, 211, 153, 0.2) 0%, rgba(5, 150, 105, 0) 70%);
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(40px);
+}
+
+.brand-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+}
+
+.brand-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a7f3d0;
+    box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.15);
+}
+
+.brand-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: #ffffff;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ecfdf5;
+    font-size: 0.775rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50rem;
+    margin-bottom: 1rem;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #34d399;
+    box-shadow: 0 0 6px #34d399;
+}
+
+.brand-section h1.display-5 {
+    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+}
+
+.text-gradient {
+    background: var(--tm-gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.brand-description {
+    color: var(--tm-primary-subtle);
+    font-size: 0.925rem;
+    line-height: 1.5;
+    max-width: 440px;
+    margin-bottom: 1.5rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    max-width: 440px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    color: #f0fdf4;
+    font-size: 0.825rem;
+    font-weight: 600;
+}
+
+    .feature-item i {
+        color: #6ee7b7;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+
+/* ==========================================================================
+   4. PHÂN NỬA BÊN PHẢI: FORM ĐĂNG NHẬP (TỐI ƯU GỌN GÀNG, 0 THANH CUỘN)
+   ========================================================================== */
+.form-section {
+    flex: 1 1 52%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    overflow: hidden; /* Triệt tiêu con trượt bên trong */
+    height: 100%;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--tm-primary);
+    background-color: var(--tm-primary-bg);
+    border: 1px solid #a7f3d0;
+    font-size: 0.725rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.65rem;
+    border-radius: 50rem;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+}
+
+.form-header-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--tm-text-main);
+    margin-bottom: 0.15rem;
+}
+
+.form-header-desc {
+    color: var(--tm-text-muted);
+    font-size: 0.825rem;
+    margin-bottom: 0.85rem;
+}
+
+/* Ô nhập liệu tinh gọn */
+.form-group-custom {
+    margin-bottom: 0.65rem;
+}
+
+    .form-group-custom .form-label {
+        font-size: 0.785rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+.input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon-left {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: color 0.2s ease;
+    z-index: 4;
+}
+
+.form-control-custom {
+    width: 100%;
+    height: 38px; /* Tối ưu 38px để vừa khít màn hình không sinh thanh cuộn */
+    padding: 0.35rem 2.4rem 0.35rem 2.4rem;
+    background-color: var(--tm-input-bg);
+    border: 1.25px solid var(--tm-border-color);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: var(--tm-text-main);
+    transition: all 0.2s ease;
+}
+
+    .form-control-custom:focus {
+        background-color: #ffffff;
+        border-color: var(--tm-primary-light);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        outline: none;
+    }
+
+.input-group-custom:focus-within .input-icon-left {
+    color: var(--tm-primary);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.05rem;
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    z-index: 5;
+    user-select: none;
+}
+
+    .toggle-password:hover {
+        color: var(--tm-primary);
+    }
+
+.form-check-input {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+}
+
+    .form-check-input:checked {
+        background-color: var(--tm-primary);
+        border-color: var(--tm-primary);
+    }
+
+.form-check-label {
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #475569;
+}
+
+.forgot-pwd-link {
+    color: var(--tm-primary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+    .forgot-pwd-link:hover {
+        color: var(--tm-primary-hover);
+        text-decoration: underline;
+    }
+
+/* Nút bấm đăng nhập gọn gàng */
+.btn-login {
+    height: 40px; /* Tối ưu gọn 40px */
+    background: var(--tm-gradient-btn);
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.885rem;
+    box-shadow: 0 3px 12px rgba(5, 150, 105, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+}
+
+    .btn-login:hover {
+        background: var(--tm-gradient-btn-hover);
+        color: #ffffff;
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.35);
+    }
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 0.65rem 0;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .divider::before {
+        margin-right: 0.75rem;
+    }
+
+    .divider::after {
+        margin-left: 0.75rem;
+    }
+
+/* Nút Google gọn đẹp */
+.btn-google {
+    height: 38px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    border: 1.25px solid #e2e8f0;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.825rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    margin-bottom: 0.65rem;
+}
+
+    .btn-google img {
+        width: 17px;
+        height: 17px;
+    }
+
+    .btn-google:hover {
+        background-color: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+
+/* Khung chuyển sang Đăng ký */
+.signup-card {
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.85rem;
+    background-color: var(--tm-primary-bg);
+    border: 1px dashed rgba(5, 150, 105, 0.35);
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+    .signup-card p {
+        color: #334155;
+        font-size: 0.8rem;
+        margin: 0;
+    }
+
+.btn-signup {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: #ffffff;
+    color: var(--tm-primary);
+    border: 1.25px solid var(--tm-primary);
+    font-size: 0.775rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50rem;
+    text-decoration: none;
+}
+
+    .btn-signup:hover {
+        background-color: var(--tm-primary);
+        color: #ffffff;
+    }
+
+.security-footer {
+    text-align: center;
+    margin-top: 0.55rem;
+    color: #94a3b8;
+    font-size: 0.725rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+/* ==========================================================================
+   5. RESPONSIVE CHO MOBILE & TABLET
+   ========================================================================== */
+@media (max-width: 991.98px) {
+    html,
+    body.tm-login-body {
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+
+    .login-container {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+
+    .form-section {
+        padding: 1.5rem 1rem 2.5rem;
+        overflow-y: visible !important;
+        height: auto !important;
+    }
+}

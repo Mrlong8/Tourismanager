@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TourisManager.Core.Entities
@@ -7,16 +8,19 @@ namespace TourisManager.Core.Entities
     [Table("Review")]
     public class Review
     {
-        public string ReviewId { get; set; }
-        public string TargetType { get; set; } = string.Empty; // "Location" hoặc "Restaurant"
-        public string TargetId { get; set; } // LocationId hoặc RestaurantId tương ứng
-        public string UserId { get; set; }
-        public int Rating { get; set; } // Điểm đánh giá (1-5 sao)
+        [Key]
+        public string ReviewId { get; set; } = Guid.NewGuid().ToString();
+        [ForeignKey(nameof(Account))]
+        public string AccountId { get; set; } = string.Empty;
+        [ForeignKey(nameof(Location))]
+        public string LocationId { get; set; } = string.Empty;
+        public int Rating { get; set; }
         public string? Content { get; set; }
+        public string? ImageUrl { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
-        // Navigation Properties
-        public Account? Account { get; set; }
-        public ICollection<ReviewContent> ReviewContents { get; set; } = new List<ReviewContent>();
+        // Navigation
+        public Account Account { get; set; } = null!;
+        public Location Location { get; set; } = null!;
     }
 }

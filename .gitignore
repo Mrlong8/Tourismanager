@@ -25,3 +25,6 @@ wwwroot/lib/
 Thumbs.db
 
 appsettings.Development.json
+
+appsettings.Development.json
+**/appsettings.Development.json

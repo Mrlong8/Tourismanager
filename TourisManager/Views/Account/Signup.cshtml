@@ -1,64 +1,194 @@
 ﻿@model TourisManager.Models.ViewModels.SignupViewModel
-
+ 
 @{
-    ViewData["Title"] = "Sign Up";
+    // Nếu nhúng chung trong _Layout.cshtml (đã có TopNav) thì giữ mặc định hoặc bỏ chú thích dòng dưới
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng ký tài khoản - TourisManager";
 }
-
-<div class="container my-5" style="max-width: 500px;">
-    <h1 class="mb-4 text-center">Sign Up</h1>
-
-    @if (TempData["Msg"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Msg"]</div>
-    }
-
-    <form asp-controller="Account" asp-action="Signup" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="form-group mb-3">
-            <label asp-for="Username" class="form-label"></label>
-            <input asp-for="Username" class="form-control" placeholder="Nhập tên tài khoản" />
-            <span asp-validation-for="Username" class="text-danger"></span>
+ 
+<!-- Liên kết file CSS riêng biệt cho trang Đăng ký (đã tối ưu 0 thanh cuộn, vừa khít TopNav) -->
+<link rel="stylesheet" href="~/css/Account/signup.css" asp-append-version="true" />
+ 
+<div class="signup-container">
+    <!-- ==============================================
+         PHÂN NỬA BÊN TRÁI: BRAND & GIỚI THIỆU HỆ THỐNG
+         - Màu xanh lá Gradient hiện đại
+         - Đã bỏ số liệu
+         - Tự động ẨN trên thiết bị di động (chỉ hiện form)
+         ============================================== -->
+    <div class="signup-brand-section">
+        <div class="signup-brand-pattern"></div>
+        
+        <!-- Logo & Giới thiệu ứng dụng TourisManager -->
+        <div class="brand-header-wrap">
+            <div class="brand-badge-icon">
+                <i class="bi bi-geo-alt-fill fs-4"></i>
+            </div>
+            <div class="brand-header-text">
+                <h3 class="mb-0">TourisManager</h3>
+                <p class="mb-0">Nền tảng quản lý &amp; khám phá du lịch</p>
+            </div>
         </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="FullName" class="form-label"></label>
-            <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
+ 
+        <!-- Badge trạng thái miễn phí -->
+        <div class="d-flex align-items-center">
+            <span class="trial-badge">
+                <span class="trial-dot"></span>
+                <span>Miễn phí trải nghiệm tài khoản</span>
+            </span>
         </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" placeholder="name@example.com" />
-            <span asp-validation-for="Email" class="text-danger"></span>
+ 
+        <!-- Tiêu đề lớn & đoạn giới thiệu -->
+        <h1 class="brand-title-large">
+            Đăng ký miễn phí<br />
+            <span class="text-gradient">khám phá du lịch ngay hôm nay</span>
+        </h1>
+        <p class="brand-desc-text">
+            Chỉ cần 30 giây để tạo tài khoản người dùng. Tìm kiếm địa điểm, lưu trữ hành trình và chia sẻ đánh giá yêu thích của bạn.
+        </p>
+ 
+        <!-- 4 Hộp tính năng mờ kính (Glassmorphism) -->
+        <div class="brand-feature-grid">
+            <div class="brand-feature-card">
+                <i class="bi bi-check2-circle"></i>
+                <span>Miễn phí trọn đời</span>
+            </div>
+            <div class="brand-feature-card">
+                <i class="bi bi-lightning-charge"></i>
+                <span>Đăng ký chỉ 30 giây</span>
+            </div>
+            <div class="brand-feature-card">
+                <i class="bi bi-cloud-check"></i>
+                <span>Lưu trữ hành trình an toàn</span>
+            </div>
+            <div class="brand-feature-card">
+                <i class="bi bi-map"></i>
+                <span>Bản đồ &amp; gợi ý thông minh</span>
+            </div>
         </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="Password" class="form-label"></label>
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+ 
+    <!-- ==============================================
+         PHÂN NỬA BÊN PHẢI: FORM ĐĂNG KÝ
+         - Nằm trọn vẹn 100% trong khung hình bên dưới TopNav
+         - KHÔNG XUẤT HIỆN CON TRƯỢT NÀO TRÊN DESKTOP
+         ============================================== -->
+    <div class="signup-form-section">
+        <div class="signup-box">
+ 
+            <!-- Badge người dùng -->
+            <div class="text-start mb-2">
+                <span class="user-type-pill">
+                    <i class="bi bi-person-plus-fill me-1"></i> TẠO TÀI KHOẢN NGƯỜI DÙNG
+                </span>
+            </div>
+ 
+            <h2 class="signup-heading-title">Bắt đầu hành trình của bạn 🚀</h2>
+            <p class="signup-heading-desc">Tạo tài khoản để bắt đầu lưu trữ và khám phá địa điểm du lịch</p>
+ 
+            <!-- Hiển thị thông báo TempData["Msg"] nếu có -->
+            @if (TempData["Msg"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm py-1.5 px-3 mb-2 d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 text-danger"></i>
+                    <span class="small">@TempData["Msg"]</span>
+                    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+ 
+            <form asp-controller="Account" asp-action="Signup" method="post" id="signupForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-1"></div>
+ 
+                <!-- Họ và tên (FullName) -->
+                <div class="form-item">
+                    <label asp-for="FullName" class="form-label-custom">Họ và tên *</label>
+                    <div class="input-box-wrapper">
+                        <i class="bi bi-person input-icon"></i>
+                        <input asp-for="FullName" class="form-control form-control-signup" placeholder="Nguyễn Văn A" required />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger small mt-0.5 d-block"></span>
+                </div>
+ 
+                <!-- Hàng 2 cột: Tên tài khoản (Username) & Email -->
+                <div class="row g-2 mb-1">
+                    <div class="col-sm-6">
+                        <div class="form-item mb-0">
+                            <label asp-for="Username" class="form-label-custom">Tên đăng nhập *</label>
+                            <div class="input-box-wrapper">
+                                <i class="bi bi-person-badge input-icon"></i>
+                                <input asp-for="Username" class="form-control form-control-signup" placeholder="nguyenvana" required autocomplete="username" />
+                            </div>
+                            <span asp-validation-for="Username" class="text-danger small mt-0.5 d-block"></span>
+                        </div>
+                    </div>
+ 
+                    <div class="col-sm-6">
+                        <div class="form-item mb-0">
+                            <label asp-for="Email" class="form-label-custom">Email *</label>
+                            <div class="input-box-wrapper">
+                                <i class="bi bi-envelope input-icon"></i>
+                                <input asp-for="Email" type="email" class="form-control form-control-signup" placeholder="name@example.com" required autocomplete="email" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small mt-0.5 d-block"></span>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- Mật khẩu (Password) với Mắt xem & Thanh đo độ mạnh -->
+                <div class="form-item">
+                    <label asp-for="Password" class="form-label-custom">Mật khẩu *</label>
+                    <div class="input-box-wrapper">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input asp-for="Password" type="password" class="form-control form-control-signup" id="passwordInput" placeholder="Nhập mật khẩu của bạn..." required autocomplete="new-password" />
+                        <i class="bi bi-eye-slash password-eye-toggle" id="togglePassword" title="Hiện mật khẩu"></i>
+                    </div>
+                    <div class="password-strength-bar">
+                        <div class="password-strength-progress" id="passwordStrengthBar"></div>
+                    </div>
+                    <small class="password-hint-text" id="passwordHint">Dùng chữ hoa, số và ký tự đặc biệt để tăng độ mạnh</small>
+                    <span asp-validation-for="Password" class="text-danger small mt-0.5 d-block"></span>
+                </div>
+ 
+                <!-- Xác nhận mật khẩu (ConfirmPassword) với Mắt xem -->
+                <div class="form-item">
+                    <label asp-for="ConfirmPassword" class="form-label-custom">Xác nhận mật khẩu *</label>
+                    <div class="input-box-wrapper">
+                        <i class="bi bi-shield-lock input-icon"></i>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-signup" id="confirmPasswordInput" placeholder="Nhập lại mật khẩu..." required autocomplete="new-password" />
+                        <i class="bi bi-eye-slash password-eye-toggle" id="toggleConfirmPassword" title="Hiện mật khẩu"></i>
+                    </div>
+                    <span id="confirmPasswordFeedback" class="text-danger small mt-0.5 d-none"></span>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small mt-0.5 d-block"></span>
+                </div>
+ 
+                <!-- Nút Đăng ký & Bắt đầu -->
+                <button type="submit" class="btn btn-signup-submit">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                    <span>Đăng ký &amp; Bắt đầu</span>
+                </button>
+ 
+                <!-- Chú thích điều khoản -->
+                <p class="terms-agreement-note">
+                    Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> và <a href="#">Chính sách bảo mật</a> của TourisManager.
+                </p>
+ 
+                <!-- Khung chuyển sang Đăng nhập -->
+                <div class="login-redirect-card">
+                    <span>Đã có tài khoản?</span>
+                    <a asp-controller="Account" asp-action="Login">Đăng nhập ngay</a>
+                </div>
+            </form>
+ 
+            <div class="security-note">
+                <i class="bi bi-shield-check text-success"></i>
+                <span>Được bảo mật bởi TourisManager</span>
+            </div>
         </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="ConfirmPassword" class="form-label"></label>
-            <input asp-for="ConfirmPassword" class="form-control" />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
-
-        @* <div class="form-check mb-3">
-            <input asp-for="AcceptTerms" class="form-check-input" />
-            <label asp-for="AcceptTerms" class="form-check-label">Tôi đồng ý với các điều khoản</label>
-            <br />
-            <span asp-validation-for="AcceptTerms" class="text-danger"></span>
-        </div> *@
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Signup</button>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-warning">Log In</a>
-        </div>
-    </form>
+    </div>
 </div>
-
+ 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <!-- File JavaScript riêng biệt cho trang Đăng ký (mắt xem mật khẩu, độ mạnh, kiểm tra trùng khớp) -->
+    <script src="~/js/Accounts/Signup.js" asp-append-version="true"></script>
 }
+ 

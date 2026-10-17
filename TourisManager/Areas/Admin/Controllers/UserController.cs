@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TourisManager.Data;
 using TourisManager.Core.Entities;
-
+using TourisManager.Data;
+using TourisManager.Helpers;   
 namespace TourisManager.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -16,11 +16,17 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: /Admin/User
-        public async Task<IActionResult> Index()
+     
+        public async Task<IActionResult> Index(string searchString, int? pageIndex)
         {
-            var users = await _context.Accounts.ToListAsync();
+            // ... logic truy vấn ...
+            ViewBag.CurrentSearch = searchString;
 
-            return View(users);
+            int pageSize = 3;
+            int pageNumber = pageIndex ?? 1;
+
+            var pagedData = await PaginatedList<Account>.CreateAsync(_context.Accounts.AsNoTracking(), pageNumber, pageSize);
+            return View(pagedData);
         }
 
         // GET: /Admin/User/Create

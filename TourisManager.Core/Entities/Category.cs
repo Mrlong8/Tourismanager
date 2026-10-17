@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TourisManager.Core.Entities
@@ -6,12 +7,11 @@ namespace TourisManager.Core.Entities
     [Table("Category")]
     public class Category
     {
-        public string CategoryId { get; set; }
+        [Key]
+        public string CategoryId { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty; // "Địa điểm" hoặc "Quán ăn"
 
-        // Navigation Properties
-        public ICollection<Location> Locations { get; set; } = new List<Location>();
-        public ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
+        // N - N thông qua LocationCategory
+        public ICollection<LocationCategory> LocationCategories { get; set; } = new List<LocationCategory>();
     }
 }

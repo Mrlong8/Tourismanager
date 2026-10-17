@@ -1,44 +1,211 @@
 ﻿@model TourisManager.Models.ViewModels.LoginViewModel
+ 
+@{
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng nhập - TourisManager";
 }
-<h1>Log in</h1>
+ 
 
-@if (TempData["Msg"] != null)
-{
-    <div class="alert alert-danger">@TempData["Msg"]</div>
-}
-<form asp-controller="Account" asp-action="Login" method="post">
-    <!-- Hiển thị tổng hợp lỗi ở đầu form (nếu muốn) -->
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="form-group mb-3">
-        <label asp-for="UsernameOrEmail" class="form-label"></label>
-        <input asp-for="UsernameOrEmail" class="form-control" />
+<link rel="stylesheet" href="~/css/Account/login.css" asp-append-version="true" />
+ 
+<div class="login-container">
+    <!-- ==============================================
+         PHÂN NỬA BÊN TRÁI: BRAND & GIỚI THIỆU HỆ THỐNG
+         (Dải màu chuyển xanh lá Gradient hiện đại, ẩn trên Mobile)
+         ============================================== -->
+    <div class="brand-section">
+        <div class="brand-pattern"></div>
         
-        <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+        <div>
+            <!-- Logo & Tên dự án -->
+            <a asp-controller="Home" asp-action="Index" class="brand-logo-wrap text-decoration-none">
+                <div class="brand-icon-box">
+                    <i class="bi bi-geo-alt-fill fs-5"></i>
+                </div>
+                <h3 class="brand-title">TourisManager</h3>
+            </a>
+            <br />
+ 
+            <!-- Badge trạng thái hoạt động -->
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span>Hệ thống đang hoạt động ổn định</span>
+            </div>
+ 
+            <!-- Tiêu đề dải màu chuyển tiếp & Giới thiệu -->
+            <h1 class="fw-bold display-5 text-gradient mb-2">
+                Khám phá các địa điểm<br class="d-none d-lg-block" /> du lịch tuyệt vời nhất
+            </h1>
+            <p class="brand-description">
+                Nền tảng giúp bạn tìm kiếm, lưu trữ và đánh giá các địa điểm du lịch trên toàn quốc một cách dễ dàng, tiện lợi và nhanh chóng.
+            </p>
+ 
+            <!-- Lưới tính năng nổi bật -->
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="bi bi-compass"></i>
+                    <span>Tìm kiếm địa điểm</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-journal-bookmark"></i>
+                    <span>Lên lịch trình cá nhân</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-star"></i>
+                    <span>Đánh giá chân thực</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-map"></i>
+                    <span>Bản đồ trực quan</span>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" />
-        
-        <span asp-validation-for="Password" class="text-danger"></span>
+ 
+    <!-- ==============================================
+         PHÂN NỬA BÊN PHẢI: FORM ĐĂNG NHẬP
+         - Vừa vặn 100% bên dưới TopNav
+         - KHÔNG XUẤT HIỆN CON TRƯỢT NÀO TRÊN DESKTOP
+         ============================================== -->
+    <div class="form-section">
+        <div class="login-box">
+ 
+            <!-- Badge Khu vực người dùng -->
+            <div class="mb-2 text-start">
+                <span class="user-badge">
+                    <i class="bi bi-person-circle"></i> KHU VỰC NGƯỜI DÙNG
+                </span>
+            </div>
+ 
+            <h2 class="form-header-title">Chào mừng trở lại 👋</h2>
+            <p class="form-header-desc">Đăng nhập để tiếp tục khám phá các địa điểm du lịch</p>
+ 
+            <!-- Hiển thị thông báo lỗi nếu có -->
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm py-1.5 px-3 mb-2 d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 text-danger"></i>
+                    <div class="small">@ViewBag.Error</div>
+                    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Msg"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm py-1.5 px-3 mb-2 d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-circle-fill flex-shrink-0 me-2 text-warning"></i>
+                    <div class="small">@TempData["Msg"]</div>
+                    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+ 
+            <form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-1"></div>
+ 
+                <!-- Input Tài khoản hoặc Email -->
+                <div class="form-group-custom">
+                    <label asp-for="UsernameOrEmail" class="form-label">Tên đăng nhập hoặc Email *</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope input-icon-left"></i>
+                        <input asp-for="UsernameOrEmail" 
+                               class="form-control form-control-custom" 
+                               placeholder="Nhập email hoặc tài khoản..." 
+                               required 
+                               autocomplete="username" />
+                    </div>
+                    <span asp-validation-for="UsernameOrEmail" class="text-danger small mt-0.5 d-block"></span>
+                </div>
+ 
+                <!-- Input Mật khẩu với nút Mắt bật/tắt -->
+                <div class="form-group-custom">
+                    <label asp-for="Password" class="form-label">Mật khẩu *</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-lock input-icon-left"></i>
+                        <input asp-for="Password" 
+                               type="password" 
+                               class="form-control form-control-custom" 
+                               id="passwordInput" 
+                               placeholder="Nhập mật khẩu của bạn..." 
+                               required 
+                               autocomplete="current-password" />
+                        <!-- Nút mắt xem mật khẩu -->
+                        <i class="bi bi-eye-slash toggle-password" id="togglePassword" title="Hiện mật khẩu"></i>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small mt-0.5 d-block"></span>
+                </div>
+ 
+                <!-- Ghi nhớ đăng nhập & Quên mật khẩu -->
+                <div class="d-flex justify-content-between align-items-center my-2">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="RememberMe" value="true">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="#" id="forgotPasswordLink" class="forgot-pwd-link" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                        Quên mật khẩu?
+                    </a>
+                </div>
+ 
+                <!-- Nút Đăng nhập -->
+                <button type="submit" class="btn btn-login w-100">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Đăng nhập</span>
+                </button>
+ 
+                <div class="divider">HOẶC</div>
+ 
+                <!-- Đăng nhập bằng Google -->
+                <a asp-controller="Account" asp-action="LoginWithGoogle" class="btn btn-google w-100">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" />
+                    <span>Đăng nhập bằng Google</span>
+                </a>
+ 
+                <!-- Khung chuyển sang Đăng ký -->
+                <div class="signup-card">
+                    <p class="mb-0">Chưa có tài khoản người dùng?</p>
+                    <a asp-controller="Account" asp-action="Signup" class="btn btn-signup">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>Đăng ký miễn phí</span>
+                    </a>
+                </div>
+            </form>
+ 
+            <div class="security-footer">
+                <i class="bi bi-shield-check text-success"></i>
+                <span>Được bảo mật bởi TourisManager • SSL 256-bit</span>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group form-check mb-3">
-        <a class="form-check-label" href="#">Quên Mật khẩu</a>
+</div>
+ 
+<!-- Modal Quên mật khẩu dự phòng -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="forgotPasswordModalLabel">Khôi phục mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body py-3">
+                <p class="text-muted small mb-3">
+                    Vui lòng nhập địa chỉ email đã đăng ký của bạn. Hệ thống sẽ gửi hướng dẫn đặt lại mật khẩu qua email.
+                </p>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold text-muted">Email nhận liên kết *</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope input-icon-left"></i>
+                        <input type="email" class="form-control form-control-custom" id="forgotEmailInput" placeholder="name@example.com" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-login px-3" id="btnSubmitForgot">Gửi yêu cầu</button>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <button type="submit" class="btn btn-primary">Login</button>
-        <a asp-controller="Account" asp-action="Signup" class="btn btn-warning">Bạn chưa có tài khoản</a>
-        <a asp-controller="Account" asp-action="LoginWithGoogle" class="btn btn-danger">Google</a>
-
-    </div>
-</form>
+</div>
+ 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <!-- File JavaScript riêng biệt cho trang Đăng nhập -->
+    <script src="~/js/Accounts/Login.js" asp-append-version="true"></script>
 }

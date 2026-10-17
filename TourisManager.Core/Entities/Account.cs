@@ -19,9 +19,16 @@ namespace TourisManager.Core.Entities
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
         // Navigation Properties
+        public DetailAccount? DetailAccount { get; set; }
         public ICollection<Location> Locations { get; set; } = new List<Location>();
-        public ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+        public ICollection<SavedFood> SavedFoods { get; set; } = new List<SavedFood>();
+        public ICollection<ReservationService> ReservationServices { get; set; } = new List<ReservationService>();
+        public ICollection<RoomChat> RoomChats { get; set; } = new List<RoomChat>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+
+
     }
 }

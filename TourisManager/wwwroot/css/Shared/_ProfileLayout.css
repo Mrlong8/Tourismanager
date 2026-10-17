@@ -1,0 +1,358 @@
+﻿:root {
+    --tm-primary: #059669;
+    --tm-primary-hover: #047857;
+    --tm-primary-dark: #064e3b;
+    --tm-primary-light: #10b981;
+    --tm-primary-subtle: #ecfdf5;
+    --tm-border-color: #e2e8f0;
+    --tm-border-light: #f1f5f9;
+    --tm-text-main: #0f172a;
+    --tm-text-muted: #64748b;
+    --tm-sidebar-width: 20%;
+    --tm-content-width: 80%;
+    --tm-sidebar-collapsed-width: 70px;
+}
+
+/* 1. KHUNG CHỨA TOÀN BỘ BỐ CỤC */
+.profile-layout-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    background-color: #f8fafc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* 2. CỘT TRÁI: SIDEBAR (CHIẾM 1/5 = 20%) */
+.profile-sidebar {
+    flex: 0 0 var(--tm-sidebar-width);
+    width: var(--tm-sidebar-width);
+    max-width: var(--tm-sidebar-width);
+    background-color: #ffffff;
+    border-right: 1px solid var(--tm-border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.sidebar-user-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 1.5rem;
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid var(--tm-border-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-avatar {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+}
+
+    .sidebar-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.sidebar-user-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--tm-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-role {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--tm-primary);
+}
+
+.sidebar-group-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem 0.35rem;
+}
+
+.sidebar-link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 12px;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+    .sidebar-link-item:hover {
+        background-color: #f1f5f9;
+        color: var(--tm-text-main);
+    }
+
+    .sidebar-link-item.active {
+        background: var(--tm-primary-subtle);
+        color: var(--tm-primary-dark);
+        font-weight: 700;
+    }
+
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    padding: 0.7rem 0.95rem;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 3. TRẠNG THÁI THỤT VÀO (COLLAPSED 70px) */
+.profile-layout-wrapper.is-collapsed .profile-sidebar {
+    flex: 0 0 var(--tm-sidebar-collapsed-width);
+    width: var(--tm-sidebar-collapsed-width);
+    padding: 1.5rem 0.5rem;
+}
+
+.profile-layout-wrapper.is-collapsed .sidebar-user-header {
+    border: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.profile-layout-wrapper.is-collapsed .sidebar-user-info,
+.profile-layout-wrapper.is-collapsed .sidebar-group-label,
+.profile-layout-wrapper.is-collapsed .sidebar-item-text {
+    display: none !important;
+}
+
+.profile-layout-wrapper.is-collapsed .sidebar-link-item,
+.profile-layout-wrapper.is-collapsed .sidebar-logout-btn {
+    justify-content: center;
+}
+
+/* 4. CỘT PHẢI: NỘI DUNG (4/5 = 80%) */
+.profile-main-content {
+    flex: 0 0 var(--tm-content-width);
+    width: var(--tm-content-width);
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.profile-layout-wrapper.is-collapsed .profile-main-content {
+    flex: 0 0 calc(100% - var(--tm-sidebar-collapsed-width));
+    width: calc(100% - var(--tm-sidebar-collapsed-width));
+}
+
+.profile-sub-header {
+    height: 60px;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--tm-border-color);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-toggle-sidebar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--tm-border-color);
+    background-color: #ffffff;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-toggle-sidebar:hover {
+        background-color: #f1f5f9;
+        color: var(--tm-primary);
+    }
+
+.header-meta-time {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: var(--tm-primary);
+    background-color: var(--tm-primary-subtle);
+    border: 1px solid rgba(5, 150, 105, 0.15);
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+}
+
+/* 5. KHUNG THẺ CARD BẢO VỆ @RenderBody() */
+.profile-content-body {
+    padding: 2rem 2.25rem;
+    flex: 1;
+}
+
+.profile-card-container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--tm-border-color);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    padding: 2.25rem 2.5rem;
+    max-width: 850px;
+}
+
+/* Tự động sửa lỗi khi view con có class col-lg-9 col-md-8 */
+.profile-content-body .col-lg-9,
+.profile-content-body .col-md-8,
+.profile-content-body .ps-md-4 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.profile-page-header {
+    border-bottom: 1px solid var(--tm-border-light);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.profile-page-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--tm-text-main);
+    margin-bottom: 0.35rem;
+}
+
+.profile-page-subtitle {
+    font-size: 0.9rem;
+    color: var(--tm-text-muted);
+    margin-bottom: 0;
+}
+
+/* 6. KHU VỰC AVATAR XỊN */
+.profile-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background-color: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar-frame {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--tm-primary-light);
+    overflow: hidden;
+}
+
+    .profile-avatar-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.btn-avatar-edit {
+    background-color: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 50px;
+    padding: 0.45rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+    .btn-avatar-edit:hover {
+        background-color: #f1f5f9;
+        color: var(--tm-primary);
+    }
+
+/* 7. Ô NHẬP LIỆU & NÚT SUBMIT */
+.profile-content-body .form-control {
+    height: 46px;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.925rem;
+    padding: 0.65rem 1rem;
+}
+
+    .profile-content-body .form-control:focus {
+        border-color: var(--tm-primary);
+        box-shadow: 0 0 0 3.5px rgba(5, 150, 105, 0.12);
+        outline: none;
+    }
+
+.profile-content-body .btn-success {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 0.925rem;
+    border-radius: 12px;
+    padding: 0.7rem 1.85rem;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+    transition: all 0.25s ease;
+}
+
+    .profile-content-body .btn-success:hover {
+        background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+        transform: translateY(-1px);
+    }
+
+@media (max-width: 767.98px) {
+    .profile-sidebar {
+        display: none !important;
+    }
+
+    .profile-main-content {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    .profile-content-body {
+        padding: 1.25rem 1rem;
+    }
+
+    .profile-card-container {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .profile-avatar-section {
+        flex-direction: column;
+        text-align: center;
+    }
+}

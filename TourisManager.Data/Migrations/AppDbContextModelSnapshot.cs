@@ -63,6 +63,42 @@ namespace TourisManager.Data.Migrations
                     b.ToTable("Account");
                 });
 
+            modelBuilder.Entity("TourisManager.Core.Entities.ActivityStatus", b =>
+                {
+                    b.Property<string>("ActivityStatusId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<TimeSpan>("CloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<TimeSpan>("OpenTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("ActivityStatusId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("ActivityStatus");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Area", b =>
+                {
+                    b.Property<string>("AreaId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AreaId");
+
+                    b.ToTable("Area");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.Category", b =>
                 {
                     b.Property<string>("CategoryId")
@@ -72,13 +108,55 @@ namespace TourisManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("CategoryId");
 
                     b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Chat", b =>
+                {
+                    b.Property<string>("ChatId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoomChatId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("ChatId");
+
+                    b.HasIndex("RoomChatId");
+
+                    b.ToTable("Chat");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.DetailAccount", b =>
+                {
+                    b.Property<string>("DetailId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GoogleMapUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SDT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DetailId");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
+                    b.ToTable("DetailAccounts");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Favorite", b =>
@@ -108,13 +186,93 @@ namespace TourisManager.Data.Migrations
                     b.ToTable("Favorite");
                 });
 
+            modelBuilder.Entity("TourisManager.Core.Entities.Food", b =>
+                {
+                    b.Property<string>("FoodId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeFoodId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("FoodId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("TypeFoodId");
+
+                    b.ToTable("Foods");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.FoodSize", b =>
+                {
+                    b.Property<string>("FoodId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("SizeId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("FoodId", "SizeId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("FoodSize");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Image", b =>
+                {
+                    b.Property<string>("ImageId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Image");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.Location", b =>
                 {
                     b.Property<string>("LocationId")
                         .HasColumnType("varchar(36)");
 
+                    b.Property<string>("AccountId")
+                        .HasColumnType("varchar(36)");
+
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AreaId")
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("CategoryId")
                         .IsRequired()
@@ -122,9 +280,6 @@ namespace TourisManager.Data.Migrations
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateBy")
-                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -149,77 +304,160 @@ namespace TourisManager.Data.Migrations
 
                     b.HasKey("LocationId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("AccountId");
 
-                    b.HasIndex("CreateBy");
+                    b.HasIndex("AreaId");
 
                     b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.LocationImage", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.LocationCategory", b =>
                 {
-                    b.Property<string>("LocationImageId")
+                    b.Property<string>("CategoryId")
                         .HasColumnType("varchar(36)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LocationId")
-                        .IsRequired()
                         .HasColumnType("varchar(36)");
 
-                    b.HasKey("LocationImageId");
+                    b.HasKey("CategoryId", "LocationId");
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("LocationImage");
+                    b.ToTable("LocationCategory");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.Restaurant", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.Order", b =>
                 {
-                    b.Property<string>("RestaurantId")
+                    b.Property<string>("OrderId")
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CategoryId")
+                    b.Property<string>("AccountId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreateBy")
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatorAccountId")
+                    b.Property<string>("PaymentMethodId")
+                        .IsRequired()
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Latitude")
-                        .HasPrecision(18, 6)
-                        .HasColumnType("decimal(18,6)");
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Longitude")
-                        .HasPrecision(18, 6)
-                        .HasColumnType("decimal(18,6)");
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.OrderDetail", b =>
+                {
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("FoodId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderId", "FoodId");
+
+                    b.HasIndex("FoodId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.PaymentMethod", b =>
+                {
+                    b.Property<string>("PaymentMethodId")
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RestaurantId");
+                    b.HasKey("PaymentMethodId");
 
-                    b.HasIndex("CategoryId");
+                    b.ToTable("PaymentMethod");
+                });
 
-                    b.HasIndex("CreatorAccountId");
+            modelBuilder.Entity("TourisManager.Core.Entities.Reservation", b =>
+                {
+                    b.Property<string>("ReservationId")
+                        .HasColumnType("varchar(36)");
 
-                    b.ToTable("Restaurant");
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Reservation");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.ReservationService", b =>
+                {
+                    b.Property<string>("ReservationServiceId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<int>("PeopleQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ReservationServiceId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("ReservationService");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
@@ -228,6 +466,7 @@ namespace TourisManager.Data.Migrations
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("AccountId")
+                        .IsRequired()
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Content")
@@ -236,46 +475,121 @@ namespace TourisManager.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TargetId")
-                        .IsRequired()
-                        .HasColumnType("varchar(36)");
-
-                    b.Property<string>("TargetType")
-                        .IsRequired()
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("LocationId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
 
                     b.HasKey("ReviewId");
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("LocationId");
+
                     b.ToTable("Review");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.ReviewContent", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.RoomChat", b =>
                 {
-                    b.Property<string>("ReviewContentId")
+                    b.Property<string>("RoomChatId")
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("ContentUrl")
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("LocationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("RoomChatId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("RoomChat");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.SavedFood", b =>
+                {
+                    b.Property<string>("FoodId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("FoodId", "AccountId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("SavedFoods");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Size", b =>
+                {
+                    b.Property<string>("SizeId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReviewId")
-                        .IsRequired()
+                    b.HasKey("SizeId");
+
+                    b.ToTable("Sizes");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.TypeFood", b =>
+                {
+                    b.Property<string>("TypeFoodId")
                         .HasColumnType("varchar(36)");
 
-                    b.HasKey("ReviewContentId");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ReviewId");
+                    b.HasKey("TypeFoodId");
 
-                    b.ToTable("ReviewContent");
+                    b.ToTable("TypeFood");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.ActivityStatus", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("ActivityStatuses")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Chat", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.RoomChat", "RoomChat")
+                        .WithMany("Chats")
+                        .HasForeignKey("RoomChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RoomChat");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.DetailAccount", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithOne("DetailAccount")
+                        .HasForeignKey("TourisManager.Core.Entities.DetailAccount", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Favorite", b =>
@@ -287,28 +601,48 @@ namespace TourisManager.Data.Migrations
                     b.Navigation("account");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.Location", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.Food", b =>
                 {
-                    b.HasOne("TourisManager.Core.Entities.Category", "Category")
-                        .WithMany("Locations")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("Foods")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TourisManager.Core.Entities.Account", "Creator")
-                        .WithMany("Locations")
-                        .HasForeignKey("CreateBy")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasOne("TourisManager.Core.Entities.TypeFood", "TypeFood")
+                        .WithMany("Foods")
+                        .HasForeignKey("TypeFoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("Location");
 
-                    b.Navigation("Creator");
+                    b.Navigation("TypeFood");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.LocationImage", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.FoodSize", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Food", "Food")
+                        .WithMany("FoodSizes")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Size", "Size")
+                        .WithMany("FoodSizes")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+
+                    b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Image", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Location", "Location")
-                        .WithMany("LocationImages")
+                        .WithMany("Images")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -316,69 +650,261 @@ namespace TourisManager.Data.Migrations
                     b.Navigation("Location");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.Restaurant", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.Location", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany("Locations")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("TourisManager.Core.Entities.Area", "Area")
+                        .WithMany("Locations")
+                        .HasForeignKey("AreaId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Area");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.LocationCategory", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Category", "Category")
-                        .WithMany("Restaurants")
+                        .WithMany("LocationCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TourisManager.Core.Entities.Account", "Creator")
-                        .WithMany("Restaurants")
-                        .HasForeignKey("CreatorAccountId");
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("LocationCategories")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("Creator");
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Order", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany("Orders")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("Orders")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.PaymentMethod", "PaymentMethod")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("PaymentMethod");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.OrderDetail", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Food", "Food")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Reservation", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("Reservations")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.ReservationService", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany("ReservationServices")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("ReservationServices")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Account", "Account")
                         .WithMany("Reviews")
-                        .HasForeignKey("AccountId");
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("TourisManager.Core.Entities.ReviewContent", b =>
-                {
-                    b.HasOne("TourisManager.Core.Entities.Review", "Review")
-                        .WithMany("ReviewContents")
-                        .HasForeignKey("ReviewId")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Review");
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("Reviews")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.RoomChat", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany("RoomChats")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Location", "Location")
+                        .WithMany("RoomChats")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.SavedFood", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany("SavedFoods")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TourisManager.Core.Entities.Food", "Food")
+                        .WithMany("SavedFoods")
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Account", b =>
                 {
+                    b.Navigation("DetailAccount");
+
                     b.Navigation("Favorites");
 
                     b.Navigation("Locations");
 
-                    b.Navigation("Restaurants");
+                    b.Navigation("Orders");
+
+                    b.Navigation("ReservationServices");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("RoomChats");
+
+                    b.Navigation("SavedFoods");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Area", b =>
+                {
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Category", b =>
                 {
-                    b.Navigation("Locations");
+                    b.Navigation("LocationCategories");
+                });
 
-                    b.Navigation("Restaurants");
+            modelBuilder.Entity("TourisManager.Core.Entities.Food", b =>
+                {
+                    b.Navigation("FoodSizes");
+
+                    b.Navigation("OrderDetails");
+
+                    b.Navigation("SavedFoods");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Location", b =>
                 {
-                    b.Navigation("LocationImages");
+                    b.Navigation("ActivityStatuses");
+
+                    b.Navigation("Foods");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("LocationCategories");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("ReservationServices");
+
+                    b.Navigation("Reservations");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("RoomChats");
                 });
 
-            modelBuilder.Entity("TourisManager.Core.Entities.Review", b =>
+            modelBuilder.Entity("TourisManager.Core.Entities.Order", b =>
                 {
-                    b.Navigation("ReviewContents");
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.PaymentMethod", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.RoomChat", b =>
+                {
+                    b.Navigation("Chats");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Size", b =>
+                {
+                    b.Navigation("FoodSizes");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.TypeFood", b =>
+                {
+                    b.Navigation("Foods");
                 });
 #pragma warning restore 612, 618
         }

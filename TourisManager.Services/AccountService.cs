@@ -3,14 +3,14 @@ using System;
 using System.Linq;
 using TourisManager.Core.Entities;
 using TourisManager.Data;
-
+using TourisManager.Services;
 namespace TourisManager.Services
 {
     public class AccountService : IAccountService
     {
         private readonly AppDbContext db;
 
-        public  AccountService(AppDbContext _db)
+        public AccountService(AppDbContext _db)
         {
             db = _db;
         }
@@ -32,7 +32,7 @@ namespace TourisManager.Services
                 }
 
                 account.AccountId = $"acc-{nextId:D2}";
-               // Chỉ gán mặc định nếu đối tượng truyền vào chưa có giá trị
+                // Chỉ gán mặc định nếu đối tượng truyền vào chưa có giá trị
                 if (string.IsNullOrEmpty(account.Role))
                 {
                     account.Role = "User";
@@ -73,7 +73,7 @@ namespace TourisManager.Services
             return null;
         }
         // tìm kiếm theo id
-        public async  Task<Account?> FindByIdAsync(string accountId)
+        public async Task<Account?> FindByIdAsync(string accountId)
         {
             return await db.Accounts
                 .AsNoTracking()
@@ -83,11 +83,10 @@ namespace TourisManager.Services
         }
 
         // Tìm kiếm theo Username hoặc Email
-        public async Task<Account> FindByUsernameOrEmailAsync(string usernameOrEmail)
+        public async Task<Account?> FindByUsernameOrEmailAsync(string usernameOrEmail)
         {
             return await db.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.Username == usernameOrEmail || a.Email == usernameOrEmail);
         }
-
         // tìm kiếm username bị trùng
         public async Task<bool> IsUserNameExistsAsync(string UserName)
         {
@@ -127,10 +126,10 @@ namespace TourisManager.Services
             }
         }
 
-        public async Task<(bool Success,string Message)> ChangePasswordAsync(string accountID, string newPassword, string CurentPassword)
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(string accountID, string newPassword, string CurentPassword)
         {
             var account = await db.Accounts.FindAsync(accountID);
-            if(account == null)
+            if (account == null)
             {
                 return (false, "Không tìm thấy thông tin tài khoản!");
             }
