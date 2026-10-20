@@ -1,0 +1,19 @@
+﻿@model IEnumerable<TourisManager.Core.Entities.TypeFood>
+
+<div class="d-flex flex-column gap-2">
+    <a href="javascript:void(0);" data-id=""
+       class="btn-category-filter btn btn-success text-white fw-bold text-start rounded-0 d-flex align-items-center px-3 py-2">
+        <i class="bi bi-grid-fill me-2"></i> Tất cả
+    </a>
+
+    @if (Model != null)
+    {
+        foreach (var type in Model)
+        {
+            <a href="javascript:void(0);" data-id="@type.TypeFoodId"
+               class="btn-category-filter btn btn-outline-secondary text-dark text-start rounded-0 d-flex align-items-center px-3 py-2">
+                <i class="bi bi-cup-hot me-2 text-danger"></i> @type.Name
+            </a>
+        }
+    }
+</div>

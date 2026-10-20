@@ -1,0 +1,60 @@
+@{
+    // Lồng vào MyLayout (chứa TopNav & Footer)
+    Layout = "MyLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Food/_LayoutFood.css" asp-append-version="true" />
+}
+
+<div class="container-fluid py-3 px-4 bg-light">
+    <div class="row g-3">
+        <!-- ================= SIDEBAR BÊN TRÁI  ================= -->
+        <div class="col-lg-3 col-md-4">
+            <!-- Frame Loại đồ ăn -->
+            <div class="bg-white border p-3 mb-3 rounded-0 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0 text-uppercase fs-7">Phân loại món</h6>
+                    <a href="javascript:void(0);" data-id="" class="btn-category-filter text-success text-decoration-none small">Tất cả</a>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                   
+                    @await Component.InvokeAsync("TypeOfFood")
+                </div>
+            </div>
+
+            <!-- Frame Bộ lọc Sắp xếp -->
+            <div class="bg-white border p-3 rounded-0 shadow-sm">
+                <h6 class="fw-bold mb-3 text-uppercase fs-7">Sắp xếp</h6>
+                <select class="form-select rounded-0 border" id="sortSelect">
+                    <option value="default">Mặc định</option>
+                    <option value="price_asc">Giá: Thấp đến Cao</option>
+                    <option value="price_desc">Giá: Cao đến Thấp</option>
+                    <option value="name_asc">Tên: A - Z</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-lg-9 col-md-8">
+            <div class="food-toolbar-fixed bg-white border p-3 mb-3 rounded-0 shadow-sm d-flex justify-content-between align-items-center">
+                <div class="fw-bold text-dark">
+                    <span>Thực đơn món ăn</span>
+                </div>
+                <div class="btn-group rounded-0" role="group">
+                    <button type="button" class="btn btn-outline-secondary rounded-0 py-1 px-2"><i class="bi bi-list-ul"></i></button>
+                    <button type="button" class="btn btn-success rounded-0 py-1 px-2 active"><i class="bi bi-grid-3x3-gap-fill"></i></button>
+                </div>
+            </div>
+
+            <!-- ĐÂY LÀ VỊ TRÍ INDEX.CSHTML SẼ RENDER VÀO -->
+            <div class="food-scroll-container">
+                @RenderBody()
+            </div>
+           
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

@@ -1,0 +1,43 @@
+@model IEnumerable<TourisManager.Core.Entities.Food>
+
+@{
+    ViewData["Title"] = "Thực Đơn Món Ăn";
+    Layout = "_LayoutFood"; 
+}
+
+<!-- ID 'food-container' là nơi AJAX sẽ đổ dữ liệu (PartialView) vào đây -->
+<div id="food-container">
+    <partial name="_FoodGridPartial" model="Model" />
+</div>
+
+<!-- Lệnh AJAX (Giống bài Lab5) -->
+@section Scripts {
+    <script>
+        $(document).on('click', '.btn-category-filter', function (e) {
+            e.preventDefault();
+
+            var $btn = $(this);
+            var typeId = $btn.data('id');
+
+            // Đổi màu nút đang chọn
+            $('.btn-category-filter')
+                .removeClass('btn-success text-white fw-bold')
+                .addClass('btn-outline-secondary text-dark');
+            $btn.removeClass('btn-outline-secondary text-dark')
+                .addClass('btn-success text-white fw-bold');
+
+            // Gọi AJAX lấy lưới món ăn
+            $.ajax({
+                url: '@Url.Action("FilterFoodsByType", "Food")',
+                type: 'GET',
+                data: { typeId: typeId },
+                success: function (html) {
+                    $('#food-container').html(html);
+                },
+                error: function () {
+                    alert('Có lỗi xảy ra khi tải dữ liệu.');
+                }
+            });
+        });
+    </script>
+}
