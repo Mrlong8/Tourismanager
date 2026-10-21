@@ -1,0 +1,47 @@
+﻿
+.card-food-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+    height: 100%;
+}
+
+.card-food-item {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+    .card-food-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+    }
+
+.transition-img {
+    transition: transform 0.35s ease;
+}
+
+.card-food-item:hover .transition-img {
+    transform: scale(1.06);
+}
+
+.food-scroll-container {
+    /* Trừ đi chiều cao của thanh header + bộ lọc (ví dụ 250px). 
+           Bạn có thể tăng/giảm số 250px này cho vừa với giao diện thực tế */
+    height: calc(100vh - 250px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+    /* Làm đẹp thanh cuộn (Tùy chọn) */
+    .food-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .food-scroll-container::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+        .food-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }

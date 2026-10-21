@@ -1,0 +1,58 @@
+﻿/* Khung cuộn riêng cho phần món ăn */
+.food-scroll-container {
+    /* 100vh trừ đi chiều cao TopNav (~60px) + Tiêu đề (~60px) + khoảng cách lề */
+    height: calc(100vh - 165px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px; /* Khoảng đệm nhỏ để không bị thanh cuộn che mất card */
+}
+
+    /* Tùy chỉnh thanh cuộn cho đẹp và mảnh */
+    .food-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .food-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .food-scroll-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+
+        .food-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+.food-sidebar-sticky {
+    position: sticky;
+    top: 15px; /* Ghim sát đỉnh màn hình */
+    max-height: calc(100vh - 30px);
+    overflow-y: auto;
+}
+
+.food-toolbar-sticky {
+    position: sticky;
+    top: 15px; /* Ghim sát đỉnh màn hình */
+    z-index: 1020;
+}
+/* Khung chứa món ăn: Giới hạn chiều cao vừa vặn màn hình */
+.food-scroll-container {
+    /* 100vh trừ đi TopNav (~60px) + Tiêu đề (~60px) + lề đệm */
+    max-height: calc(100vh - 170px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* 1. Ẩn thanh cuộn trên Firefox */
+    scrollbar-width: none;
+    /* 2. Ẩn thanh cuộn trên IE / Edge cũ */
+    -ms-overflow-style: none;
+}
+
+    /* 3. Ẩn thanh cuộn trên Chrome, Edge mới, Safari, Cốc Cốc */
+    .food-scroll-container::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
