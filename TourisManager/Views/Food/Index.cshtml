@@ -9,35 +9,52 @@
 <div id="food-container">
     <partial name="_FoodGridPartial" model="Model" />
 </div>
+<partial name="_QuickOrderModal" />
 
-<!-- Lệnh AJAX (Giống bài Lab5) -->
 @section Scripts {
     <script>
+        var currentTypeId = "";
+
         $(document).on('click', '.btn-category-filter', function (e) {
             e.preventDefault();
-
             var $btn = $(this);
-            var typeId = $btn.data('id');
+            currentTypeId = $btn.data('id') || "";
 
-            // Đổi màu nút đang chọn
             $('.btn-category-filter')
                 .removeClass('btn-success text-white fw-bold')
                 .addClass('btn-outline-secondary text-dark');
             $btn.removeClass('btn-outline-secondary text-dark')
                 .addClass('btn-success text-white fw-bold');
 
-            // Gọi AJAX lấy lưới món ăn
+            loadFoods(currentTypeId, 1);
+        });
+
+        $('body').on('click', '.page-item', function (e) {
+            e.preventDefault();
+            var page = $(this).attr("page");
+            var typeId = $(this).attr("typeId") || currentTypeId;
+
+            if (page) {
+                loadFoods(typeId, page);
+            }
+        });
+
+        function loadFoods(typeId, pageIndex) {
             $.ajax({
                 url: '@Url.Action("FilterFoodsByType", "Food")',
                 type: 'GET',
-                data: { typeId: typeId },
+                data: {
+                    typeId: typeId,
+                    pageIndex: pageIndex
+                },
                 success: function (html) {
                     $('#food-container').html(html);
+                    $('.food-scroll-container').scrollTop(0);
                 },
                 error: function () {
                     alert('Có lỗi xảy ra khi tải dữ liệu.');
                 }
             });
-        });
+        }
     </script>
 }
