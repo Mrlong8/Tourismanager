@@ -1,67 +1,90 @@
 ﻿@model IEnumerable<TourisManager.Core.Entities.Food>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-    @if (Model != null && Model.Any())
-    {
-        foreach (var item in Model)
+@section Styles {
+    <link rel="stylesheet" href="~/css/Food/_FoodGirdPartial.css" asp-append-version="true" />
+}
+<div class="food-scroll-container pe-2">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+        @if (Model != null && Model.Any())
         {
-            var minPrice = item.FoodSizes != null && item.FoodSizes.Any()
-                ? item.FoodSizes.Min(fs => fs.Price) : (decimal?)null;
+            foreach (var item in Model)
+            {
+                var minPrice = item.FoodSizes != null && item.FoodSizes.Any()
+                    ? item.FoodSizes.Min(fs => fs.Price) : (decimal?)null;
 
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden position-relative card-food-item bg-white">
-                    <div class="position-absolute top-0 start-0 m-2 z-1">
-                        <span class="badge bg-danger text-white fw-normal px-2 py-1 shadow-sm">
-                            <i class="bi bi-tag-fill me-1"></i>@(item.TypeFood?.Name ?? "Đồ ăn")
-                        </span>
-                    </div>
-
-                    <div class="ratio ratio-4x3 bg-light overflow-hidden">
-                        <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/Image/Food/default_food.jpg" : item.ImageUrl)"
-                             alt="@item.Name" class="card-img-top object-fit-cover transition-img"
-                             onerror="this.onerror=null; this.src='/Image/Food/default_food.jpg';" />
-                    </div>
-
-                    <div class="card-body p-2 d-flex flex-column justify-content-between">
-                        <div>
-                            <h6 class="card-title fw-bold text-dark text-truncate mb-1" title="@item.Name">@item.Name</h6>
-                            <p class="card-text text-muted small text-truncate mb-2" style="font-size: 0.8rem;">
-                                @(string.IsNullOrEmpty(item.Description) ? "Thơm ngon chuẩn vị" : item.Description)
-                            </p>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center justify-content-between my-2">
-                                <span class="fw-bold text-danger fs-6">
-                                    @(minPrice.HasValue ? minPrice.Value.ToString("N0") + " đ" : "Liên hệ")
+                <div class="col">
+                    <a href="@Url.Action("Detail", "Food", new { id = item.FoodId })" class="card-food-link">
+                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden position-relative card-food-item bg-white">
+                            <!-- Code ruột card giữ nguyên như cũ -->
+                            <div class="position-absolute top-0 start-0 m-2 z-1">
+                                <span class="badge bg-danger text-white fw-normal px-2 py-1 shadow-sm">
+                                    <i class="bi bi-tag-fill me-1"></i>@(item.TypeFood?.Name ?? "Đồ ăn")
                                 </span>
                             </div>
-                             <!-- Các nút thao tác cho Khách hàng -->
-                                <div class="d-grid gap-1">
-                                    <!-- Nút Xem chi tiết / Đặt mua -->
-                                    <a href="@Url.Action("Detail", "Food", new { id = item.FoodId })"
-                                       class="btn btn-outline-danger btn-sm rounded-2 text-start d-flex align-items-center justify-content-between px-2">
-                                        <span>Xem & Đặt món</span>
-                                        <i class="bi bi-chevron-right"></i>
-                                    </a>
 
-                                    <!-- Nút Thêm nhanh vào giỏ hàng -->
-                                    <button type="button"
-                                            class="btn btn-danger btn-sm rounded-2 fw-bold d-flex align-items-center justify-content-center gap-1"
-                                            onclick="addToCart('@item.FoodId')">
-                                        <i class="bi bi-cart-plus fs-6"></i>
-                                        <span>Thêm vào giỏ</span>
-                                    </button>
+                            <div class="ratio ratio-4x3 bg-light overflow-hidden">
+                                <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/Image/Food/default_food.jpg" : item.ImageUrl)"
+                                     alt="@item.Name" class="card-img-top object-fit-cover transition-img"
+                                     onerror="this.onerror=null; this.src='/Image/Food/default_food.jpg';" />
+                            </div>
+
+                            <div class="card-body p-2.5 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="card-title fw-bold text-dark text-truncate mb-1" title="@item.Name">@item.Name</h6>
+                                    <p class="card-text text-muted small text-truncate mb-2" style="font-size: 0.8rem;">
+                                        @(string.IsNullOrEmpty(item.Description) ? "Thơm ngon chuẩn vị" : item.Description)
+                                    </p>
                                 </div>
+                                <div>
+                                    <div class="d-flex align-items-center justify-content-between my-2">
+                                        <span class="fw-bold text-danger fs-6">
+                                            @(minPrice.HasValue ? "Giá chỉ từ: " + minPrice.Value.ToString("N0") + " đ" : "Liên hệ")
+                                        </span>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm rounded-2 d-flex align-items-center justify-content-center px-3"
+                                                title="Thêm vào giỏ hàng"
+                                                onclick="event.stopPropagation(); event.preventDefault(); addToCart('@item.FoodId');">
+                                            <i class="bi bi-cart-plus fs-6"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm rounded-2 fw-bold d-flex align-items-center justify-content-center flex-grow-1 gap-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#quickOrderModal"
+                                                onclick="event.stopPropagation(); event.preventDefault(); addToCart('@item.FoodId');">
+                                            <span>Đặt hàng ngay</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
+            }
+
+        }
+        else
+        {
+            <div class="col-12 w-100 text-center py-5 bg-white rounded border">
+                <p class="text-muted mt-2 mb-0">Không có món ăn nào trong danh mục này!</p>
             </div>
         }
-    }
-    else
-    {
-        <div class="col-12 w-100 text-center py-5 bg-white rounded border">
-            <p class="text-muted mt-2 mb-0">Không có món ăn nào trong danh mục này!</p>
-        </div>
-    }
+    </div>
 </div>
+<!-- Đặt ở dưới cùng file _FoodGridPartial.cshtml -->
+@if (ViewBag.pageNum != null && ViewBag.pageNum > 1)
+{
+    <div class="d-flex justify-content-center mt-4">
+        <ul class="pagination pagination-sm m-0">
+            @for (int i = 1; i <= ViewBag.pageNum; i++)
+            {
+                <li class="page-item @(ViewBag.pageIndex == i ? "active" : "")"
+                    page="@i"
+                    @(ViewBag.typeId != null ? $"typeId={ViewBag.typeId}" : "")>
+                    <a class="page-link" href="javascript:void(0);">@i</a>
+                </li>
+            }
+        </ul>
+    </div>
+}
