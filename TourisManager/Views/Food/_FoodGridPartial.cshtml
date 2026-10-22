@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TourisManager.Core.Entities.Food>
+@model IEnumerable<TourisManager.Core.Entities.Food>
 
 @section Styles {
     <link rel="stylesheet" href="~/css/Food/_FoodGirdPartial.css" asp-append-version="true" />
@@ -50,9 +50,7 @@
                                         </button>
                                         <button type="button"
                                                 class="btn btn-danger btn-sm rounded-2 fw-bold d-flex align-items-center justify-content-center flex-grow-1 gap-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#quickOrderModal"
-                                                onclick="event.stopPropagation(); event.preventDefault(); addToCart('@item.FoodId');">
+                                                onclick="event.stopPropagation(); event.preventDefault(); openModal('@item.FoodId');">
                                             <span>Đặt hàng ngay</span>
                                         </button>
                                     </div>
@@ -72,7 +70,7 @@
         }
     </div>
 </div>
-<!-- Đặt ở dưới cùng file _FoodGridPartial.cshtml -->
+<!-- phần phân trang -->
 @if (ViewBag.pageNum != null && ViewBag.pageNum > 1)
 {
     <div class="d-flex justify-content-center mt-4">
