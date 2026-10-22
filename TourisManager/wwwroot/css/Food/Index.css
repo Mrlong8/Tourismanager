@@ -1,0 +1,27 @@
+﻿/* Tối ưu bo góc 0 và viền vuông vức */
+.rounded-0 {
+    border-radius: 0px !important;
+}
+
+/* Đảm bảo hình ảnh co giãn đẹp không bị méo */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* Hiệu ứng rê chuột vào card sản phẩm */
+.card-hover {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card-hover:hover {
+        border-color: #198754 !important; /* Viền đổi sang màu xanh lá */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    }
+
+.bg-light-hover:hover {
+    background-color: #f8f9fa !important;
+}
+
+.fs-7 {
+    font-size: 0.85rem;
+}
