@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TourisManager.Core.Entities;
@@ -9,5 +9,6 @@ namespace TourisManager.Core.Interfaces
     {
         Task<List<Food>> GetListFoodAsync();
         Task<IEnumerable<Food>> FilterFoodsAsync(string typeID);
+        Task<Food?> GetFoodByIdAsync(string id);
     }
 }
