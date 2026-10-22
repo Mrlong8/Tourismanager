@@ -95,12 +95,16 @@
                             {
                                 <tr>
                                     <td class="ps-4">
-                                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/Image/Upload/avatadefault.jpg" : item.ImageUrl)"
+
+                                        <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl)
+                                             ? "/Image/Upload/avatadefault.jpg"
+                                             : item.ImageUrl)"
                                              onerror="this.onerror=null; this.src='/Image/Upload/avatadefault.jpg';"
                                              class="rounded-3 object-fit-cover"
                                              width="50"
                                              height="50"
                                              alt="@item.Name" />
+
                                     </td>
                                     <td>
                                         <div class="fw-bold text-dark">@item.Name</div>
