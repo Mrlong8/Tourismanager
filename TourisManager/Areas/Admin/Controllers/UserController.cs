@@ -16,18 +16,40 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // GET: /Admin/User
-     
-        public async Task<IActionResult> Index(string searchString, int? pageIndex)
+
+
+        public async Task<IActionResult> Index(string? searchString, int? pageIndex)
         {
-            // ... logic truy vấn ...
             ViewBag.CurrentSearch = searchString;
 
             int pageSize = 3;
             int pageNumber = pageIndex ?? 1;
 
-            var pagedData = await PaginatedList<Account>.CreateAsync(_context.Accounts.AsNoTracking(), pageNumber, pageSize);
+            var usersQuery = _context.Accounts.AsNoTracking();
+
+            // Tìm kiếm theo Username, Name hoặc Email
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                string keyword = searchString.Trim();
+
+                usersQuery = usersQuery.Where(u =>
+                    (u.Username != null && u.Username.Contains(keyword)) ||
+                    u.Name.Contains(keyword) ||
+                    u.Email.Contains(keyword));
+            }
+
+            // Sắp xếp tài khoản mới nhất lên đầu
+            usersQuery = usersQuery.OrderByDescending(u => u.CreateAt);
+
+            // Phân trang sau khi tìm kiếm
+            var pagedData = await PaginatedList<Account>.CreateAsync(
+                usersQuery,
+                pageNumber,
+                pageSize);
+
             return View(pagedData);
         }
+
 
         // GET: /Admin/User/Create
         public IActionResult Create()
@@ -62,10 +84,11 @@ namespace TourisManager.Areas.Admin.Controllers
             return View(user);
         }
 
+
         // GET: /Admin/User/Edit/id
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return NotFound();
             }
@@ -80,27 +103,51 @@ namespace TourisManager.Areas.Admin.Controllers
             return View(user);
         }
 
-        // POST: /Admin/User/Edit
+        // POST: /Admin/User/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Account user)
         {
-            if (id != user.AccountId)
+            if (string.IsNullOrWhiteSpace(id) || id != user.AccountId)
             {
                 return NotFound();
             }
 
+            // Lấy tài khoản hiện có trong database
+            var existingUser = await _context.Accounts.FindAsync(id);
+
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+
+            // Chỉ cập nhật các trường được phép sửa
             if (ModelState.IsValid)
             {
-                _context.Accounts.Update(user);
+                existingUser.Username = user.Username;
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.Role = user.Role;
+                existingUser.AvataUrl = user.AvataUrl;
+                existingUser.AuthProvider = user.AuthProvider;
 
+                // Chỉ đổi mật khẩu nếu người quản trị nhập mật khẩu mới
+                if (!string.IsNullOrWhiteSpace(user.Password))
+                {
+                    existingUser.Password =
+                        BCrypt.Net.BCrypt.HashPassword(user.Password);
+                }
+
+                // Giữ nguyên Password, CreateAt và thông tin đăng nhập ngoài form
                 await _context.SaveChangesAsync();
 
+                TempData["Success"] = "Cập nhật tài khoản thành công!";
                 return RedirectToAction(nameof(Index));
             }
 
             return View(user);
         }
+
 
         // GET: /Admin/User/Delete/id
         public async Task<IActionResult> Delete(string id)
@@ -121,21 +168,39 @@ namespace TourisManager.Areas.Admin.Controllers
             return View(user);
         }
 
+
         // POST: /Admin/User/Delete/id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
             var user = await _context.Accounts.FindAsync(id);
 
-            if (user != null)
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            try
             {
                 _context.Accounts.Remove(user);
-
                 await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Xóa tài khoản thành công!";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] =
+                    "Không thể xóa tài khoản vì dữ liệu đang được sử dụng hoặc có ràng buộc liên quan.";
             }
 
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

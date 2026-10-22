@@ -10,12 +10,29 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold text-primary mb-1">
-    <a asp-area="Admin" asp-controller="User" asp-action="Index" class="text-decoration-none text-primary">
-        <i class="bi bi-people-fill me-2"></i>Quản lý User
-    </a>
-</h3>
+                <a asp-area="Admin" asp-controller="User" asp-action="Index" class="text-decoration-none text-primary">
+                    <i class="bi bi-people-fill me-2"></i>Quản lý User
+                </a>
+            </h3>
             <p class="text-muted small mb-0">Quản lý danh sách tài khoản người dùng trong hệ thống</p>
         </div>
+        
+            <form asp-area="Admin"
+                  asp-controller="User"
+                  asp-action="Index"
+                  method="get"
+                  class="d-flex gap-2">
+                <input type="text"
+                       name="searchString"
+                       value="@ViewBag.CurrentSearch"
+                       class="form-control"
+                       placeholder="Tìm username, họ tên hoặc email..." />
+
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-search"></i> Tìm kiếm
+                </button>
+            </form>
+
         <a asp-area="Admin" asp-controller="User" asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-person-plus-fill me-1"></i> Thêm User
         </a>
@@ -135,62 +152,47 @@
                 </table>
                 <!-- THANH PHÂN TRANG -->
                 <!-- Card Footer: Thanh Phân Trang Bootstrap (Đồng bộ với Location) -->
-                @if (Model != null)
-                {
-                    <div class="card-footer bg-white border-top py-3 px-4 d-flex align-items-center justify-content-between">
-                        <!-- 1. Hiển thị thông tin tổng số trang / bản ghi -->
-                        <div class="text-muted small">
-                            Hiển thị trang <b>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</b> / <b>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</b> (Tổng <b>@Model.TotalCount</b> người dùng)
-                        </div>
-
-                        <!-- 2. Điều hướng phân trang -->
-                        @if (Model.TotalPages > 1)
-                        {
-                            <nav>
-                                <ul class="pagination pagination-sm mb-0">
-                                    <!-- Nút Trang trước -->
-                                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                                        <a class="page-link rounded-pill px-3 me-1"
-                                           asp-area="Admin"
-                                           asp-controller="User"
-                                           asp-action="Index"
-                                           asp-route-pageIndex="@(Model.PageIndex - 1)"
-                                           asp-route-searchString="@ViewBag.CurrentSearch">
-                                            <i class="bi bi-chevron-left me-1"></i> Trước
-                                        </a>
-                                    </li>
-
-                                    <!-- Danh sách các số trang -->
-                                    @for (int i = 1; i <= Model.TotalPages; i++)
-                                    {
-                                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                                            <a class="page-link rounded-circle mx-1"
-                                               asp-area="Admin"
-                                               asp-controller="User"
-                                               asp-action="Index"
-                                               asp-route-pageIndex="@i"
-                                               asp-route-searchString="@ViewBag.CurrentSearch">
-                                                @i
-                                            </a>
-                                        </li>
-                                    }
-
-                                    <!-- Nút Trang sau -->
-                                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                                        <a class="page-link rounded-pill px-3 ms-1"
-                                           asp-area="Admin"
-                                           asp-controller="User"
-                                           asp-action="Index"
-                                           asp-route-pageIndex="@(Model.PageIndex + 1)"
-                                           asp-route-searchString="@ViewBag.CurrentSearch">
-                                            Sau <i class="bi bi-chevron-right ms-1"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        }
+                
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
+                    <div class="text-muted">
+                        Hiển thị trang @Model.PageIndex / @Model.TotalPages
+                        (Tổng @Model.TotalCount người dùng)
                     </div>
-                }
+
+                    <div class="d-flex gap-2">
+                        <a asp-area="Admin"
+                           asp-controller="User"
+                           asp-action="Index"
+                           asp-route-pageIndex="@(Model.PageIndex - 1)"
+                           asp-route-searchString="@ViewBag.CurrentSearch"
+                           class="btn btn-outline-primary btn-sm @(Model.HasPreviousPage ? "" : "disabled")">
+                            <i class="bi bi-chevron-left"></i> Trước
+                        </a>
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <a asp-area="Admin"
+                               asp-controller="User"
+                               asp-action="Index"
+                               asp-route-pageIndex="@i"
+                               asp-route-searchString="@ViewBag.CurrentSearch"
+                               class="btn btn-sm @(i == Model.PageIndex ? "btn-primary" : "btn-outline-primary")">
+                                @i
+                            </a>
+                        }
+
+                        <a asp-area="Admin"
+                           asp-controller="User"
+                           asp-action="Index"
+                           asp-route-pageIndex="@(Model.PageIndex + 1)"
+                           asp-route-searchString="@ViewBag.CurrentSearch"
+                           class="btn btn-outline-primary btn-sm @(Model.HasNextPage ? "" : "disabled")">
+                            Tiếp <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

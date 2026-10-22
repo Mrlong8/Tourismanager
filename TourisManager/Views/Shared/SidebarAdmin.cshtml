@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     // Kế thừa giao diện gốc MyLayout của bạn (không đổi tên mặc định)
      Layout = "~/Views/Shared/MyLayout.cshtml";
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
@@ -52,35 +53,43 @@
                     <span class="admin-item-text">Bảng tổng quan</span>
                 </a>
  
+               
                 <!-- Quản lý Người dùng -->
-                <a class="admin-link-item @(currentController == "User" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="User" asp-action="Index" 
+                <a class="admin-link-item @(currentController == "User" ? "active" : "")"
+                   asp-area="Admin"
+                   asp-controller="User"
+                   asp-action="Index"
                    data-title="Quản lý Người dùng">
                     <i class="bi bi-people-fill"></i>
                     <span class="admin-item-text">Quản lý Người dùng</span>
-                    <span class="admin-item-badge">1,420</span>
+
+                    @await Component.InvokeAsync("AdminSidebar", new { item = "Users" })
                 </a>
- 
+
                 <!-- Quản lý Địa điểm -->
-                <a class="admin-link-item @(currentController == "Location" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Location" asp-action="Index" 
+                <a class="admin-link-item @(currentController == "Location" ? "active" : "")"
+                   asp-area="Admin"
+                   asp-controller="Location"
+                   asp-action="Index"
                    data-title="Quản lý Địa điểm">
                     <i class="bi bi-geo-alt-fill"></i>
                     <span class="admin-item-text">Quản lý Địa điểm</span>
-                    <span class="admin-item-badge">384</span>
+
+                    @await Component.InvokeAsync("AdminSidebar", new { item = "Locations" })
                 </a>
+
  
                 <!-- Quản lý Nhà hàng -->
-                <a class="admin-link-item @(currentController == "Restaurant" ? "active" : "")" 
+                @* <a class="admin-link-item @(currentController == "Restaurant" ? "active" : "")" 
                    asp-area="Admin" asp-controller="Restaurant" asp-action="Index" 
                    data-title="Quản lý Nhà hàng">
                     <i class="bi bi-cup-hot-fill"></i>
                     <span class="admin-item-text">Quản lý Nhà hàng</span>
                     <span class="admin-item-badge">156</span>
-                </a>
+                </a> *@
             </nav>
  
-            <!-- NHÓM 2: VẬN HÀNH & TOUR DU LỊCH -->
+            @* <!-- NHÓM 2: VẬN HÀNH & TOUR DU LỊCH -->
             <div class="admin-group-label">Vận hành & Du lịch</div>
             <nav class="admin-menu-nav">
                 <a class="admin-link-item @(currentController == "Tour" ? "active" : "")" 
@@ -103,17 +112,17 @@
                     <i class="bi bi-bar-chart-line-fill"></i>
                     <span class="admin-item-text">Báo cáo & Thống kê</span>
                 </a>
-            </nav>
+            </nav> *@
  
             <!-- NHÓM 3: HỆ THỐNG & ĐIỀU HƯỚNG -->
             <div class="admin-group-label">Hệ thống</div>
             <nav class="admin-menu-nav">
-                <a class="admin-link-item @(currentController == "Setting" ? "active" : "")" 
+                @* <a class="admin-link-item @(currentController == "Setting" ? "active" : "")" 
                    asp-area="Admin" asp-controller="Setting" asp-action="Index" 
                    data-title="Cài đặt hệ thống">
                     <i class="bi bi-sliders"></i>
                     <span class="admin-item-text">Cài đặt hệ thống</span>
-                </a>
+                </a> *@
  
                 <!-- Nút quay lại trang chủ Tour du lịch -->
                 <a class="admin-link-item text-primary" 
