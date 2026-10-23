@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,12 +15,14 @@ namespace TourisManager.Services
         {
             _db = db;
         }
+
         public async Task<List<Food>> GetListFoodAsync()
         {
-            return await  _db.Foods.
-                            Include(f => f.TypeFood).
-                            Include(f => f.FoodSizes).
-                            AsNoTracking().ToListAsync();
+            return await _db.Foods
+                .Include(f => f.TypeFood)
+                .Include(f => f.FoodSizes)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Food>> FilterFoodsAsync(string typeId)
@@ -34,6 +36,16 @@ namespace TourisManager.Services
                 query = query.Where(f => f.TypeFoodId == typeId);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<Food?> GetFoodByIdAsync(string id)
+        {
+            return await _db.Foods
+                .Include(f => f.TypeFood)
+                .Include(f => f.FoodSizes)
+                    .ThenInclude(fs => fs.Size)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.FoodId == id);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace TourisManager.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FilterFoodsByType(string typeId,int? pageIndex)
+        public async Task<IActionResult> FilterFoodsByType(string typeId, int? pageIndex)
         {
             var allFood = await _foodService.FilterFoodsAsync(typeId);
             int page = (pageIndex == null || pageIndex <= 0) ? 1 : pageIndex.Value;
@@ -44,6 +44,23 @@ namespace TourisManager.Controllers
             ViewBag.typeId = typeId;
             var result = allFood.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
             return PartialView("_FoodGridPartial", result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadQuickOrderModal(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("Mã món ăn không hợp lệ.");
+            }
+
+            var food = await _foodService.GetFoodByIdAsync(id);
+            if (food == null)
+            {
+                return NotFound("Không tìm thấy thông tin món ăn.");
+            }
+
+            return PartialView("_QuickOrderModal", food);
         }
     }
 }
