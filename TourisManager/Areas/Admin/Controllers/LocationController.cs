@@ -17,38 +17,55 @@ namespace TourisManager.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: /Admin/Location
-        public async Task<IActionResult> Index(string searchString, string categoryId, int? pageIndex)
-        {
-            // 1. Tạo Query bao gồm cả thông tin Category
-            var query = _context.Locations.Include(l => l.CategoryId).AsQueryable();
 
-            // 2. Lọc theo từ khóa tìm kiếm (Tên địa điểm hoặc Địa chỉ)
+        // GET: /Admin/Location
+        public async Task<IActionResult> Index(
+            string? searchString,
+            string? categoryId,
+            int? pageIndex)
+        {
+            // Lấy danh sách địa điểm
+            var query = _context.Locations
+                .AsNoTracking()
+                .AsQueryable();
+
+            // Tìm theo tên hoặc địa chỉ
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                string keyword = searchString.Trim().ToLower();
-                query = query.Where(l => l.Name.ToLower().Contains(keyword) ||
-                                         (l.Address != null && l.Address.ToLower().Contains(keyword)));
+                string keyword = searchString.Trim();
+
+                query = query.Where(l =>
+                    (l.Name != null && l.Name.Contains(keyword)) ||
+                    (l.Address != null && l.Address.Contains(keyword)));
             }
 
-            // 3. Lọc theo Danh mục
+            // Lọc theo danh mục qua bảng trung gian LocationCategory
+            // Lọc trực tiếp theo CategoryId trong bảng Location
             if (!string.IsNullOrWhiteSpace(categoryId))
             {
-                query = query.Where(l => l.CategoryId.ToString() == categoryId);
+                query = query.Where(l => l.CategoryId == categoryId);
             }
 
-            // 4. Lưu lại giá trị bộ lọc ra ViewBag để View hiển thị lại
-            ViewBag.Categories = await _context.Categories.ToListAsync();
+            // Dữ liệu cho bộ lọc và giữ lại giá trị đã chọn
+            ViewBag.Categories = await _context.Categories
+                .AsNoTracking()
+                .ToListAsync();
+
             ViewBag.CurrentSearch = searchString;
             ViewBag.CurrentCategory = categoryId;
 
-            // 5. Phân trang
+            // Phân trang
             int pageSize = 8;
             int pageNumber = pageIndex ?? 1;
 
-            var pagedData = await PaginatedList<Location>.CreateAsync(query.AsNoTracking(), pageNumber, pageSize);
+            var pagedData = await PaginatedList<Location>.CreateAsync(
+                query.OrderBy(l => l.Name),
+                pageNumber,
+                pageSize);
+
             return View(pagedData);
         }
+
 
         // GET: /Admin/Location/Details/id
         public async Task<IActionResult> Details(string id)
