@@ -1,22 +1,110 @@
-﻿@model IEnumerable<TourisManager.Core.Entities.Location>
+﻿@model System.Collections.Generic.IEnumerable<TourisManager.Models.ViewModels.MapLocationViewModel>
 
 @{
-    ViewData["Title"] = "Leaflet";
+    ViewData["Title"] = "Bản đồ khám phá";
+    ViewData["FullMap"] = true;
 }
 
-<!-- CSS của Leaflet CDN & CSS tùy chỉnh -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="~/css/Map/Map.css" asp-append-version="true" />
+@section Styles {
+    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/leaflet.markercluster/MarkerCluster.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Map/Map.css" asp-append-version="true" />
+}
 
-<div id="map"></div>
+<section id="touris-map" class="tm-map-page" aria-label="Bản đồ địa điểm và nhà hàng"
+         data-details-url="@Url.Action("Details", "Location")" data-app-base="@Url.Content("~/")">
+    <div id="map" aria-label="Bản đồ tương tác"></div>
 
-<!-- Đưa dữ liệu C# Model sang biến JavaScript -->
-<script>
-    window.locationsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
-</script>
+    <aside id="map-sidebar" class="tm-sidebar" aria-labelledby="map-list-title">
+        <div class="tm-sidebar-heading">
+            <div>
+                <p class="tm-eyebrow">TOURISMANAGER · KHÁM PHÁ</p>
+                <h1 id="map-list-title">Địa điểm &amp; nhà hàng</h1>
+            </div>
+            <button id="map-close-list" class="tm-icon-button" type="button" aria-label="Ẩn danh sách" title="Ẩn danh sách">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5" /></svg>
+            </button>
+        </div>
+        <div class="tm-list-summary">
+            <span id="map-result-count" role="status" aria-live="polite">Đang tải danh sách…</span>
+            <button id="map-reset" class="tm-text-button" type="button" hidden>Xóa bộ lọc</button>
+        </div>
+        <div id="map-list" class="tm-place-list" aria-label="Danh sách kết quả"></div>
+        <div class="tm-sidebar-footnote">Chọn một địa điểm để xem vị trí trên bản đồ.</div>
+    </aside>
 
-<!-- JS của Leaflet CDN & JS tùy chỉnh -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="~/js/Map/map.js" asp-append-version="true"></script>
+    <button id="map-open-list" class="tm-open-list" type="button" aria-controls="map-sidebar" aria-expanded="true" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M3 6h.01M3 12h.01M3 18h.01" /></svg>
+        <span>Danh sách</span><span id="map-list-badge">0</span>
+    </button>
+
+    <div class="tm-toolbar">
+        <form id="map-search-form" class="tm-search" role="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+            <label class="tm-sr-only" for="map-search">Tìm địa điểm hoặc nhà hàng</label>
+            <input id="map-search" type="search" autocomplete="off" maxlength="200"
+                   placeholder="Tìm theo tên, địa chỉ, quận, thành phố…" />
+            <button id="map-clear-search" class="tm-icon-button" type="button" aria-label="Xóa từ khóa" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+            </button>
+        </form>
+        <div class="tm-filter-row" aria-label="Lọc kết quả">
+            <div class="tm-type-filters" role="group" aria-label="Loại địa điểm">
+                <button class="tm-filter-chip" type="button" data-map-type="place" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+                    Địa điểm <span id="map-place-count" class="tm-chip-count">0</span>
+                </button>
+                <button class="tm-filter-chip tm-filter-restaurant" type="button" data-map-type="restaurant" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v6c0 3 6 3 6 0V3M8 3v18M19 3c-4 3-4 9 0 9V3Zm0 9v9" /></svg>
+                    Nhà hàng <span id="map-restaurant-count" class="tm-chip-count">0</span>
+                </button>
+            </div>
+            <div class="tm-area-filter">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15" /></svg>
+                <label class="tm-sr-only" for="map-area">Lọc theo khu vực</label>
+                <select id="map-area"><option value="">Mọi khu vực</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="tm-base-layers" role="group" aria-label="Chọn nền bản đồ">
+        <button type="button" data-map-layer="road" aria-pressed="true">Google</button>
+        <button type="button" data-map-layer="satellite" aria-pressed="false">Vệ tinh</button>
+        <button type="button" data-map-layer="osm" aria-pressed="false">OSM</button>
+    </div>
+
+    <div class="tm-map-controls" role="group" aria-label="Điều khiển bản đồ">
+        <button id="map-fit" class="tm-control-button" type="button" aria-label="Xem tất cả kết quả trên bản đồ" title="Xem tất cả kết quả">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M8 8l-5-5m13 5 5-5M8 16l-5 5m13-5 5 5" /></svg>
+        </button>
+        <button id="map-locate" class="tm-control-button" type="button" aria-label="Tìm vị trí của tôi" title="Vị trí của tôi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6.5" /><circle cx="12" cy="12" r="2" /><path d="M12 2v3m0 14v3M2 12h3m14 0h3" /></svg>
+        </button>
+        <div class="tm-zoom-buttons">
+            <button id="map-zoom-in" class="tm-control-button" type="button" aria-label="Phóng to" title="Phóng to">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14" /></svg>
+            </button>
+            <button id="map-zoom-out" class="tm-control-button" type="button" aria-label="Thu nhỏ" title="Thu nhỏ">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+            </button>
+        </div>
+        <button id="map-fullscreen" class="tm-control-button" type="button" aria-label="Mở toàn màn hình" aria-pressed="false" title="Toàn màn hình">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
+        </button>
+    </div>
+
+    <div class="tm-map-legend" aria-label="Chú thích bản đồ">
+        <span><i class="tm-legend-place"></i>Địa điểm</span>
+        <span><i class="tm-legend-restaurant"></i>Nhà hàng</span>
+    </div>
+    <div id="map-message" class="tm-map-message" role="status" aria-live="polite" hidden></div>
+    <noscript><div class="tm-map-message">Bạn cần bật JavaScript để sử dụng bản đồ và tìm kiếm.</div></noscript>
+</section>
+
+<script id="map-locations-data" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }))</script>
+
+@section Scripts {
+    <script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
+    <script src="~/lib/leaflet.markercluster/leaflet.markercluster.js" asp-append-version="true"></script>
+    <script src="~/js/map/map.js" asp-append-version="true"></script>
+}
