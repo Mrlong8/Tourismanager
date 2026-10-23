@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TourisManager.Services;
-
+using TourisManager.Core.Interfaces;
 namespace TourisManager.Controllers
 {
     public class MapController : Controller

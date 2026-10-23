@@ -1,41 +1,50 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TourisManager.Data; // Đã khớp với namespace trong hình AppDbContext.cs
+using System.Linq;
+using System.Threading.Tasks;
 using TourisManager.Core.Entities;
-using TourisManager.Helpers; // Đã khớp với namespace trong hình PaginatedList.cs
+using TourisManager.Helpers;
+using TourisManager.Services;
+using TourisManager.Core.Interfaces;
 namespace TourisManager.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly AppDbContext _context; // Đã đổi tên chuẩn thành AppDbContext
+        private readonly IAdminService _adminService;
 
-        public AdminController(AppDbContext context)
+        public AdminController(IAdminService adminService)
         {
-            _context = context;
+            _adminService = adminService;
         }
 
+        // Trang tổng quan Admin
         public async Task<IActionResult> Index()
         {
-            // Lấy số lượng từ các DbSet khai báo trong AppDbContext
-            ViewBag.TotalUsers = await _context.Accounts.CountAsync();
-            ViewBag.TotalLocations = await _context.Locations.CountAsync();
-            //ViewBag.TotalRestaurants = await _context.Restaurants.CountAsync();
+            var stats = await _adminService.GetDashboardStatsAsync();
+
+            ViewBag.TotalUsers = stats.TotalUsers;
+            ViewBag.TotalLocations = stats.TotalLocations;
 
             return View();
         }
+
+        // Danh sách tài khoản có phân trang
         public async Task<IActionResult> User(int? pageNumber)
         {
-            int pageSize = 10; // Cố định 10 dòng/trang theo thống nhất
+            const int pageSize = 10;
             int pageIndex = pageNumber ?? 1;
 
-            // Lấy danh sách Account (truy vấn IQueryable chưa thực thi ngay)
-            var usersQuery = _context.Accounts.AsNoTracking().OrderByDescending(u => u.CreateAt);
+            var users = await _adminService.GetUsersAsync();
 
-            // Gọi hàm phân trang bất đồng bộ
-            var paginatedUsers = await PaginatedList<Account>.CreateAsync(usersQuery, pageIndex, pageSize);
+            var usersQuery = users.AsQueryable();
+
+            var paginatedUsers = await PaginatedList<Account>.CreateAsync(
+                usersQuery,
+                pageIndex,
+                pageSize);
 
             return View(paginatedUsers);
         }

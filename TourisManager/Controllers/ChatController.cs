@@ -1,46 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TourisManager.Core.Entities;
-using TourisManager.Data;
-using System;
-using System.Linq;
-
-
-
+using System.Threading.Tasks;
+using TourisManager.Services;
+using TourisManager.Core.Interfaces;
 namespace TourisManager.Controllers
 {
     public class ChatController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IChatService _chatService;
 
-        public ChatController(AppDbContext context)
+        public ChatController(IChatService chatService)
         {
-            _context = context;
+            _chatService = chatService;
         }
 
+        // Danh sách phòng chat
         public async Task<IActionResult> Index()
         {
             var accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
 
             if (string.IsNullOrEmpty(accountId))
-            {
-                return Content("Không tìm thấy AccountId trong Session. Hãy kiểm tra đăng nhập.");
-            }
+                return RedirectToAction("Login", "Account");
 
-            var rooms = await _context.RoomChats
-                .AsNoTracking()
-                .Include(r => r.Location)
-                .Where(r => r.AccountId == accountId)
-                .ToListAsync();
+            var rooms = await _chatService.GetRoomsAsync(accountId, role);
 
             return View(rooms);
         }
 
+        // Mở phòng chat
         public async Task<IActionResult> Room(string id)
         {
-            var accountId = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
 
             if (string.IsNullOrEmpty(accountId))
                 return RedirectToAction("Login", "Account");
@@ -48,30 +41,33 @@ namespace TourisManager.Controllers
             if (string.IsNullOrEmpty(id))
                 return NotFound();
 
-            var room = await _context.RoomChats
-                .AsNoTracking()
-                .Include(r => r.Location)
-                .Include(r => r.Chats)
-                .FirstOrDefaultAsync(r => r.RoomChatId == id);
+            var room = await _chatService.GetRoomAsync(id);
 
             if (room == null)
                 return NotFound();
 
-            if (room.AccountId != accountId)
+            if (role == "Seller")
+            {
+                if (room.Location == null ||
+                    room.Location.AccountId != accountId)
+                    return Forbid();
+            }
+            else if (role != "Admin" && room.AccountId != accountId)
+            {
                 return Forbid();
+            }
 
-            room.Chats = room.Chats
-                .OrderBy(c => c.ChatId)
-                .ToList();
+            ViewBag.CurrentAccountId = accountId;
+            ViewBag.CurrentRole = role;
 
             return View(room);
         }
 
+        // Bắt đầu trò chuyện
         [HttpGet]
         public async Task<IActionResult> Start(string locationId)
         {
-            var accountId = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(accountId))
                 return RedirectToAction("Login", "Account");
@@ -79,123 +75,57 @@ namespace TourisManager.Controllers
             if (string.IsNullOrEmpty(locationId))
                 return NotFound();
 
-            var location = await _context.Locations
-                .FirstOrDefaultAsync(l => l.LocationId == locationId);
+            var room = await _chatService.GetOrCreateRoomAsync(
+                locationId, accountId);
 
-            if (location == null)
-                return NotFound();
-
-            var room = await _context.RoomChats
-                .FirstOrDefaultAsync(r =>
-                    r.LocationId == locationId &&
-                    r.AccountId == accountId);
-
-            if (room == null)
-            {
-                room = new RoomChat
-                {
-                    RoomChatId = Guid.NewGuid().ToString(),
-                    LocationId = locationId,
-                    AccountId = accountId
-                };
-
-                _context.RoomChats.Add(room);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Room),
-                new { id = room.RoomChatId });
+            return RedirectToAction(nameof(Room), new { id = room.RoomChatId });
         }
 
+        // Gửi tin nhắn
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Send(string roomChatId, string messageText)
+        public async Task<IActionResult> Send(
+            string roomChatId,
+            string messageText)
         {
-            var accountId = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
 
             if (string.IsNullOrEmpty(accountId))
                 return RedirectToAction("Login", "Account");
 
-            if (string.IsNullOrWhiteSpace(messageText))
-                return RedirectToAction(nameof(Room), new { id = roomChatId });
+            if (string.IsNullOrEmpty(roomChatId))
+                return NotFound();
 
-            var room = await _context.RoomChats.FirstOrDefaultAsync(r =>
-                r.RoomChatId == roomChatId &&
-                r.AccountId == accountId);
+            var room = await _chatService.GetRoomAsync(roomChatId);
 
             if (room == null)
                 return NotFound();
-            // Lưu tin nhắn của khách
-            var chat = new Chat
-            {
-                ChatId = Guid.NewGuid().ToString(),
-                RoomChatId = roomChatId,
-                MessageText = messageText.Trim(),
-                SenderAccountId=accountId,
-                SentAt= DateTime.Now
-            };
 
-            _context.Chats.Add(chat);
-            await _context.SaveChangesAsync();
-            // Tạo tin nhắn trả lời tự động
-            var autoReply = new Chat
+            // Kiểm tra quyền gửi tin nhắn
+            if (role == "Seller")
             {
-                ChatId = Guid.NewGuid().ToString(),
-                RoomChatId = roomChatId,
-                SenderAccountId = null,
-                MessageText = GetAutoReply(messageText),
-                SentAt = DateTime.Now
-            };
+                if (room.Location == null ||
+                    room.Location.AccountId != accountId)
+                    return Forbid();
+            }
+            else if (role != "Admin" && room.AccountId != accountId)
+            {
+                return Forbid();
+            }
 
-            _context.Chats.Add(autoReply);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(messageText))
+                return RedirectToAction(nameof(Room), new { id = roomChatId });
+
+            bool shouldAutoReply = role != "Admin" && role != "Seller";
+
+            await _chatService.SendMessageAsync(
+                roomChatId,
+                accountId,
+                messageText,
+                shouldAutoReply);
 
             return RedirectToAction(nameof(Room), new { id = roomChatId });
-        }
-        private string GetAutoReply(string message)
-        {
-            message = message.ToLower().Trim();
-
-            if (message.Contains("giờ mở cửa") ||
-                message.Contains("mấy giờ mở cửa") ||
-                message.Contains("mở cửa"))
-            {
-                return "Bạn vui lòng cho biết thời gian muốn đến. " +
-                       "Nhà hàng sẽ xác nhận giờ mở cửa chính xác cho bạn nhé!";
-            }
-
-            if (message.Contains("địa chỉ") ||
-                message.Contains("ở đâu"))
-            {
-                return "Bạn có thể xem địa chỉ nhà hàng ở phần thông tin " +
-                       "phía trên cuộc trò chuyện nhé!";
-            }
-
-            if (message.Contains("menu") ||
-                message.Contains("thực đơn") ||
-                message.Contains("món ăn"))
-            {
-                return "Bạn có thể xem thông tin món ăn trên trang nhà hàng. " +
-                       "Nếu cần thêm thông tin, nhà hàng sẽ hỗ trợ bạn nhé!";
-            }
-
-            if (message.Contains("giá") ||
-                message.Contains("bao nhiêu tiền"))
-            {
-                return "Bạn vui lòng cho biết món ăn hoặc dịch vụ muốn hỏi giá. " +
-                       "Nhà hàng sẽ hỗ trợ bạn nhé!";
-            }
-
-            if (message.Contains("xin chào") ||
-                message.Contains("hello") ||
-                message.Contains("chào"))
-            {
-                return "Xin chào bạn! Bạn cần tư vấn về nhà hàng hoặc món ăn nào?";
-            }
-
-            return "Cảm ơn bạn đã liên hệ! Nhà hàng đã nhận được tin nhắn " +
-                   "và sẽ phản hồi bạn sớm nhất có thể.";
         }
     }
 }
