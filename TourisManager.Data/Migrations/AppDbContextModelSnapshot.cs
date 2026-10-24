@@ -126,6 +126,12 @@ namespace TourisManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
+                    b.Property<string>("SenderAccountId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ChatId");
 
                     b.HasIndex("RoomChatId");

@@ -55,6 +55,14 @@ namespace TourisManager
                      options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
 
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IFoodService, FoodService>();
+            builder.Services.AddScoped<ILocationService, LocationService>();
+            builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ChatAutoReplyService>();
             var app = builder.Build();
 
             // Initialize the database
