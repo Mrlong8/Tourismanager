@@ -1,5 +1,41 @@
-﻿
+// =========================================================================
+// 0. CHUYỂN ĐỔI ROLE (NGƯỜI DÙNG / NGƯỜI BÁN)
+// =========================================================================
+window.switchRole = function (role) {
+    const roleInput = document.getElementById('selectedRole');
+    const btnUser = document.getElementById('btnUser');
+    const btnSeller = document.getElementById('btnSeller');
+
+    if (!roleInput) return;
+
+    if (role && role.toLowerCase() === 'seller') {
+        roleInput.value = 'Seller';
+        if (btnSeller) btnSeller.classList.add('active');
+        if (btnUser) btnUser.classList.remove('active');
+    } else {
+        roleInput.value = 'User';
+        if (btnUser) btnUser.classList.add('active');
+        if (btnSeller) btnSeller.classList.remove('active');
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function () {
+ 
+    const btnUser = document.getElementById('btnUser');
+    const btnSeller = document.getElementById('btnSeller');
+
+    if (btnUser) {
+        btnUser.addEventListener('click', function () {
+            window.switchRole('User');
+        });
+    }
+
+    if (btnSeller) {
+        btnSeller.addEventListener('click', function () {
+            window.switchRole('Seller');
+        });
+    }
+
     // =========================================================================
     // 1. TÍNH NĂNG MẮT XEM MẬT KHẨU (PASSWORD & CONFIRM PASSWORD)
     // =========================================================================

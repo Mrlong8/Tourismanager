@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using TourisManager.Core.Entities;
 using TourisManager.Data;
 using TourisManager.Services;
+
 namespace TourisManager.Services
 {
     public class AccountService : IAccountService
@@ -72,10 +73,12 @@ namespace TourisManager.Services
             }
             return null;
         }
-        // tìm kiếm theo id
+
+        // Tìm kiếm theo id
         public async Task<Account?> FindByIdAsync(string accountId)
         {
             return await db.Accounts
+                .Include(ac => ac.DetailAccount)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
                     a => a.AccountId == accountId
@@ -87,43 +90,139 @@ namespace TourisManager.Services
         {
             return await db.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.Username == usernameOrEmail || a.Email == usernameOrEmail);
         }
-        // tìm kiếm username bị trùng
+
+        // Tìm kiếm username bị trùng
         public async Task<bool> IsUserNameExistsAsync(string UserName)
         {
             var userName = await db.Accounts.FirstOrDefaultAsync(a => a.Username == UserName);
-            if (userName != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return userName != null;
         }
-        // kiểm tra email bị trùng
+
+        // Kiểm tra email bị trùng
         public async Task<bool> IsUserEmailExistsAsync(string Email)
         {
             var userName = await db.Accounts.FirstOrDefaultAsync(a => a.Email == Email);
-            if (userName != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return userName != null;
         }
+
+        // Cập nhật thông tin tài khoản cơ bản (dùng chung, an toàn cho AccountController và upload Avatar)
         public async Task<bool> UpdateAsync(Account account)
         {
             try
             {
-                db.Entry(account).State = EntityState.Modified;
-                return await db.SaveChangesAsync() > 0;
+                var existingAccount = await db.Accounts.FirstOrDefaultAsync(a => a.AccountId == account.AccountId);
+                if (existingAccount == null) return false;
+
+                if (!string.IsNullOrEmpty(account.Name))
+                {
+                    existingAccount.Name = account.Name;
+                }
+                if (!string.IsNullOrEmpty(account.AvataUrl))
+                {
+                    existingAccount.AvataUrl = account.AvataUrl;
+                }
+                if (!string.IsNullOrEmpty(account.Role))
+                {
+                    existingAccount.Role = account.Role;
+                }
+                if (!string.IsNullOrEmpty(account.AuthProvider))
+                {
+                    existingAccount.AuthProvider = account.AuthProvider;
+                }
+                if (!string.IsNullOrEmpty(account.ProviderKey))
+                {
+                    existingAccount.ProviderKey = account.ProviderKey;
+                }
+
+                await db.SaveChangesAsync();
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"=== LỖI UPDATE ACCOUNT: {ex.Message} ===");
                 return false;
             }
+        }
+
+        // Cập nhật hồ sơ cá nhân và bảng DetailAccount (hàm riêng biệt cho Profile)
+        public async Task<bool> UpdateProfileAsync(Account account)
+        {
+            try
+            {
+                // 1. Tìm account hiện tại trong DB kèm theo DetailAccount
+                var existingAccount = await db.Accounts
+                    .Include(a => a.DetailAccount)
+                    .FirstOrDefaultAsync(a => a.AccountId == account.AccountId);
+
+                if (existingAccount == null) return false;
+
+                // 2. Cập nhật các trường của Account
+                existingAccount.Name = account.Name;
+                if (!string.IsNullOrEmpty(account.AvataUrl))
+                {
+                    existingAccount.AvataUrl = account.AvataUrl;
+                }
+
+                // 3. Xử lý bảng DetailAccount
+                if (account.DetailAccount != null)
+                {
+                    if (existingAccount.DetailAccount == null)
+                    {
+                        // Nếu DB chưa có DetailAccount -> Thêm mới
+                        var newDetail = new DetailAccount
+                        {
+                            DetailId = Guid.NewGuid().ToString(),
+                            AccountId = existingAccount.AccountId,
+                            SDT = account.DetailAccount.SDT,
+                            Address = account.DetailAccount.Address,
+                            Latitude = account.DetailAccount.Latitude,
+                            Longitude = account.DetailAccount.Longitude
+                        };
+                        await db.DetailAccounts.AddAsync(newDetail);
+                        existingAccount.DetailAccount = newDetail;
+                    }
+                    else
+                    {
+                        // Nếu DB đã có DetailAccount -> Cập nhật dữ liệu
+                        existingAccount.DetailAccount.SDT = account.DetailAccount.SDT;
+                        existingAccount.DetailAccount.Address = account.DetailAccount.Address;
+                        existingAccount.DetailAccount.Latitude = account.DetailAccount.Latitude;
+                        existingAccount.DetailAccount.Longitude = account.DetailAccount.Longitude;
+                    }
+                }
+
+                // 4. Lưu thay đổi
+                await db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"=== LỖI UPDATE PROFILE: {ex.Message} ===");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Chi tiết: {ex.InnerException.Message}");
+                }
+                return false;
+            }
+        }
+
+        // Overload cập nhật Profile trực tiếp từ các tham số
+        public async Task<bool> UpdateProfileAsync(string accountId, string name, string? sdt, string? address, double? latitude, double? longitude)
+        {
+            var account = new Account
+            {
+                AccountId = accountId,
+                Name = name,
+                DetailAccount = new DetailAccount
+                {
+                    AccountId = accountId,
+                    SDT = sdt,
+                    Address = address,
+                    Latitude = latitude,
+                    Longitude = longitude
+                }
+            };
+            return await UpdateProfileAsync(account);
         }
 
         public async Task<(bool Success, string Message)> ChangePasswordAsync(string accountID, string newPassword, string CurentPassword)
@@ -154,9 +253,6 @@ namespace TourisManager.Services
             await db.SaveChangesAsync();
 
             return (true, "Đổi mật khẩu thành công!");
-
         }
-
-
     }
 }

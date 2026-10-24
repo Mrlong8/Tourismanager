@@ -4,6 +4,8 @@ namespace TourisManager.Models.ViewModels
 {
     public class SignupViewModel
     {
+        public string Role { get; set; } = "User";
+
         [Required(ErrorMessage = "Vui lòng nhập tên tài khoản")]
         [RegularExpression(@"^[a-zA-Z0-9_]{3,20}$", ErrorMessage = "Tên tài khoản không được chứa khoảng trắng, ký tự đặc biệt và phải từ 3 - 20 ký tự")]
         [Display(Name = "Tên tài khoản")]
