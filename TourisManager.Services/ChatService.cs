@@ -32,25 +32,35 @@ namespace TourisManager.Services
                 .Include(r => r.Account)
                 .AsQueryable();
 
+            // Seller chỉ xem các phòng chat thuộc địa điểm mình quản lý
             if (role == "Seller")
             {
                 query = query.Where(r =>
                     r.Location != null &&
                     r.Location.AccountId == accountId);
             }
+            // Khách hàng chỉ xem phòng chat của mình
             else if (role != "Admin")
             {
                 query = query.Where(r => r.AccountId == accountId);
             }
 
-            return await query.ToListAsync();
+            // Đưa cuộc trò chuyện có tin nhắn mới nhất lên đầu
+            return await query
+                .OrderByDescending(r => r.Chats
+                    .Select(c => (DateTime?)c.SentAt)
+                    .Max())
+                .ThenByDescending(r => r.RoomChatId)
+                .ToListAsync();
         }
 
         public async Task<RoomChat?> GetRoomAsync(string roomChatId)
         {
+
             var room = await _context.RoomChats
                 .Include(r => r.Location)
                 .Include(r => r.Chats)
+                    .ThenInclude(c => c.SenderAccount)
                 .FirstOrDefaultAsync(r => r.RoomChatId == roomChatId);
 
             if (room != null)
@@ -61,6 +71,7 @@ namespace TourisManager.Services
             }
 
             return room;
+
         }
 
         public async Task<RoomChat> GetOrCreateRoomAsync(
@@ -121,5 +132,16 @@ namespace TourisManager.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<Location>> GetLocationsAsync()
+        {
+            return await _context.Locations
+                .AsNoTracking()
+                .OrderBy(l => l.Name)
+                .ToListAsync();
+        }
+
+      
+
     }
 }

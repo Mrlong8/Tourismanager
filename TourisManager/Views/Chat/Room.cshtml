@@ -36,20 +36,20 @@
             {
                 @foreach (var message in Model.Chats.OrderBy(m => m.SentAt))
                 {
-
+                    
                     var isMine = message.SenderAccountId == currentAccountId;
                     var isAutoReply = message.SenderAccountId == null;
 
                     var senderLabel = isAutoReply
                         ? "Trợ lý tự động"
-                        : isMine
-                            ? $"Bạn ({currentRole})"
-                            : currentRole == "Seller"
-                                ? "Admin"
-                                : currentRole == "Admin"
-                                    ? "Seller"
-                                    : "Người gửi";
-                    <div class="chat-row @(isMine ? "mine" : "other")">
+                        : message.SenderAccount?.Role switch
+                        {
+                            "Admin" => "Quản trị viên",
+                            "Seller" => "Nhà hàng",
+                            "User" => "Khách hàng",
+                            _ => "Người dùng"
+                        };
+                        <div class="chat-row @(isMine ? "mine" : "other")">
                         <div class="chat-bubble @(isMine ? "chat-mine" : "chat-other")">
                             <div class="small mb-1 opacity-75">
                                 @senderLabel

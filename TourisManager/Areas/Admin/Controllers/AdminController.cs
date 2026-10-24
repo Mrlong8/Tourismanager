@@ -1,4 +1,4 @@
-﻿
+﻿using TourisManager.Areas.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -27,6 +27,12 @@ namespace TourisManager.Areas.Admin.Controllers
 
             ViewBag.TotalUsers = stats.TotalUsers;
             ViewBag.TotalLocations = stats.TotalLocations;
+
+            ViewBag.UsersByRole =
+                await _adminService.GetUsersByRoleAsync();
+
+            ViewBag.LocationsByArea =
+                await _adminService.GetLocationsByAreaAsync();
 
             return View();
         }

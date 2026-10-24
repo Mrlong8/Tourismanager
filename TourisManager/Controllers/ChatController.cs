@@ -25,6 +25,9 @@ namespace TourisManager.Controllers
                 return RedirectToAction("Login", "Account");
 
             var rooms = await _chatService.GetRoomsAsync(accountId, role);
+            var locations = await _chatService.GetLocationsAsync();
+
+            ViewBag.Locations = locations;
 
             return View(rooms);
         }

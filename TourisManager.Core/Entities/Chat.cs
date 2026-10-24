@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,6 +17,9 @@ namespace TourisManager.Core.Entities
 
         // Tài khoản gửi tin nhắn
         public string? SenderAccountId { get; set; }
+        // Tài khoản gửi tin nhắn (null nếu là trợ lý tự động)
+        [ForeignKey(nameof(SenderAccountId))]
+        public Account? SenderAccount { get; set; }
 
         // Thời gian gửi tin nhắn
         public DateTime SentAt { get; set; } = DateTime.Now;
