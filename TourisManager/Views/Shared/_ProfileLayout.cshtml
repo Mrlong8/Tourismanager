@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/MyLayout.cshtml"; // Kế thừa từ MyLayout.cshtml chính của bạn
 }
 
@@ -129,6 +129,10 @@
         </div>
     </main>
 </div>
+
+@section Styles {
+    @await RenderSectionAsync("Styles", required: false)
+}
 
 @section Scripts {
     <script src="~/js/Shared/_ProfileLayout.js" asp-append-version="true"></script>

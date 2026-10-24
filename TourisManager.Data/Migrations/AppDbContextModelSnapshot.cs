@@ -151,8 +151,11 @@ namespace TourisManager.Data.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GoogleMapUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("SDT")
                         .HasColumnType("nvarchar(max)");
