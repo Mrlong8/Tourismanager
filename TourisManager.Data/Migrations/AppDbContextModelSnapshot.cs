@@ -136,6 +136,8 @@ namespace TourisManager.Data.Migrations
 
                     b.HasIndex("RoomChatId");
 
+                    b.HasIndex("SenderAccountId");
+
                     b.ToTable("Chat");
                 });
 
@@ -584,7 +586,13 @@ namespace TourisManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TourisManager.Core.Entities.Account", "SenderAccount")
+                        .WithMany()
+                        .HasForeignKey("SenderAccountId");
+
                     b.Navigation("RoomChat");
+
+                    b.Navigation("SenderAccount");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.DetailAccount", b =>

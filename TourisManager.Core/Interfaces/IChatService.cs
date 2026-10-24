@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using TourisManager.Core.Entities;
 
 namespace TourisManager.Core.Interfaces
-
 {
     public interface IChatService
     {
@@ -15,11 +14,13 @@ namespace TourisManager.Core.Interfaces
         Task<RoomChat> GetOrCreateRoomAsync(
             string locationId,
             string accountId);
-
         Task SendMessageAsync(
             string roomChatId,
             string accountId,
             string messageText,
             bool shouldAutoReply);
+
+        // Lấy danh sách địa điểm để khách hàng chọn chat
+        Task<List<Location>> GetLocationsAsync();
     }
 }

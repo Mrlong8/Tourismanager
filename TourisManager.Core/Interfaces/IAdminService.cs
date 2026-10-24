@@ -11,5 +11,8 @@ namespace TourisManager.Core.Interfaces
         Task<(int TotalUsers, int TotalLocations)> GetDashboardStatsAsync();
 
         Task<List<Account>> GetUsersAsync();
+        Task<Dictionary<string, int>> GetUsersByRoleAsync();
+
+        Task<Dictionary<string, int>> GetLocationsByAreaAsync();
     }
 }
