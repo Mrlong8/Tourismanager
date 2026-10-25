@@ -42,7 +42,6 @@ namespace TourisManager.Controllers
                 // Lấy Id từ Cookie
                 string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                // Kiểm tra xem Id này có tồn tại trong CSDL không
                 var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {
@@ -239,19 +238,14 @@ namespace TourisManager.Controllers
             {
                 return View(model);
             }
-            //  KIỂM TRA TRÙNG username  TRONG DATABASE
             if (await _accountService.IsUserNameExistsAsync(model.Username))
             {
                 ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
             }
-
-            // KIỂM TRA TRÙNG EMAIL TRONG DATABASE
             if (await _accountService.IsUserEmailExistsAsync(model.Email))
             {
                 ModelState.AddModelError("Email", "Email này đã được đăng ký.");
             }
-
-
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -262,7 +256,8 @@ namespace TourisManager.Controllers
                 Username = model.Username,
                 Name = model.FullName,
                 Email = model.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                Role = string.IsNullOrEmpty(model.Role) ? "User" : model.Role
             };
 
 
