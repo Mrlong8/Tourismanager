@@ -33,21 +33,24 @@ namespace TourisManager.Controllers
             return View();
         }
 
-     
         [HttpGet]
         [Route("login")]
-        public async Task<IActionResult> Login() 
+        public async Task<IActionResult> Login()
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-               
-                string? userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+                // Lấy Id từ Cookie
+                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-              
                 var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {
-                    return RedirectToAction("index","profile"); // Có trong CSDL thì vào Profile
+                    // Nếu đã đăng nhập là Seller, chuyển thẳng vào Dashboard
+                    if (account.Role == "Seller")
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+                    }
+                    return RedirectToAction("index", "profile"); // Có trong CSDL thì vào Profile
                 }
                 else
                 {
@@ -89,13 +92,20 @@ namespace TourisManager.Controllers
                 new AuthenticationProperties
                 {
                     IsPersistent = true
-                    //nghĩa là authentication cookie là persistent
-                    //Tức là bạn đang nói
-                    //"Hãy duy trì đăng nhập sau khi trình duyệt đóng/mở lại, theo thời hạn cookie."
                 }
                 );
+
+            // BƯỚC 5: Đăng nhập hoàn tất, kiểm tra Role để chuyển hướng
+            if (account.Role == "Seller")
+            {
+                // Nếu là chủ quán, đưa thẳng vào khu vực quản lý
+                return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+            }
+
+            // Nếu là khách hàng bình thường, đưa về Profile
             return RedirectToAction("index", "profile");
         }
+
         [HttpPost]
         [Route("logout")]
         [ValidateAntiForgeryToken]// thủ tục bảo mật chống tấn công
@@ -120,6 +130,7 @@ namespace TourisManager.Controllers
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
+
         // hàm xử lý
         public async Task<IActionResult> GoogleResponse()
         {
@@ -127,7 +138,7 @@ namespace TourisManager.Controllers
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (!result.Succeeded)
             {
-                return RedirectToAction("Login", new { error = "Lỗi đăng nhập"});
+                return RedirectToAction("Login", new { error = "Lỗi đăng nhập" });
             }
             // lấy danh sách thông tin mà google gửi về
             var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
@@ -197,7 +208,6 @@ namespace TourisManager.Controllers
             };
 
             // Đóng gói danh sách Claims vào danh tính (ClaimsIdentity) với sơ đồ Cookie
-
             var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Ghi Cookie đăng nhập vào Trình duyệt của người dùng
@@ -206,6 +216,10 @@ namespace TourisManager.Controllers
                 new ClaimsPrincipal(claimsIdentity));
 
             // BƯỚC 5: Đăng nhập hoàn tất, chuyển hướng người dùng về trang chủ (Home/Index)
+            if (account.Role == "Seller")
+            {
+                return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+            }
             return RedirectToAction("index", "profile");
         }
 
@@ -255,8 +269,59 @@ namespace TourisManager.Controllers
             TempData["Msg"] = "Đăng ký thất bại!";
             return RedirectToAction("login");
         }
-     
 
+        [HttpGet]
+        [Route("signup-seller")]
+        public IActionResult SignupSeller()
+        {
+            return View(new SellerSignupViewModel());
+        }
 
+        [HttpPost]
+        [Route("signup-seller")]
+        public async Task<IActionResult> SignupSeller(SellerSignupViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // KIỂM TRA TRÙNG LẶP
+            if (await _accountService.IsUserNameExistsAsync(model.Username))
+            {
+                ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
+            }
+
+            if (await _accountService.IsUserEmailExistsAsync(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email này đã được đăng ký.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // TẠO TÀI KHOẢN VỚI QUYỀN SELLER
+            var account = new Account
+            {
+                Username = model.Username,
+                Name = model.FullName,
+                Email = model.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                Role = "Seller" // Gán cứng quyền Chủ quán
+            };
+
+            if (await _accountService.CreateAsync(account))
+            {
+                // Lưu tạm tên quán vào TempData để dùng khi họ đăng nhập lần đầu vào Dashboard
+                TempData["PendingShopName"] = model.ShopName;
+                TempData["Msg"] = "Đăng ký gian hàng thành công! Vui lòng đăng nhập.";
+                return RedirectToAction("login");
+            }
+
+            TempData["Msg"] = "Đăng ký thất bại do lỗi hệ thống!";
+            return View(model);
+        }
     }
 }

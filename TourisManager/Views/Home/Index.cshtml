@@ -1,9 +1,158 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-
+﻿@model IEnumerable<TourisManager.Core.Entities.Location>
+@{
+    ViewData["Title"] = "Trang chủ - Khám phá Ẩm thực & Du lịch";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Thêm CSS riêng cho trang chủ nếu cần (hoặc dùng chung CSS sẵn có) -->
+@section Styles {
+    <!-- 1. Bắt buộc phải có CSS của Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* Ép cứng chiều cao cho bản đồ để tránh bị mất hiển thị */
+        #map {
+            width: 100% !important;
+            height: 450px !important;
+            border-radius: 8px;
+            z-index: 1;
+        }
+        /* Thay background banner bằng màu gradient hoặc ảnh online tạm thời để không bị xám */
+        .hero-banner {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            border-radius: 12px;
+        }
+    </style>
+}
+
+<div class="container py-4">
+    <!-- 1. HERO BANNER -->
+    <div class="hero-banner text-white p-5 mb-4 shadow-sm text-center">
+        <h1 class="fw-bold mb-3">KHÁM PHÁ ẨM THỰC & DU LỊCH</h1>
+        <p class="lead mb-4">Tìm kiếm quán ăn ngon, trải nghiệm bản đồ du lịch tiện lợi và đặt món ngay hôm nay!</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="#map-section" class="btn btn-warning fw-bold px-4 py-2 rounded-pill text-dark">Khám Phá Bản Đồ</a>
+            <a href="/account/signup-seller" class="btn btn-success fw-bold px-4 py-2 rounded-pill">Đăng Ký Chủ Quán</a>
+        </div>
+    </div>
+
+    <!-- 2. BỘ LỌC TÌM KIẾM NHANH -->
+    <div class="card shadow-sm border-0 p-3 mb-4 rounded-3 bg-white">
+        <form method="get" action="/Restaurant/Search" class="row g-3 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="keyword" class="form-control border-start-0" placeholder="Tìm kiếm quán ăn, món ăn...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="location" class="form-select">
+                    <option value="">Chọn khu vực</option>
+                    <option value="hanoi">Hà Nội</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="">Loại hình ẩm thực</option>
+                    <option value="an-vat">Ăn vặt</option>
+                    <option value="dac-san">Đặc sản</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-danger w-100 fw-bold">Tìm</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 3. KHU VỰC BẢN ĐỒ & QUÁN ĂN NỔI BẬT (HIỂN THỊ SONG SONG) -->
+    <div id="map-section" class="row g-4 mb-5">
+        <!-- Cột trái: Bản đồ Leaflet -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 p-3 h-100 rounded-3">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-map text-danger me-2"></i>Bản đồ tương tác quán ăn</h5>
+                <!-- Thẻ chứa bản đồ Leaflet -->
+                <div id="map" style="width: 100%; height: 500px; min-height: 500px; display: block;"></div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Danh sách quán ăn nổi bật gần bạn (SỬ DỤNG DỮ LIỆU THẬT) -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 p-3 h-100 rounded-3 d-flex flex-column">
+                <h5 class="fw-bold mb-3 text-dark">Quán ăn nổi bật gần bạn</h5>
+                <div class="overflow-auto pe-1" style="max-height: 440px;">
+
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <div class="d-flex align-items-center border-bottom pb-3 mb-3">
+                                <img src="@(!string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "/Image/default.jpg")"
+                                     class="rounded-3 object-fit-cover me-3" style="width: 70px; height: 70px;" alt="@item.Name">
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1">@item.Name</h6>
+                                    <p class="text-muted small mb-1">📍 @(string.IsNullOrEmpty(item.Address) ? "Chưa cập nhật địa chỉ" : item.Address)</p>
+                                    <span class="badge bg-success bg-opacity-10 text-success small">Đang mở cửa</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted small text-center fst-italic">Chưa có quán ăn nào trong cơ sở dữ liệu.</p>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. KHU VỰC PHÍA DƯỚI -->
+    <div class="row g-4">
+        <!-- Phần dành cho khách du lịch -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 p-4 rounded-3 h-100 bg-light">
+                <h4 class="fw-bold text-secondary mb-3">Dành cho Khách Du Lịch</h4>
+                <p class="text-muted fst-italic">Khu vực này đang được chuẩn bị để cập nhật thêm các tính năng tiện ích mới dành cho hành trình của bạn...</p>
+            </div>
+        </div>
+
+        <!-- Phần dành cho Chủ quán quảng bá -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 p-4 rounded-3 h-100 bg-success bg-opacity-10 border-success border-start border-4">
+                <h4 class="fw-bold text-success mb-2">Bạn là chủ quán ăn?</h4>
+                <p class="text-muted small mb-3">Đăng ký ngay để đưa quán của bạn lên bản đồ du lịch, quản lý thực đơn và tiếp cận hàng ngàn du khách mỗi ngày.</p>
+                <a href="/account/signup-seller" class="btn btn-success fw-bold mt-auto w-100 py-2">Đăng ký gian hàng ngay</a>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- CHỈ LẤY ĐÚNG CÁC CỘT CẦN THIẾT ĐỂ VẼ BẢN ĐỒ -->
+    <script>
+        window.locationsData = @Html.Raw(Json.Serialize(Model.Select(x => new
+            {
+                name = x.Name,
+                address = x.Address ?? "Chưa cập nhật địa chỉ",
+                latitude = x.Latitude,
+                longitude = x.Longitude
+        })));
+    </script>
+
+    <!-- Đoạn mã kỹ thuật giữ nguyên -->
+    <script>
+        (function() {
+            var originalAddEventListener = document.addEventListener;
+            document.addEventListener = function(type, listener, options) {
+                if (type === 'DOMContentLoaded' && (document.readyState === 'interactive' || document.readyState === 'complete')) {
+                    listener();
+                } else {
+                    originalAddEventListener.call(document, type, listener, options);
+                }
+            };
+        })();
+    </script>
+
+    <!-- Gọi file map.js -->
+    <script src="~/js/Map/map.js" asp-append-version="true"></script>
+}
