@@ -11,11 +11,11 @@
 </div>
 
 <div class="modal-body">
-    <!-- ID món ăn ẩn -->
+
     <input type="hidden" id="modalFoodId" value="@Model.FoodId" />
 
     <div class="d-flex gap-3 mb-3">
-        <!-- Ảnh món -->
+      
         <img id="modalFoodImg" 
              src="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/Image/Food/default_food.jpg" : Model.ImageUrl)" 
              alt="@Model.Name" 
@@ -30,7 +30,7 @@
 
     <hr class="text-muted">
 
-    <!-- Chọn Size động từ CSDL -->
+  
     <div class="mb-3">
         <label class="fw-bold mb-2">Chọn Size</label>
         <div class="d-flex flex-wrap gap-2">
@@ -47,7 +47,7 @@
                            class="btn-check size-option" 
                            name="foodSize" 
                            id="@inputId" 
-                           autocomplete="off" @* yêu cầu trình duyệt không tự động gợi ý hoặc khôi phục dữ liệu nhập cho phần tử đó. *@
+                           autocomplete="off" 
                            value="@fs.Price" 
                            data-size-id="@fs.SizeId"
                            @isChecked 
@@ -75,6 +75,39 @@
         </div>
     </div>
 
+    <hr class="text-muted">
+
+    <!-- Chọn phương thức thanh toán -->
+    <div class="mb-3">
+        <label class="fw-bold mb-2">Phương thức thanh toán</label>
+        <div class="d-flex flex-column gap-2">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="payCOD" value="1" checked onchange="togglePaymentMethod()">
+                <label class="form-check-label" for="payCOD">
+                    Thanh toán khi nhận hàng (COD)
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="payQR" value="2" onchange="togglePaymentMethod()">
+                <label class="form-check-label" for="payQR">
+                    Chuyển khoản QR Code
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực hiển thị QR Code (Ẩn mặc định) -->
+    <div id="qrCodeContainer" class="text-center d-none bg-light p-3 rounded-3 mt-2 border">
+        <p class="fw-bold text-primary mb-2">Quét mã để thanh toán</p>
+       
+        <img id="qrCodeImg" src="/Image/qr-placeholder.png" alt="QR Code" class="img-fluid rounded" style="max-width: 180px;" />
+        <div class="mt-2 text-start small">
+            <p class="mb-1"><strong>Ngân hàng:</strong> Vietcombank</p>
+            <p class="mb-1"><strong>STK:</strong> 1234567890</p>
+            <p class="mb-0"><strong>Nội dung:</strong> <span class="text-danger fw-bold">DH @Model.FoodId</span></p>
+        </div>
+    </div>
+
     <!-- Tổng cộng -->
     <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded-3 mt-3">
         <span class="fw-bold text-dark">Tổng tiền:</span>
@@ -83,7 +116,98 @@
 </div>
 
 <div class="modal-footer border-top-0 pt-0">
-    <button type="button" class="btn btn-danger w-100 fw-bold py-2 shadow-sm" onclick="processCheckout()">
-        Xác nhận & Thanh toán
+    <button type="button" id="btnCheckout" class="btn btn-danger w-100 fw-bold py-2 shadow-sm" onclick="processCheckout()">
+        Thanh Toán khi nhận hàng
     </button>
 </div>
+
+<!-- Thêm Script xử lý ẩn/hiện QR -->
+<script>
+    function togglePaymentMethod() {
+        var isQR = document.getElementById('payQR').checked;
+        var qrContainer = document.getElementById('qrCodeContainer');
+        var btnCheckout = document.getElementById('btnCheckout');
+
+        if (isQR) {
+            // Hiện phần QR
+            qrContainer.classList.remove('d-none');
+            // Đổi text nút bấm
+            btnCheckout.innerText = "Xác nhận đã chuyển khoản";
+            btnCheckout.classList.replace('btn-danger', 'btn-primary'); // Tuỳ chọn đổi màu nút
+            
+            // Nếu bạn dùng API VietQR để tạo mã động theo tổng tiền, bạn có thể gọi hàm cập nhật tại đây
+            // generateDynamicQR();
+        } else {
+            // Ẩn phần QR
+            qrContainer.classList.add('d-none');
+            // Trả lại text nút bấm
+            btnCheckout.innerText = "Thanh Toán khi nhận hàng";
+            btnCheckout.classList.replace('btn-primary', 'btn-danger');
+        }
+    }
+
+    // Gợi ý: Nếu bạn muốn ảnh QR tự động cập nhật số tiền (Dùng VietQR API)
+    function generateDynamicQR(totalAmount) {
+        // Cần thay thế các thông tin bằng tài khoản thật của bạn
+        const bankId = 'VCB'; // Mã ngân hàng
+        const accountNo = '1234567890';
+        const template = 'compact';
+        const accountName = 'NGUYEN VAN A';
+        const description = 'DH ' + document.getElementById('modalFoodId').value;
+        
+        const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${totalAmount}&addInfo=${encodeURIComponent(description)}&accountName=${encodeURIComponent(accountName)}`;
+        
+        document.getElementById('qrCodeImg').src = qrUrl;
+    }
+
+      // Hàm thanh toán / xác nhận (tuỳ chọn)
+        function processCheckout() {
+            let foodId = $('#modalFoodId').val();
+            let selectedSize = $('input[name="foodSize"]:checked');
+            let sizeId = selectedSize.data('size-id');
+            let qty = parseInt($('#inputQty').val()) || 1;
+
+            let paymentMethodId = parseInt($('input[name="paymentMethod"]:checked').val()) || 1;
+            let pricePerItem = parseFloat(selectedSize.val()) || 0;
+            let totalPrice = pricePerItem * qty;
+
+
+            let request = {
+                FoodId: String(foodId),
+                SizeId: String(sizeId),
+                Quantity: qty,
+                TotalPrice: totalPrice,
+                PaymentMethodId: String(paymentMethodId) 
+            };
+
+            console.log("Dữ liệu chuẩn bị gửi đi:", request);
+            let $btn = $('#btnCheckout');
+            let originalText = $btn.text(); // lấy lại phần chữ
+            $btn.prop('disabled', true).text('Đang xử lý...'); // xử lý phần load
+
+         $.ajax({
+            url: '/Food/SubmitOrder', 
+            type: 'POST',
+            contentType: 'application/json', 
+            data: JSON.stringify(request),
+            success: function (response) {
+                if (response.success) {
+                    // Đóng Modal
+                    var modalEl = document.getElementById('quickOrderModal');
+                    var myModal = bootstrap.Modal.getInstance(modalEl);
+                    if (myModal) myModal.hide();
+
+                    // Chuyển hướng sang trang Hóa đơn (Invoice) bằng URL do Backend trả về
+                    window.location.href = response.redirectUrl;
+                } else {
+                    alert('Lỗi: ' + response.message);
+                    $btn.prop('disabled', false).text(originalText);
+                }
+            },
+            error: function (xhr) {
+                alert('Có lỗi xảy ra khi kết nối với máy chủ!');
+                $btn.prop('disabled', false).text(originalText);
+            }
+        });
+    }
+</script>
