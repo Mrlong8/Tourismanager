@@ -1,4 +1,4 @@
-﻿@model TourisManager.Core.Entities.Account
+@model TourisManager.Models.ViewModels.ProfileViewModel
 
 @{
     Layout = "_ProfileLayout";
@@ -18,7 +18,6 @@
     <h3 class="profile-page-title">Profile</h3>
     <p class="profile-page-subtitle">Quản lý và cập nhật thông tin cá nhân của bạn.</p>
 </div>
-
 
 <div class="profile-avatar-section">
     <div class="profile-avatar-frame">
@@ -47,10 +46,14 @@
     </div>
 </div>
 
-
 <form asp-controller="Profile" asp-action="Index" method="post" style="max-width: 600px;">
     @Html.AntiForgeryToken()
 
+    <!-- Input Hidden để lưu tọa độ gửi về Server -->
+    <input type="hidden" asp-for="Latitude" id="latInput" />
+    <input type="hidden" asp-for="Longitude" id="lngInput" />
+
+    <!-- Họ tên -->
     <div class="mb-4">
         <label asp-for="Name" class="form-label fw-semibold text-dark small mb-1">
             Họ và tên <span class="text-danger">*</span>
@@ -59,21 +62,79 @@
         <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
     </div>
 
-    <div class="mb-5">
+    <!-- Email -->
+    <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center mb-1">
             <label class="form-label fw-semibold text-dark small mb-0">
-                Email <span class="text-danger">*</span>
+                Email
             </label>
             <span class="badge bg-light text-secondary border px-2 py-0.5 small">Không đổi</span>
         </div>
         <input type="email" class="form-control" value="@Model?.Email" readonly />
     </div>
 
+    <!-- Số điện thoại -->
+    <div class="mb-4">
+        <label asp-for="SDT" class="form-label fw-semibold text-dark small mb-1">
+            Số Điện Thoại
+        </label>
+        <input asp-for="SDT" class="form-control" placeholder="Nhập Số Điện Thoại..." />
+        <span asp-validation-for="SDT" class="text-danger small mt-1 d-block"></span>
+    </div>
+
+    <!-- Địa chỉ & Bản đồ -->
+    <div class="mb-4">
+        <label class="form-label fw-semibold text-dark small mb-1">
+            Vị trí trên bản đồ
+        </label>
+
+        <div class="d-flex gap-2 mb-1">
+            <div class="input-group">
+                <input asp-for="Address" class="form-control" id="addressInput" placeholder="Nhập địa chỉ hoặc ghim trên bản đồ..." autocomplete="off" />
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnSearchAddress" title="Tìm vị trí theo địa chỉ này" onclick="searchAddressToLocation()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm text-nowrap d-flex align-items-center gap-1" id="btnGetLocation" onclick="getCurrentLocation()">
+                <i class="bi bi-geo-alt-fill" id="btnGetLocationIcon"></i>
+                <span id="btnGetLocationText">Định vị tôi</span>
+            </button>
+        </div>
+
+        <!-- Trạng thái đang tải địa chỉ (nếu có) -->
+        <div id="addressStatusMsg" class="small text-muted mb-2 d-none">
+            <span class="spinner-border spinner-border-sm me-1 text-primary"></span>
+            <span id="addressStatusText">Đang tìm địa chỉ...</span>
+        </div>
+
+        <!-- Khung hiển thị bản đồ Leaflet -->
+        <div id="map" 
+             style="height: 280px; border-radius: 10px; z-index: 1;" 
+             class="border shadow-sm"
+             data-lat="@(Model?.Latitude.HasValue == true ? Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")"
+             data-lng="@(Model?.Longitude.HasValue == true ? Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "")"
+             data-has-coords="@(Model?.Latitude.HasValue == true ? "true" : "false")">
+        </div>
+        <small class="text-muted d-block mt-1" id="coordText">
+            Tọa độ: @(Model?.Latitude.HasValue == true ? $"{Model.Latitude:F6}, {Model.Longitude:F6}" : "Chưa chọn vị trí — Bấm \"Định vị tôi\" hoặc ghim trên bản đồ")
+        </small>
+        <span asp-validation-for="Address" class="text-danger small mt-1 d-block"></span>
+    </div>
+
     <button type="submit" class="btn btn-success">
-        Save Profile
+        <i class="bi bi-check-lg me-1"></i> Save Profile
     </button>
 </form>
 
+@section Styles {
+    <!-- Leaflet CSS nội bộ (local), tải ngay lập tức 0ms -->
+    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" asp-append-version="true" />
+}
+
 @section Scripts {
+    <!-- Leaflet JS nội bộ (local) -->
+    <script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
+    
+    <!-- File JS Profile -->
     <script src="~/js/Profile/Index.js" asp-append-version="true"></script>
 }

@@ -35,6 +35,7 @@ namespace TourisManager.Controllers
 
         [HttpGet]
         [Route("login")]
+<<<<<<< HEAD
         public async Task<IActionResult> Login()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -42,6 +43,16 @@ namespace TourisManager.Controllers
                 // Lấy Id từ Cookie
                 string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+=======
+        public async Task<IActionResult> Login() 
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+               
+                string? userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+              
+>>>>>>> main
                 var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {

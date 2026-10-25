@@ -10,34 +10,114 @@
     <partial name="_FoodGridPartial" model="Model" />
 </div>
 
-<!-- Lệnh AJAX (Giống bài Lab5) -->
+<!-- Khung Modal rỗng, chờ AJAX đổ dữ liệu vào thẻ div .modal-content -->
+<div class="modal fade" id="quickOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" id="quickOrderModalContent">
+            <!-- PartialView sẽ được nhét vào đây qua AJAX -->
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
+        var currentTypeId = "";
+
         $(document).on('click', '.btn-category-filter', function (e) {
             e.preventDefault();
-
             var $btn = $(this);
-            var typeId = $btn.data('id');
+            currentTypeId = $btn.data('id') || "";
 
-            // Đổi màu nút đang chọn
             $('.btn-category-filter')
                 .removeClass('btn-success text-white fw-bold')
                 .addClass('btn-outline-secondary text-dark');
             $btn.removeClass('btn-outline-secondary text-dark')
                 .addClass('btn-success text-white fw-bold');
 
-            // Gọi AJAX lấy lưới món ăn
+            loadFoods(currentTypeId, 1);
+        });
+
+        $('body').on('click', '.page-item', function (e) {
+            e.preventDefault();
+            var page = $(this).attr("page");
+            var typeId = $(this).attr("typeId") || currentTypeId;
+
+            if (page) {
+                loadFoods(typeId, page);
+            }
+        });
+
+        function loadFoods(typeId, pageIndex) {
             $.ajax({
                 url: '@Url.Action("FilterFoodsByType", "Food")',
                 type: 'GET',
-                data: { typeId: typeId },
+                data: {
+                    typeId: typeId,
+                    pageIndex: pageIndex
+                },
                 success: function (html) {
                     $('#food-container').html(html);
+                    $('.food-scroll-container').scrollTop(0);
                 },
                 error: function () {
                     alert('Có lỗi xảy ra khi tải dữ liệu.');
                 }
             });
-        });
+        }
+
+
+        // Hàm mở Modal qua AJAX
+        function openModal(foodId) {
+            $.ajax({
+                url: '@Url.Action("LoadQuickOrderModal", "Food")',
+                type: 'GET',
+                data: { id: foodId },
+                success: function (html) {
+                    // 1. Nhét PartialView vừa nhận được vào khung Modal trống
+                    $('#quickOrderModalContent').html(html);
+
+                    // 2. Tính lại giá ban đầu tương ứng theo size đang được chọn mặc định
+                    updateModalPrice();
+
+                    // 3. Hiển thị Modal lên màn hình
+                    var modalEl = document.getElementById('quickOrderModal');
+                    var myModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    myModal.show();
+                },
+                error: function (xhr) {
+                    alert('Lỗi tải dữ liệu món ăn: ' + (xhr.responseText || 'Không tìm thấy thông tin món ăn!'));
+                }
+            });
+        }
+
+        // Cập nhật số lượng
+        function updateQty(change) {
+            let currentQty = parseInt($('#inputQty').val()) || 1;
+            let newQty = currentQty + change;
+            if (newQty >= 1) {
+                $('#inputQty').val(newQty);
+                updateModalPrice();
+            }
+        }
+
+        // Cập nhật đơn giá và tổng tiền theo Size và Số lượng
+        function updateModalPrice() {
+            let price = parseFloat($('input[name="foodSize"]:checked').val()) || 0;
+            let qty = parseInt($('#inputQty').val()) || 1;
+            let total = price * qty;
+
+            $('#modalDisplayPrice').text(price.toLocaleString('vi-VN') + ' đ');
+            $('#modalTotalPrice').text(total.toLocaleString('vi-VN') + ' đ');
+        }
+
+        // Hàm thanh toán / xác nhận (tuỳ chọn)
+        function processCheckout() {
+            let foodId = $('#modalFoodId').val();
+            let selectedSize = $('input[name="foodSize"]:checked');
+            let sizeId = selectedSize.data('size-id');
+            let qty = parseInt($('#inputQty').val()) || 1;
+
+            alert('Đã chọn món: ' + foodId + ' | Size ID: ' + sizeId + ' | Số lượng: ' + qty);
+        }
     </script>
 }

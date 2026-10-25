@@ -1,0 +1,123 @@
+﻿@using TourisManager.Core.Entities
+@using System.Security.Claims
+@model RoomChat
+
+@{
+    ViewData["Title"] = "Phòng chat";
+    Layout = "~/Views/Shared/MyLayout.cshtml";
+
+    var currentAccountId = User.FindFirstValue(
+        ClaimTypes.NameIdentifier);
+
+    var currentRole = User.FindFirstValue(
+        ClaimTypes.Role);
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/Chat/site.css"
+          asp-append-version="true" />
+}
+
+<div class="container py-4">
+    <div class="card border-0 shadow rounded-4">
+
+        <div class="card-header bg-success text-white p-3">
+            <h5 class="mb-1">
+                <i class="bi bi-chat-dots-fill me-2"></i>
+                @(Model.Location?.Name ?? "Phòng chat")
+            </h5>
+            <small>@Model.Location?.Address</small>
+        </div>
+
+        
+        <div class="card-body chat-messages" id="chatMessages">
+            @if (Model.Chats != null && Model.Chats.Any())
+            {
+                @foreach (var message in Model.Chats.OrderBy(m => m.SentAt))
+                {
+                    
+                    var isMine = message.SenderAccountId == currentAccountId;
+                    var isAutoReply = message.SenderAccountId == null;
+
+                    var senderLabel = isAutoReply
+                        ? "Trợ lý tự động"
+                        : message.SenderAccount?.Role switch
+                        {
+                            "Admin" => "Quản trị viên",
+                            "Seller" => "Nhà hàng",
+                            "User" => "Khách hàng",
+                            _ => "Người dùng"
+                        };
+                        <div class="chat-row @(isMine ? "mine" : "other")">
+                        <div class="chat-bubble @(isMine ? "chat-mine" : "chat-other")">
+                            <div class="small mb-1 opacity-75">
+                                @senderLabel
+                            </div>
+
+                            <div class="message-text">
+                                @message.MessageText
+                            </div>
+
+                            <div class="message-time">
+                                @message.SentAt.ToString("HH:mm dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center text-muted mt-5">
+                    Chưa có tin nhắn. Hãy bắt đầu cuộc trò chuyện!
+                </p>
+            }
+        </div>
+
+
+        <div class="card-footer bg-white p-3">
+            <form asp-controller="Chat"
+                  asp-action="Send"
+                  method="post"
+                  class="d-flex gap-2">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="roomChatId"
+                       value="@Model.RoomChatId" />
+
+                <input type="text"
+                       name="messageText"
+                       class="form-control rounded-pill"
+                       placeholder="Nhập tin nhắn..."
+                       maxlength="2000"
+                       autocomplete="off"
+                       required />
+
+                <button type="submit"
+                        class="btn btn-success rounded-pill px-4">
+                    <i class="bi bi-send-fill me-1"></i>
+                    Gửi
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <a asp-controller="Chat"
+       asp-action="Index"
+       class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left me-1"></i>
+        Quay lại
+    </a>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatMessages = document.getElementById("chatMessages");
+
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    });
+</script>

@@ -1,0 +1,861 @@
+﻿@model TourisManager.Models.LocationDetailViewModel
+
+@functions {
+    static string Stars(double rating)
+    {
+        var sb = new System.Text.StringBuilder();
+        for (int i = 1; i <= 5; i++)
+        {
+            if (rating >= i) sb.Append("<i class=\"bi bi-star-fill\"></i>");
+            else if (rating >= i - 0.5) sb.Append("<i class=\"bi bi-star-half\"></i>");
+            else sb.Append("<i class=\"bi bi-star\"></i>");
+        }
+        return sb.ToString();
+    }
+}
+
+@{
+    ViewData["Title"] = Model.Name;
+    var x = Model.Extra;
+    var ci = System.Globalization.CultureInfo.InvariantCulture;
+    var lat = Model.Latitude.ToString(ci);
+    var lng = Model.Longitude.ToString(ci);
+    var directionUrl = $"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}";
+    var embedUrl = $"https://maps.google.com/maps?q={lat},{lng}&z=15&output=embed";
+    var total = x.Reviews.Count;
+}
+
+@section Styles {
+    <style>
+        :root {
+            --ld-green: #10b981;
+            --ld-green-dark: #059669;
+            --ld-green-deep: #065f46;
+            --ld-green-soft: #d1fae5;
+            --ld-bg: #f6f8fb;
+            --ld-text: #111827;
+            --ld-muted: #6b7280;
+            --ld-border: #e5e7eb;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .ld-page {
+            background: var(--ld-bg);
+            min-height: 100vh;
+            padding: 20px 0 48px;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: var(--ld-text);
+        }
+
+        .ld-container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .ld-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--ld-muted);
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+            .ld-breadcrumb a {
+                color: var(--ld-muted);
+                text-decoration: none;
+            }
+
+                .ld-breadcrumb a:hover {
+                    color: var(--ld-green-dark);
+                }
+
+            .ld-breadcrumb i {
+                font-size: 10px;
+            }
+
+            .ld-breadcrumb span {
+                color: var(--ld-text);
+                font-weight: 600;
+            }
+
+        .ld-hero {
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #eef0f3;
+            margin-bottom: 20px;
+        }
+
+            .ld-hero img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .ld-hero-empty {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #9ca3af;
+        }
+
+            .ld-hero-empty i {
+                font-size: 56px;
+            }
+
+        .ld-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .ld-main, .ld-side {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ld-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+        }
+
+        .ld-sticky {
+            position: sticky;
+            top: 90px;
+        }
+
+        .ld-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ld-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ld-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 999px;
+        }
+
+        .ld-chip-green {
+            background: var(--ld-green-soft);
+            color: var(--ld-green-deep);
+        }
+
+        .ld-actions-mini {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ld-btn-outline-sm {
+            border: 1px solid var(--ld-border);
+            background: #fff;
+            color: #374151;
+            border-radius: 999px;
+            padding: 5px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+            .ld-btn-outline-sm:hover, .ld-btn-outline-sm.active {
+                border-color: var(--ld-green);
+                color: var(--ld-green-dark);
+                background: #f0fdf9;
+            }
+
+        .ld-title {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 16px 0 6px;
+            line-height: 1.25;
+        }
+
+        .ld-address {
+            color: #374151;
+            margin: 0;
+            font-size: 15px;
+        }
+
+            .ld-address i, .ld-meta i, .ld-h2 i {
+                color: var(--ld-green);
+            }
+
+        .ld-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 24px;
+            margin-top: 14px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+            .ld-meta span {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .text-green {
+            color: var(--ld-green-dark);
+        }
+
+        .ld-hr {
+            border: 0;
+            border-top: 1px solid #eef0f3;
+            margin: 20px 0;
+            opacity: 1;
+        }
+
+        .ld-h2 {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 0 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ld-h3 {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0 0 12px;
+        }
+
+        .ld-text {
+            line-height: 1.7;
+            color: #374151;
+            margin: 0;
+        }
+
+        .ld-note {
+            font-size: 12px;
+            color: var(--ld-muted);
+            margin: 16px 0 0;
+        }
+
+        .ld-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ld-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--ld-border);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+            .ld-pill i {
+                color: var(--ld-green);
+            }
+
+        .ld-tip {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: #f0fdf9;
+            border: 1px solid var(--ld-green-soft);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--ld-green-deep);
+            line-height: 1.55;
+        }
+
+            .ld-tip i {
+                color: #f59e0b;
+                font-size: 18px;
+                margin-top: 2px;
+            }
+
+        .ld-stars {
+            color: #f59e0b;
+            display: inline-flex;
+            gap: 2px;
+        }
+
+            .ld-stars.sm {
+                font-size: 12px;
+            }
+
+        .ld-rating-summary {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 4px 0 20px;
+        }
+
+        .ld-rating-big {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .ld-rating-num {
+            font-size: 46px;
+            font-weight: 800;
+            color: var(--ld-green-dark);
+            line-height: 1;
+        }
+
+        .ld-rating-sub {
+            font-size: 12px;
+            color: var(--ld-muted);
+            margin-top: 4px;
+        }
+
+        .ld-rating-bars {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ld-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+            .ld-bar-row > span:first-child {
+                width: 36px;
+            }
+
+            .ld-bar-row i {
+                color: #f59e0b;
+                font-size: 11px;
+            }
+
+        .ld-bar {
+            flex: 1;
+            height: 8px;
+            background: #eef0f3;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+            .ld-bar div {
+                height: 100%;
+                background: var(--ld-green);
+                border-radius: 999px;
+            }
+
+        .ld-bar-count {
+            width: 24px;
+            text-align: right;
+        }
+
+        .ld-form {
+            background: #f9fafb;
+            border: 1px solid #eef0f3;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 22px;
+        }
+
+        .ld-star-pick {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+            .ld-star-pick button {
+                border: 0;
+                background: none;
+                font-size: 26px;
+                color: #d1d5db;
+                cursor: pointer;
+                padding: 0 2px;
+                transition: transform .1s;
+            }
+
+                .ld-star-pick button.on {
+                    color: #f59e0b;
+                }
+
+                .ld-star-pick button:hover {
+                    transform: scale(1.15);
+                }
+
+        .ld-input {
+            display: block;
+            width: 100%;
+            border: 1px solid var(--ld-border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            background: #fff;
+            outline: none;
+            font-family: inherit;
+        }
+
+            .ld-input:focus {
+                border-color: var(--ld-green);
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, .15);
+            }
+
+        .ld-form-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ld-form-msg {
+            font-size: 13px;
+        }
+
+            .ld-form-msg.err {
+                color: #dc2626;
+            }
+
+            .ld-form-msg.ok {
+                color: var(--ld-green-dark);
+            }
+
+        .ld-reviews {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ld-review {
+            display: flex;
+            gap: 14px;
+            padding: 16px 0;
+            border-top: 1px solid #eef0f3;
+        }
+
+        .ld-avatar {
+            flex: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--ld-green-soft);
+            color: var(--ld-green-deep);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ld-review-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ld-review-date {
+            font-size: 12px;
+            color: var(--ld-muted);
+        }
+
+        .ld-review p {
+            margin: 6px 0 0;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .ld-side-rating {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .ld-side-num {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--ld-green-dark);
+            line-height: 1;
+        }
+
+        .ld-info-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 4px 14px;
+            margin-bottom: 16px;
+        }
+
+            .ld-info-box div {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 10px 0;
+                font-size: 14px;
+                border-bottom: 1px solid #eef0f3;
+            }
+
+                .ld-info-box div:last-child {
+                    border-bottom: 0;
+                }
+
+            .ld-info-box span {
+                color: var(--ld-muted);
+                white-space: nowrap;
+            }
+
+            .ld-info-box b {
+                text-align: right;
+            }
+
+        .ld-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .ld-block {
+            display: flex;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .ld-btn-primary {
+            background: var(--ld-green);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, .3);
+        }
+
+            .ld-btn-primary:hover {
+                background: var(--ld-green-dark);
+                color: #fff;
+            }
+
+        .ld-btn-outline {
+            background: #fff;
+            color: var(--ld-green-dark);
+            border-color: var(--ld-green);
+        }
+
+            .ld-btn-outline:hover {
+                background: #f0fdf9;
+                color: var(--ld-green-dark);
+            }
+
+        .ld-btn-ghost {
+            background: #f3f4f6;
+            color: var(--ld-green-deep);
+        }
+
+            .ld-btn-ghost:hover {
+                background: #e5e7eb;
+                color: var(--ld-green-deep);
+            }
+
+        .ld-map {
+            display: block;
+            width: 100%;
+            height: 220px;
+            border: 0;
+            border-radius: 12px;
+        }
+
+        @@media (max-width: 900px) {
+            .ld-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ld-sticky {
+                position: static;
+            }
+
+            .ld-hero {
+                height: 200px;
+            }
+
+            .ld-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+}
+
+<div class="ld-page">
+    <div class="ld-container">
+
+        <!-- Breadcrumb -->
+        <nav class="ld-breadcrumb">
+            <a href="/">Trang chủ</a><i class="bi bi-chevron-right"></i>
+            <a href="/Map">Bản đồ</a><i class="bi bi-chevron-right"></i>
+            <span>@Model.Name</span>
+        </nav>
+
+        <!-- Ảnh đại diện -->
+        <div class="ld-hero">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" />
+            }
+            else
+            {
+                <div class="ld-hero-empty">
+                    <i class="bi bi-image"></i>
+                    <span>Chưa có ảnh cho địa điểm này</span>
+                </div>
+            }
+        </div>
+
+        <div class="ld-grid">
+            <!-- ================= CỘT TRÁI ================= -->
+            <div class="ld-main">
+
+                <section class="ld-card">
+                    <div class="ld-card-top">
+                        <div class="ld-chips">
+                            <span class="ld-chip ld-chip-green"><i class="bi bi-tag-fill"></i> @Model.CategoryName</span>
+                            <span class="ld-chip"><i class="bi bi-star-fill text-warning"></i> @x.AvgRating.ToString("0.0")</span>
+                        </div>
+                        <div class="ld-actions-mini">
+                            <button type="button" class="ld-btn-outline-sm" id="btnSave"><i class="bi bi-heart"></i> Lưu</button>
+                            <button type="button" class="ld-btn-outline-sm" id="btnShare"><i class="bi bi-share"></i> Chia sẻ</button>
+                        </div>
+                    </div>
+
+                    <h1 class="ld-title">@Model.Name</h1>
+                    <p class="ld-address"><i class="bi bi-geo-alt-fill"></i> @Model.Address</p>
+
+                    <div class="ld-meta">
+                        <span><i class="bi bi-clock"></i> Giờ mở cửa: <b>@x.OpenHours</b></span>
+                        <span><i class="bi bi-ticket-perforated"></i> Giá vé: <b class="text-green">@x.Price</b></span>
+                        <span><i class="bi bi-sun"></i> Thời điểm đẹp: <b>@x.BestTime</b></span>
+                    </div>
+
+                    <hr class="ld-hr" />
+
+                    <h2 class="ld-h2">Giới thiệu</h2>
+                    <p class="ld-text">@x.Description</p>
+
+                    <hr class="ld-hr" />
+
+                    <h2 class="ld-h2"><i class="bi bi-stars"></i> Điểm nổi bật (@x.Highlights.Count)</h2>
+                    <div class="ld-pills">
+                        @foreach (var h in x.Highlights)
+                        {
+                            <span class="ld-pill"><i class="bi bi-check-circle-fill"></i> @h</span>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(x.Tip))
+                    {
+                        <div class="ld-tip">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <div><b>Mẹo cho bạn:</b> @x.Tip</div>
+                        </div>
+                    }
+
+                    <p class="ld-note">Giờ mở cửa và giá vé chỉ mang tính tham khảo, vui lòng kiểm tra lại trước khi đi.</p>
+                </section>
+
+                <!-- ================= ĐÁNH GIÁ ================= -->
+                <section class="ld-card" id="comments">
+                    <h2 class="ld-h2"><i class="bi bi-chat-square-heart-fill"></i> Đánh giá từ du khách (<span id="reviewCount">@total</span>)</h2>
+
+                    <div class="ld-rating-summary">
+                        <div class="ld-rating-big">
+                            <div class="ld-rating-num" id="avgNum">@x.AvgRating.ToString("0.0")</div>
+                            <div class="ld-stars" id="avgStars">@Html.Raw(Stars(x.AvgRating))</div>
+                            <div class="ld-rating-sub">@total lượt đánh giá</div>
+                        </div>
+                        <div class="ld-rating-bars">
+                            @for (int s = 5; s >= 1; s--)
+                            {
+                                var c = x.Reviews.Count(r => r.Rating == s);
+                                var pct = total == 0 ? 0 : c * 100 / total;
+                                <div class="ld-bar-row">
+                                    <span>@s <i class="bi bi-star-fill"></i></span>
+                                    <div class="ld-bar"><div style="width:@(pct)%"></div></div>
+                                    <span class="ld-bar-count">@c</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Form đánh giá -->
+                    <div class="ld-form">
+                        <h3 class="ld-h3">Viết đánh giá của bạn</h3>
+                        <div class="ld-star-pick" id="starPick">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" data-v="@i" aria-label="@i sao"><i class="bi bi-star-fill"></i></button>
+                            }
+                        </div>
+                        <input type="text" id="rvName" class="ld-input" placeholder="Tên của bạn" maxlength="40" />
+                        <textarea id="rvText" class="ld-input" rows="3" placeholder="Chia sẻ trải nghiệm của bạn về địa điểm này..." maxlength="500"></textarea>
+                        <div class="ld-form-foot">
+                            <span id="rvMsg" class="ld-form-msg"></span>
+                            <button type="button" id="rvSubmit" class="ld-btn ld-btn-primary"><i class="bi bi-send-fill"></i> Gửi đánh giá</button>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách -->
+                    <div id="reviewList" class="ld-reviews">
+                        @foreach (var r in x.Reviews)
+                        {
+                            <article class="ld-review">
+                                <div class="ld-avatar">@r.Author.Substring(0, 1).ToUpper()</div>
+                                <div class="ld-review-body">
+                                    <div class="ld-review-head">
+                                        <b>@r.Author</b>
+                                        <span class="ld-stars sm">@Html.Raw(Stars(r.Rating))</span>
+                                        <span class="ld-review-date">@r.Date</span>
+                                    </div>
+                                    <p>@r.Content</p>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </section>
+            </div>
+
+            <!-- ================= CỘT PHẢI ================= -->
+            <aside class="ld-side">
+                <section class="ld-card ld-sticky">
+                    <div class="ld-side-rating">
+                        <span class="ld-side-num">@x.AvgRating.ToString("0.0")</span>
+                        <div>
+                            <div class="ld-stars">@Html.Raw(Stars(x.AvgRating))</div>
+                            <small>@total đánh giá</small>
+                        </div>
+                    </div>
+
+                    <div class="ld-info-box">
+                        <div><span>Giờ mở cửa</span><b>@x.OpenHours</b></div>
+                        <div><span>Giá vé</span><b>@x.Price</b></div>
+                        <div><span>Thời điểm đẹp</span><b>@x.BestTime</b></div>
+                    </div>
+
+                    <a class="ld-btn ld-btn-primary ld-block" href="@directionUrl" target="_blank" rel="noopener">
+                        <i class="bi bi-sign-turn-right-fill"></i> Chỉ đường đến đây
+                    </a>
+                    <a class="ld-btn ld-btn-outline ld-block" href="#comments">
+                        <i class="bi bi-pencil-square"></i> Viết đánh giá
+                    </a>
+                    <a class="ld-btn ld-btn-ghost ld-block" href="/Map">
+                        <i class="bi bi-map"></i> Quay lại bản đồ
+                    </a>
+                </section>
+
+                <section class="ld-card">
+                    <h3 class="ld-h3">Vị trí</h3>
+                    <iframe class="ld-map" src="@embedUrl" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <p class="ld-address mt-2"><i class="bi bi-geo-alt-fill"></i> @Model.Address</p>
+                </section>
+            </aside>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var rating = 0;
+            var pickBtns = document.querySelectorAll('#starPick button');
+            var msg = document.getElementById('rvMsg');
+
+            function paint(v) {
+                pickBtns.forEach(function (b) { b.classList.toggle('on', +b.dataset.v <= v); });
+            }
+            pickBtns.forEach(function (b) {
+                b.addEventListener('click', function () { rating = +b.dataset.v; paint(rating); });
+                b.addEventListener('mouseenter', function () { paint(+b.dataset.v); });
+            });
+            document.getElementById('starPick').addEventListener('mouseleave', function () { paint(rating); });
+
+            function starsHtml(n) {
+                var s = '';
+                for (var i = 1; i <= 5; i++) s += '<i class="bi bi-star' + (i <= n ? '-fill' : '') + '"></i>';
+                return s;
+            }
+
+            document.getElementById('rvSubmit').addEventListener('click', function () {
+                var name = document.getElementById('rvName').value.trim();
+                var text = document.getElementById('rvText').value.trim();
+                if (!rating || !name || !text) {
+                    msg.textContent = 'Vui lòng chọn số sao, nhập tên và nội dung.';
+                    msg.className = 'ld-form-msg err';
+                    return;
+                }
+
+                var el = document.createElement('article');
+                el.className = 'ld-review';
+                var av = document.createElement('div'); av.className = 'ld-avatar'; av.textContent = name.charAt(0).toUpperCase();
+                var body = document.createElement('div'); body.className = 'ld-review-body';
+                var head = document.createElement('div'); head.className = 'ld-review-head';
+                var b = document.createElement('b'); b.textContent = name;
+                var st = document.createElement('span'); st.className = 'ld-stars sm'; st.innerHTML = starsHtml(rating);
+                var dt = document.createElement('span'); dt.className = 'ld-review-date'; dt.textContent = new Date().toLocaleDateString('vi-VN');
+                var p = document.createElement('p'); p.textContent = text;
+                head.append(b, st, dt); body.append(head, p); el.append(av, body);
+                document.getElementById('reviewList').prepend(el);
+
+                var cnt = document.getElementById('reviewCount');
+                cnt.textContent = (+cnt.textContent + 1);
+
+                document.getElementById('rvName').value = '';
+                document.getElementById('rvText').value = '';
+                rating = 0; paint(0);
+                msg.textContent = 'Cảm ơn bạn đã đánh giá!';
+                msg.className = 'ld-form-msg ok';
+            });
+
+            document.getElementById('btnSave').addEventListener('click', function () {
+                var i = this.querySelector('i');
+                i.classList.toggle('bi-heart'); i.classList.toggle('bi-heart-fill');
+                this.classList.toggle('active');
+            });
+
+            document.getElementById('btnShare').addEventListener('click', function () {
+                if (navigator.share) { navigator.share({ title: document.title, url: location.href }); }
+                else if (navigator.clipboard) { navigator.clipboard.writeText(location.href); this.innerHTML = '<i class="bi bi-check2"></i> Đã chép link'; }
+            });
+        })();
+    </script>
+}

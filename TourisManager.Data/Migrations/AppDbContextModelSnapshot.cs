@@ -126,9 +126,17 @@ namespace TourisManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
+                    b.Property<string>("SenderAccountId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ChatId");
 
                     b.HasIndex("RoomChatId");
+
+                    b.HasIndex("SenderAccountId");
 
                     b.ToTable("Chat");
                 });
@@ -145,8 +153,11 @@ namespace TourisManager.Data.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GoogleMapUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("SDT")
                         .HasColumnType("nvarchar(max)");
@@ -578,7 +589,13 @@ namespace TourisManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TourisManager.Core.Entities.Account", "SenderAccount")
+                        .WithMany()
+                        .HasForeignKey("SenderAccountId");
+
                     b.Navigation("RoomChat");
+
+                    b.Navigation("SenderAccount");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.DetailAccount", b =>
