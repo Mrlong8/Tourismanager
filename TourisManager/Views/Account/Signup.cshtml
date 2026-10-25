@@ -1,21 +1,15 @@
-﻿@model TourisManager.Models.ViewModels.SignupViewModel
+@model TourisManager.Models.ViewModels.SignupViewModel
  
 @{
-    // Nếu nhúng chung trong _Layout.cshtml (đã có TopNav) thì giữ mặc định hoặc bỏ chú thích dòng dưới
-    // Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Đăng ký tài khoản - TourisManager";
+    var currentRole = string.IsNullOrEmpty(Model?.Role) ? "User" : Model.Role;
+    var isSeller = currentRole.Equals("Seller", StringComparison.OrdinalIgnoreCase);
 }
  
-<!-- Liên kết file CSS riêng biệt cho trang Đăng ký (đã tối ưu 0 thanh cuộn, vừa khít TopNav) -->
 <link rel="stylesheet" href="~/css/Account/signup.css" asp-append-version="true" />
  
 <div class="signup-container">
-    <!-- ==============================================
-         PHÂN NỬA BÊN TRÁI: BRAND & GIỚI THIỆU HỆ THỐNG
-         - Màu xanh lá Gradient hiện đại
-         - Đã bỏ số liệu
-         - Tự động ẨN trên thiết bị di động (chỉ hiện form)
-         ============================================== -->
+    
     <div class="signup-brand-section">
         <div class="signup-brand-pattern"></div>
         
@@ -25,8 +19,8 @@
                 <i class="bi bi-geo-alt-fill fs-4"></i>
             </div>
             <div class="brand-header-text">
-                <h3 class="mb-0">TourisManager</h3>
-                <p class="mb-0">Nền tảng quản lý &amp; khám phá du lịch</p>
+                <h3 class="mb-0">Super Food</h3>
+                <p class="mb-0">Nền tảng khám phá các địa điểm ẩm thực trực tuyến</p>
             </div>
         </div>
  
@@ -67,25 +61,13 @@
             </div>
         </div>
     </div>
- 
-    <!-- ==============================================
-         PHÂN NỬA BÊN PHẢI: FORM ĐĂNG KÝ
-         - Nằm trọn vẹn 100% trong khung hình bên dưới TopNav
-         - KHÔNG XUẤT HIỆN CON TRƯỢT NÀO TRÊN DESKTOP
-         ============================================== -->
+
     <div class="signup-form-section">
         <div class="signup-box">
- 
-            <!-- Badge người dùng -->
-            <div class="text-start mb-2">
-                <span class="user-type-pill">
-                    <i class="bi bi-person-plus-fill me-1"></i> TẠO TÀI KHOẢN NGƯỜI DÙNG
-                </span>
-            </div>
- 
-            <h2 class="signup-heading-title">Bắt đầu hành trình của bạn 🚀</h2>
+
+            <h2 class="signup-heading-title">Bắt đầu hành trình của bạn</h2>
             <p class="signup-heading-desc">Tạo tài khoản để bắt đầu lưu trữ và khám phá địa điểm du lịch</p>
- 
+
             <!-- Hiển thị thông báo TempData["Msg"] nếu có -->
             @if (TempData["Msg"] != null)
             {
@@ -97,8 +79,24 @@
             }
  
             <form asp-controller="Account" asp-action="Signup" method="post" id="signupForm">
+                <!-- Input hidden để gửi giá trị Role về Backend -->
+                <input type="hidden" asp-for="Role" id="selectedRole" value="@currentRole" />
+
+                <!-- Bộ chuyển đổi loại tài khoản (Role Switcher) -->
+                <div class="text-start mb-3">
+                    <label class="form-label-custom mb-1.5 d-block">Bạn muốn đăng ký với vai trò? *</label>
+                    <div class="role-switch-group w-100" role="group">
+                        <button type="button" class="btn role-btn @(!isSeller ? "active" : "")" id="btnUser" onclick="switchRole('User')">
+                            <i class="bi bi-person-fill me-1"></i> Người dùng
+                        </button>
+                        <button type="button" class="btn role-btn @(isSeller ? "active" : "")" id="btnSeller" onclick="switchRole('Seller')">
+                            <i class="bi bi-shop me-1"></i> Người bán
+                        </button>
+                    </div>
+                </div>
+
                 <div asp-validation-summary="ModelOnly" class="text-danger small mb-1"></div>
- 
+
                 <!-- Họ và tên (FullName) -->
                 <div class="form-item">
                     <label asp-for="FullName" class="form-label-custom">Họ và tên *</label>
@@ -169,7 +167,7 @@
  
                 <!-- Chú thích điều khoản -->
                 <p class="terms-agreement-note">
-                    Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> và <a href="#">Chính sách bảo mật</a> của TourisManager.
+                    Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> và <a href="#">Chính sách bảo mật</a> của FoodieMap.
                 </p>
  
                 <!-- Khung chuyển sang Đăng nhập -->
@@ -191,4 +189,3 @@
     <!-- File JavaScript riêng biệt cho trang Đăng ký (mắt xem mật khẩu, độ mạnh, kiểm tra trùng khớp) -->
     <script src="~/js/Accounts/Signup.js" asp-append-version="true"></script>
 }
- 

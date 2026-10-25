@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Interfaces;
+using TourisManager.Core.Services;
 using TourisManager.Data;
 using TourisManager.Data.Seed;
 using TourisManager.Services;
@@ -28,6 +29,7 @@ namespace TourisManager
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IFoodService, FoodService>();
             builder.Services.AddScoped<ITypeOfFoodService,TypeOfFoodService>();
+            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
             // CẤU HÌNH AUTHENTICATION
             builder.Services
@@ -55,6 +57,14 @@ namespace TourisManager
                      options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
 
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IFoodService, FoodService>();
+            builder.Services.AddScoped<ILocationService, LocationService>();
+            builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ChatAutoReplyService>();
             var app = builder.Build();
 
             // Initialize the database
@@ -98,8 +108,7 @@ namespace TourisManager
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}"); 
-
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             app.Run();
         }
     }

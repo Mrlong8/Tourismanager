@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
 using System.Text;
 
 namespace TourisManager.Core.Entities
