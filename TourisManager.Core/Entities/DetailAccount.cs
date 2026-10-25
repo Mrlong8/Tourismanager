@@ -22,5 +22,10 @@ namespace TourisManager.Core.Entities
 
         // Navigation
         public Account Account { get; set; } = null!;
+
+        public string? FirstOrDefaul()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

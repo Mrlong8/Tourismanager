@@ -353,17 +353,15 @@ namespace TourisManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("OrderStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("PaymentMethodId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("TotalAmount")
                         .HasPrecision(18, 2)
