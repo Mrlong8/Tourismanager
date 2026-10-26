@@ -110,14 +110,6 @@
             $('#modalTotalPrice').text(total.toLocaleString('vi-VN') + ' đ');
         }
 
-        // Hàm thanh toán / xác nhận (tuỳ chọn)
-        function processCheckout() {
-            let foodId = $('#modalFoodId').val();
-            let selectedSize = $('input[name="foodSize"]:checked');
-            let sizeId = selectedSize.data('size-id');
-            let qty = parseInt($('#inputQty').val()) || 1;
-
-            alert('Đã chọn món: ' + foodId + ' | Size ID: ' + sizeId + ' | Số lượng: ' + qty);
-        }
+      
     </script>
 }

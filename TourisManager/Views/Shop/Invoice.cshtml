@@ -1,0 +1,97 @@
+﻿@model IEnumerable<TourisManager.Core.Entities.Order>
+
+@{
+    ViewData["Title"] = "Danh sách Hóa Đơn";
+}
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Danh sách Hóa Đơn Đặt Hàng</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var order in Model)
+        {
+           
+            var accountDetail = order.Account?.DetailAccount;
+           
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Mã Hóa Đơn: #@order.OrderId</h5>
+                    <small>Ngày tạo: @(order.CreateAt.ToString("dd/MM/yyyy HH:mm"))</small>
+                </div>
+                <div class="card-body">
+                    <!-- Thông tin người đặt -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Khách hàng:</strong> @(order.Account?.Name ?? "Khách vãng lai")</p>
+                            <p class="mb-1"><strong>Trạng thái:</strong> <span class="badge bg-success">@order.OrderStatus</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Thêm dấu ? để tránh lỗi NullReferenceException nếu accountDetail bị null -->
+                            <p class="mb-1"><strong>Số điện thoại:</strong> @(accountDetail?.SDT ?? "Chưa cập nhật")</p>
+                            <p class="mb-1"><strong>Địa chỉ:</strong> @(accountDetail?.Address ?? "Chưa cập nhật")</p>
+                        </div>
+                    </div>
+
+                    <!-- Bảng chi tiết món ăn -->
+                    <table class="table table-bordered table-hover mt-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên Món Ăn</th>
+                                <th>Phân Loại</th>
+                                <th>Kích Thước (Size)</th>
+                                <th class="text-end">Đơn Giá</th>
+                                <th class="text-center">Số Lượng</th>
+                                <th class="text-end">Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (order.OrderDetails != null && order.OrderDetails.Any())
+                            {
+                                int stt = 1;
+                                foreach (var detail in order.OrderDetails)
+                                {
+                                    // Lấy tạm 1 size để hiển thị
+                                    var availableSize = detail.Food?.FoodSizes?.FirstOrDefault()?.Size?.Name ?? "Mặc định";
+
+                                    // Tính Đơn giá của 1 món
+                                    var donGia = detail.Quantity > 0 ? (detail.TotalPrice / detail.Quantity) : 0;
+
+                                    <tr>
+                                        <td>@stt</td>
+                                        <td><strong>@(detail.Food?.Name ?? "Không rõ")</strong></td>
+                                        <td>@(detail.Food?.TypeFood?.Name ?? "Không có loại")</td>
+                                        <td>@availableSize</td>
+                                        <td class="text-end">@String.Format("{0:0,0} đ", donGia)</td>
+                                        <td class="text-center">@detail.Quantity</td>
+                                        <td class="text-end text-danger fw-bold">@String.Format("{0:0,0} đ", detail.TotalPrice)</td>
+                                    </tr>
+                                    stt++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">Không có chi tiết món ăn</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" class="text-end fw-bold fs-5">Tổng Tiền Hóa Đơn:</td>
+                                <td class="text-end text-danger fw-bold fs-5">@String.Format("{0:0,0} đ", order.TotalAmount)</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            Hiện tại chưa có hóa đơn nào trong hệ thống!
+        </div>
+    }
+</div>

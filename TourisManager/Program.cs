@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Interfaces;
+using TourisManager.Core.Services;
 using TourisManager.Data;
 using TourisManager.Data.Seed;
 using TourisManager.Services;
@@ -28,6 +29,7 @@ namespace TourisManager
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IFoodService, FoodService>();
             builder.Services.AddScoped<ITypeOfFoodService,TypeOfFoodService>();
+            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
             // CẤU HÌNH AUTHENTICATION
             builder.Services
