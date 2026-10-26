@@ -10,6 +10,19 @@ namespace TourisManager.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Đồng bộ kiểu dữ liệu với Account.AccountId: varchar(36).
+            // Giữ nullable để hỗ trợ tin nhắn tự động.
+            migrationBuilder.AlterColumn<string>(
+                name: "SenderAccountId",
+                table: "Chat",
+                type: "varchar(36)",
+                maxLength: 36,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)",
+                oldMaxLength: 450,
+                oldNullable: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chat_SenderAccountId",
                 table: "Chat",
