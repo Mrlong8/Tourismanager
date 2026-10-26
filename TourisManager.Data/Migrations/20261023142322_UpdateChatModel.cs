@@ -9,13 +9,13 @@ namespace TourisManager.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Hai cột SenderAccountId và SentAt đã tồn tại trong database.
-            // Không cần thêm cột lần nữa.
+            // SenderAccountId và SentAt đã tồn tại trong database.
+            // Không thêm cột lần nữa.
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Không xóa hai cột vì chúng đã tồn tại trước migration này.
+            // Không xóa các cột đang tồn tại.
         }
     }
 }
