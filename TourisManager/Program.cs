@@ -108,6 +108,11 @@ namespace TourisManager
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.Run();
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
+            
         }
     }
 }

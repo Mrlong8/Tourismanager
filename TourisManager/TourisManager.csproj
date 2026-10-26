@@ -26,7 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Seller\" />
+    <Folder Include="Areas\Seller\Data\" />
+    <Folder Include="Areas\Seller\Models\" />
     <Folder Include="ControllersApi\" />
     <Folder Include="wwwroot\Image\Loacaltion\" />
     <Folder Include="wwwroot\Image\Location\" />

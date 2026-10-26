@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -9,13 +9,20 @@ namespace TourisManager.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Hai cột SenderAccountId và SentAt đã tồn tại trong database.
-            // Không cần thêm cột lần nữa.
+            // Bổ sung lệnh tạo cột để đồng bộ cho tất cả các máy và server
+    
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Không xóa hai cột vì chúng đã tồn tại trước migration này.
+            // Lệnh khôi phục (xóa cột) nếu cần rollback
+            migrationBuilder.DropColumn(
+                name: "SenderAccountId",
+                table: "Chat");
+
+            migrationBuilder.DropColumn(
+                name: "SentAt",
+                table: "Chat");
         }
     }
 }

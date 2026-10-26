@@ -35,7 +35,6 @@ namespace TourisManager.Controllers
 
         [HttpGet]
         [Route("login")]
-<<<<<<< HEAD
         public async Task<IActionResult> Login()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -43,16 +42,6 @@ namespace TourisManager.Controllers
                 // Lấy Id từ Cookie
                 string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-=======
-        public async Task<IActionResult> Login() 
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-               
-                string? userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-              
->>>>>>> main
                 var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {
@@ -94,7 +83,7 @@ namespace TourisManager.Controllers
                 new Claim(ClaimTypes.Role,account.Role)
             };
 
-            // xác   thực danh tính, Tạo bộ hồ sơ danh tính chính thức cho User dựa trên Scheme Cookie.
+            // xác thực danh tính, Tạo bộ hồ sơ danh tính chính thức cho User dựa trên Scheme Cookie.
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity); // sau khi đăng nhập
 
@@ -165,7 +154,7 @@ namespace TourisManager.Controllers
             {
                 return RedirectToAction("Login", new { error = "Không lấy được Email từ Google!" });
             }
-            //  Kiểm tra trong CSDL xem Email này đã tồn tại trong hệ thống chưa
+            // Kiểm tra trong CSDL xem Email này đã tồn tại trong hệ thống chưa
             var account = await _accountService.FindByUsernameOrEmailAsync(email);
             if (account == null)
             {
@@ -236,9 +225,13 @@ namespace TourisManager.Controllers
 
         [HttpGet]
         [Route("signup")]
-        public IActionResult Signup()
+        public IActionResult Signup(string role = "User") // Nhận tham số từ URL, mặc định là User
         {
-            return View(new SignupViewModel());
+            var model = new SignupViewModel
+            {
+                Role = role // Gán vai trò ngay từ lúc mở form
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -268,6 +261,7 @@ namespace TourisManager.Controllers
                 Name = model.FullName,
                 Email = model.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                // Chỗ này cực kỳ ăn tiền: Nếu frontend truyền Role="Seller", nó sẽ lấy "Seller", ngược lại mặc định là "User"
                 Role = string.IsNullOrEmpty(model.Role) ? "User" : model.Role
             };
 
@@ -279,60 +273,6 @@ namespace TourisManager.Controllers
 
             TempData["Msg"] = "Đăng ký thất bại!";
             return RedirectToAction("login");
-        }
-
-        [HttpGet]
-        [Route("signup-seller")]
-        public IActionResult SignupSeller()
-        {
-            return View(new SellerSignupViewModel());
-        }
-
-        [HttpPost]
-        [Route("signup-seller")]
-        public async Task<IActionResult> SignupSeller(SellerSignupViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // KIỂM TRA TRÙNG LẶP
-            if (await _accountService.IsUserNameExistsAsync(model.Username))
-            {
-                ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
-            }
-
-            if (await _accountService.IsUserEmailExistsAsync(model.Email))
-            {
-                ModelState.AddModelError("Email", "Email này đã được đăng ký.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // TẠO TÀI KHOẢN VỚI QUYỀN SELLER
-            var account = new Account
-            {
-                Username = model.Username,
-                Name = model.FullName,
-                Email = model.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                Role = "Seller" // Gán cứng quyền Chủ quán
-            };
-
-            if (await _accountService.CreateAsync(account))
-            {
-                // Lưu tạm tên quán vào TempData để dùng khi họ đăng nhập lần đầu vào Dashboard
-                TempData["PendingShopName"] = model.ShopName;
-                TempData["Msg"] = "Đăng ký gian hàng thành công! Vui lòng đăng nhập.";
-                return RedirectToAction("login");
-            }
-
-            TempData["Msg"] = "Đăng ký thất bại do lỗi hệ thống!";
-            return View(model);
         }
     }
 }
