@@ -5,17 +5,20 @@
 
 <!-- Thêm CSS riêng cho trang chủ nếu cần (hoặc dùng chung CSS sẵn có) -->
 @section Styles {
-    <!-- 1. Bắt buộc phải có CSS của Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="~/lib/leaflet.markercluster/MarkerCluster.css" />
+
+    <!-- Bổ sung file CSS giao diện mặc định để số gộp nhóm (Cluster) có vòng tròn màu sắc -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
     <style>
-        /* Ép cứng chiều cao cho bản đồ để tránh bị mất hiển thị */
         #map {
             width: 100% !important;
             height: 450px !important;
             border-radius: 8px;
             z-index: 1;
         }
-        /* Thay background banner bằng màu gradient hoặc ảnh online tạm thời để không bị xám */
+
         .hero-banner {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
             border-radius: 12px;
@@ -30,10 +33,21 @@
         <p class="lead mb-4">Tìm kiếm quán ăn ngon, trải nghiệm bản đồ du lịch tiện lợi và đặt món ngay hôm nay!</p>
         <div class="d-flex justify-content-center gap-3">
             <a href="#map-section" class="btn btn-warning fw-bold px-4 py-2 rounded-pill text-dark">Khám Phá Bản Đồ</a>
-            <a href="/account/signup-seller" class="btn btn-success fw-bold px-4 py-2 rounded-pill">Đăng Ký Chủ Quán</a>
+            
+            <!-- Xử lý nút Đăng ký / Quản lý gian hàng trên Banner -->
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Seller"))
+            {
+                <a asp-area="Seller" asp-controller="Dashboard" asp-action="Index" class="btn btn-success fw-bold px-4 py-2 rounded-pill">
+                    <i class="bi bi-shop me-2"></i> Quản lý gian hàng
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Signup" asp-route-role="Seller" class="btn btn-success fw-bold px-4 py-2 rounded-pill"> Đăng ký Người bán </a>
+            }
         </div>
     </div>
-
+     
     <!-- 2. BỘ LỌC TÌM KIẾM NHANH -->
     <div class="card shadow-sm border-0 p-3 mb-4 rounded-3 bg-white">
         <form method="get" action="/Restaurant/Search" class="row g-3 align-items-center">
@@ -117,42 +131,68 @@
         <!-- Phần dành cho Chủ quán quảng bá -->
         <div class="col-lg-4">
             <div class="card shadow-sm border-0 p-4 rounded-3 h-100 bg-success bg-opacity-10 border-success border-start border-4">
-                <h4 class="fw-bold text-success mb-2">Bạn là chủ quán ăn?</h4>
-                <p class="text-muted small mb-3">Đăng ký ngay để đưa quán của bạn lên bản đồ du lịch, quản lý thực đơn và tiếp cận hàng ngàn du khách mỗi ngày.</p>
-                <a href="/account/signup-seller" class="btn btn-success fw-bold mt-auto w-100 py-2">Đăng ký gian hàng ngay</a>
+                
+                <!-- Xử lý hiển thị khối này tùy theo tài khoản -->
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Seller"))
+                {
+                    <h4 class="fw-bold text-success mb-2">Kênh của bạn</h4>
+                    <p class="text-muted small mb-3">Truy cập trang quản lý để cập nhật thực đơn, theo dõi đơn hàng và phát triển gian hàng của bạn trên hệ thống.</p>
+                    <a asp-area="Seller" asp-controller="Dashboard" asp-action="Index" class="btn btn-success fw-bold mt-auto w-100 py-2">Vào trang quản lý</a>
+                }
+                else
+                {
+                    <h4 class="fw-bold text-success mb-2">Bạn là chủ quán ăn?</h4>
+                    <p class="text-muted small mb-3">Đăng ký ngay để đưa quán của bạn lên bản đồ du lịch, quản lý thực đơn và tiếp cận hàng ngàn du khách mỗi ngày.</p>
+                    <a href="/account/signup-seller" class="btn btn-success fw-bold mt-auto w-100 py-2">Đăng ký gian hàng ngay</a>
+                }
+                
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="~/lib/leaflet/leaflet.js"></script>
+    <script src="~/lib/leaflet.markercluster/leaflet.markercluster.js"></script>
 
-    <!-- CHỈ LẤY ĐÚNG CÁC CỘT CẦN THIẾT ĐỂ VẼ BẢN ĐỒ -->
     <script>
-        window.locationsData = @Html.Raw(Json.Serialize(Model.Select(x => new
+        document.addEventListener("DOMContentLoaded", function () {
+            var locationsData = @Html.Raw(Json.Serialize(Model.Select(x => new
             {
-                name = x.Name,
-                address = x.Address ?? "Chưa cập nhật địa chỉ",
-                latitude = x.Latitude,
-                longitude = x.Longitude
-        })));
-    </script>
+                    name = x.Name,
+                    address = x.Address ?? "Chưa cập nhật địa chỉ",
+                    latitude = x.Latitude,
+                    longitude = x.Longitude
+            })));
 
-    <!-- Đoạn mã kỹ thuật giữ nguyên -->
-    <script>
-        (function() {
-            var originalAddEventListener = document.addEventListener;
-            document.addEventListener = function(type, listener, options) {
-                if (type === 'DOMContentLoaded' && (document.readyState === 'interactive' || document.readyState === 'complete')) {
-                    listener();
-                } else {
-                    originalAddEventListener.call(document, type, listener, options);
+            var map = L.map('map').setView([21.0285, 105.8542], 13);
+
+            // FIX: Dùng dữ liệu bản đồ của Google Maps để load siêu tốc và không bị lỗi nền xám
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: 'Map data &copy; Google'
+            }).addTo(map);
+
+            var markers = L.markerClusterGroup();
+            var bounds = [];
+
+            if (locationsData && locationsData.length > 0) {
+                locationsData.forEach(function (loc) {
+                    if (loc.latitude && loc.longitude) {
+                        var marker = L.marker([loc.latitude, loc.longitude]);
+                        marker.bindPopup("<strong class='text-danger'>" + loc.name + "</strong><br/>" + loc.address);
+                        markers.addLayer(marker);
+                        bounds.push([loc.latitude, loc.longitude]);
+                    }
+                });
+
+                map.addLayer(markers);
+
+                if (bounds.length > 0) {
+                    map.fitBounds(bounds);
                 }
-            };
-        })();
+            }
+        });
     </script>
-
-    <!-- Gọi file map.js -->
-    <script src="~/js/Map/map.js" asp-append-version="true"></script>
 }

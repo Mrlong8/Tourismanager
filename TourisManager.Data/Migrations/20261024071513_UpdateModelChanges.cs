@@ -11,18 +11,18 @@ namespace TourisManager.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "SenderAccountId",
-                table: "Chat",
-                type: "varchar(36)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "SenderAccountId",
+            //    table: "Chat",
+            //    type: "varchar(36)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "SentAt",
-                table: "Chat",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+            //migrationBuilder.AddColumn<DateTime>(
+            //    name: "SentAt",
+            //    table: "Chat",
+            //    type: "datetime2",
+            //    nullable: false,
+            //    defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
         }
 
         /// <inheritdoc />
