@@ -13,6 +13,8 @@ namespace TourisManager.Models.ViewModels
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
         public List<string> CategoryNames { get; set; } = new List<string>();
+        public string CategoryId { get; set; } = string.Empty;
+        public List<string> MenuNames { get; set; } = new List<string>();
         public bool HasMenu { get; set; }
     }
 }

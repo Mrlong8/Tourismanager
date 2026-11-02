@@ -1,7 +1,7 @@
 ﻿@model System.Collections.Generic.IEnumerable<TourisManager.Models.ViewModels.MapLocationViewModel>
 
 @{
-    ViewData["Title"] = "Bản đồ khám phá";
+    ViewData["Title"] = "FoodieMap · Nhà hàng toàn quốc";
     ViewData["FullMap"] = true;
 }
 
@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="~/css/Map/Map.css" asp-append-version="true" />
 }
 
-<section id="touris-map" class="tm-map-page" aria-label="Bản đồ địa điểm và nhà hàng"
+<section id="touris-map" class="tm-map-page" aria-label="Bản đồ nhà hàng toàn quốc"
          data-details-url="@Url.Action("Details", "Location")" data-app-base="@Url.Content("~/")">
     <div id="map" aria-label="Bản đồ tương tác"></div>
 
     <aside id="map-sidebar" class="tm-sidebar" aria-labelledby="map-list-title">
         <div class="tm-sidebar-heading">
             <div>
-                <p class="tm-eyebrow">TOURISMANAGER · KHÁM PHÁ</p>
-                <h1 id="map-list-title">Địa điểm &amp; nhà hàng</h1>
+                <p class="tm-eyebrow">FOODIEMAP · KHÁM PHÁ ẨM THỰC</p>
+                <h1 id="map-list-title">Nhà hàng toàn quốc</h1>
             </div>
             <button id="map-close-list" class="tm-icon-button" type="button" aria-label="Ẩn danh sách" title="Ẩn danh sách">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5" /></svg>
@@ -30,7 +30,7 @@
             <button id="map-reset" class="tm-text-button" type="button" hidden>Xóa bộ lọc</button>
         </div>
         <div id="map-list" class="tm-place-list" aria-label="Danh sách kết quả"></div>
-        <div class="tm-sidebar-footnote">Chọn một địa điểm để xem vị trí trên bản đồ.</div>
+        <div class="tm-sidebar-footnote">Chọn một nhà hàng để xem vị trí trên bản đồ.</div>
     </aside>
 
     <button id="map-open-list" class="tm-open-list" type="button" aria-controls="map-sidebar" aria-expanded="true" hidden>
@@ -41,28 +41,26 @@
     <div class="tm-toolbar">
         <form id="map-search-form" class="tm-search" role="search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
-            <label class="tm-sr-only" for="map-search">Tìm địa điểm hoặc nhà hàng</label>
+            <label class="tm-sr-only" for="map-search">Tìm nhà hàng hoặc món ăn</label>
             <input id="map-search" type="search" autocomplete="off" maxlength="200"
-                   placeholder="Tìm theo tên, địa chỉ, quận, thành phố…" />
+                   placeholder="Tìm món ăn, nhà hàng, tỉnh thành…" />
             <button id="map-clear-search" class="tm-icon-button" type="button" aria-label="Xóa từ khóa" hidden>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
             </button>
         </form>
         <div class="tm-filter-row" aria-label="Lọc kết quả">
-            <div class="tm-type-filters" role="group" aria-label="Loại địa điểm">
-                <button class="tm-filter-chip" type="button" data-map-type="place" aria-pressed="false">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
-                    Địa điểm <span id="map-place-count" class="tm-chip-count">0</span>
-                </button>
-                <button class="tm-filter-chip tm-filter-restaurant" type="button" data-map-type="restaurant" aria-pressed="false">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v6c0 3 6 3 6 0V3M8 3v18M19 3c-4 3-4 9 0 9V3Zm0 9v9" /></svg>
-                    Nhà hàng <span id="map-restaurant-count" class="tm-chip-count">0</span>
-                </button>
+            <div class="tm-type-filters" role="group" aria-label="Danh mục nhà hàng">
+                @foreach (var category in TourisManager.Data.Seed.RestaurantSeed.CategoryNames)
+                {
+                    <button class="tm-filter-chip tm-filter-restaurant" type="button" data-map-type="@category" aria-pressed="false">
+                        @category <span class="tm-chip-count" data-category-count="@category">0</span>
+                    </button>
+                }
             </div>
             <div class="tm-area-filter">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15" /></svg>
                 <label class="tm-sr-only" for="map-area">Lọc theo khu vực</label>
-                <select id="map-area"><option value="">Mọi khu vực</option></select>
+                <select id="map-area"><option value="">Toàn quốc</option></select>
             </div>
         </div>
     </div>
@@ -93,10 +91,6 @@
         </button>
     </div>
 
-    <div class="tm-map-legend" aria-label="Chú thích bản đồ">
-        <span><i class="tm-legend-place"></i>Địa điểm</span>
-        <span><i class="tm-legend-restaurant"></i>Nhà hàng</span>
-    </div>
     <div id="map-message" class="tm-map-message" role="status" aria-live="polite" hidden></div>
     <noscript><div class="tm-map-message">Bạn cần bật JavaScript để sử dụng bản đồ và tìm kiếm.</div></noscript>
 </section>
