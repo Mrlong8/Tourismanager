@@ -1,12 +1,13 @@
-﻿using TourisManager.Core.Interfaces;
-using TourisManager.Services;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using TourisManager.Core.Entities;
+using TourisManager.Core.Interfaces;
 using TourisManager.Helpers;
 
 namespace TourisManager.Areas.Admin.Controllers
@@ -25,14 +26,14 @@ namespace TourisManager.Areas.Admin.Controllers
             _environment = environment;
         }
 
-        // Danh sách, tìm kiếm, lọc và phân trang
         public async Task<IActionResult> Index(
             string? searchString,
             string? categoryId,
             int? pageIndex)
         {
             var query = _locationService.GetLocationsQuery(
-                searchString, categoryId);
+                searchString,
+                categoryId);
 
             ViewBag.Categories =
                 await _locationService.GetCategoriesAsync();
@@ -88,20 +89,20 @@ namespace TourisManager.Areas.Admin.Controllers
                 return View(location);
             }
 
-            // Ưu tiên tài khoản hiện tại trong Session
-            var accountId = HttpContext.Session.GetString("AccountId");
+            var accountId =
+                HttpContext.Session.GetString("AccountId");
 
-            // Giữ cách dự phòng của code cũ
-            if (string.IsNullOrEmpty(accountId))
+            if (string.IsNullOrWhiteSpace(accountId))
             {
-                accountId = await _locationService.GetFirstAccountIdAsync();
+                accountId =
+                    await _locationService.GetFirstAccountIdAsync();
             }
 
-            if (string.IsNullOrEmpty(accountId))
+            if (string.IsNullOrWhiteSpace(accountId))
             {
                 ModelState.AddModelError(
                     "",
-                    "Hệ thống chưa có tài khoản người dùng trong bảng Account!");
+                    "Hệ thống chưa có tài khoản trong bảng Account.");
 
                 await LoadCategoriesAsync(location.CategoryId);
                 return View(location);
@@ -111,10 +112,13 @@ namespace TourisManager.Areas.Admin.Controllers
 
             if (imageFile != null && imageFile.Length > 0)
             {
-                location.ImageUrl = await SaveImageAsync(imageFile);
+                location.ImageUrl =
+                    await SaveImageAsync(imageFile);
             }
 
             await _locationService.CreateAsync(location);
+
+            TempData["Success"] = "Thêm địa điểm thành công!";
 
             return RedirectToAction(nameof(Index));
         }
@@ -126,7 +130,8 @@ namespace TourisManager.Areas.Admin.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
 
-            var location = await _locationService.GetByIdAsync(id);
+            var location =
+                await _locationService.GetByIdAsync(id);
 
             if (location == null)
                 return NotFound();
@@ -150,19 +155,21 @@ namespace TourisManager.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var oldLocation = await _locationService.GetByIdAsync(id);
+            var oldLocation =
+                await _locationService.GetByIdAsync(id);
 
             if (oldLocation == null)
                 return NotFound();
 
-            // Không cho form thay đổi các dữ liệu lịch sử
             location.AccountId = oldLocation.AccountId;
             location.CreateAt = oldLocation.CreateAt;
             location.IconUrl = oldLocation.IconUrl;
+            location.ImageUrl = oldLocation.ImageUrl;
 
-            if (string.IsNullOrEmpty(location.CategoryId))
+            if (string.IsNullOrWhiteSpace(location.CategoryId))
             {
-                location.CategoryId = oldLocation.CategoryId;
+                location.CategoryId =
+                    oldLocation.CategoryId;
             }
 
             ModelState.Remove(nameof(Location.AccountId));
@@ -174,18 +181,19 @@ namespace TourisManager.Areas.Admin.Controllers
                 return View(location);
             }
 
-            // Giữ ảnh cũ nếu không tải ảnh mới
-            location.ImageUrl = oldLocation.ImageUrl;
-
             if (imageFile != null && imageFile.Length > 0)
             {
-                location.ImageUrl = await SaveImageAsync(imageFile);
+                location.ImageUrl =
+                    await SaveImageAsync(imageFile);
             }
 
-            var updated = await _locationService.UpdateAsync(id, location);
+            var updated =
+                await _locationService.UpdateAsync(id, location);
 
             if (!updated)
                 return NotFound();
+
+            TempData["Success"] = "Cập nhật địa điểm thành công!";
 
             return RedirectToAction(nameof(Index));
         }
@@ -197,7 +205,8 @@ namespace TourisManager.Areas.Admin.Controllers
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
 
-            var location = await _locationService.GetByIdAsync(id);
+            var location =
+                await _locationService.GetByIdAsync(id);
 
             if (location == null)
                 return NotFound();
@@ -206,7 +215,8 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // POST: Xóa địa điểm
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -215,12 +225,14 @@ namespace TourisManager.Areas.Admin.Controllers
 
             try
             {
-                var deleted = await _locationService.DeleteAsync(id);
+                var deleted =
+                    await _locationService.DeleteAsync(id);
 
                 if (!deleted)
                     return NotFound();
 
-                TempData["Success"] = "Xóa địa điểm thành công!";
+                TempData["Success"] =
+                    "Xóa địa điểm thành công!";
             }
             catch (DbUpdateException)
             {
@@ -231,10 +243,11 @@ namespace TourisManager.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Nạp danh mục cho dropdown
-        private async Task LoadCategoriesAsync(string? selectedCategoryId = null)
+        private async Task LoadCategoriesAsync(
+            string? selectedCategoryId = null)
         {
-            var categories = await _locationService.GetCategoriesAsync();
+            var categories =
+                await _locationService.GetCategoriesAsync();
 
             ViewBag.CategoryId = new SelectList(
                 categories,
@@ -243,8 +256,8 @@ namespace TourisManager.Areas.Admin.Controllers
                 selectedCategoryId);
         }
 
-        // Lưu ảnh địa điểm
-        private async Task<string> SaveImageAsync(IFormFile imageFile)
+        private async Task<string> SaveImageAsync(
+            IFormFile imageFile)
         {
             var uploadDir = Path.Combine(
                 _environment.WebRootPath,
@@ -253,18 +266,23 @@ namespace TourisManager.Areas.Admin.Controllers
 
             Directory.CreateDirectory(uploadDir);
 
-            var fileName = Guid.NewGuid().ToString()
-                + Path.GetExtension(imageFile.FileName);
+            var extension =
+                Path.GetExtension(imageFile.FileName);
 
-            var filePath = Path.Combine(uploadDir, fileName);
+            var fileName =
+                $"{Guid.NewGuid():N}{extension}";
 
-            await using var fileStream = new FileStream(
-                filePath,
-                FileMode.Create);
+            var filePath =
+                Path.Combine(uploadDir, fileName);
+
+            await using var fileStream =
+                new FileStream(
+                    filePath,
+                    FileMode.Create);
 
             await imageFile.CopyToAsync(fileStream);
 
-            return "/Image/Location/" + fileName;
+            return $"/Image/Location/{fileName}";
         }
     }
 }

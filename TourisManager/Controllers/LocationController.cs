@@ -4,13 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Entities;
 using TourisManager.Data;
 using TourisManager.Data.Seed;
 using TourisManager.Models;
+using TourisManager.Services;
 
 namespace TourisManager.Controllers
 {
@@ -27,7 +30,6 @@ namespace TourisManager.Controllers
             if (location == null) return NotFound();
             var catalog = RestaurantSeed.Load(RestaurantSeed.FindCatalogPath(_environment.WebRootPath));
             var reference = catalog.Restaurants.FirstOrDefault(r => r.Id == id);
-            var foods = await _db.Foods.AsNoTracking().Include(f => f.TypeFood).Include(f => f.FoodSizes).Where(f => f.LocationId == id).ToListAsync();
             var reviews = await _db.Reviews.AsNoTracking().Include(r => r.Account).Where(r => r.LocationId == id).OrderByDescending(r => r.CreateAt).ToListAsync();
             var category = await _db.Categories.AsNoTracking().Where(c => c.CategoryId == location.CategoryId).Select(c => c.Name).FirstOrDefaultAsync();
             var model = new LocationDetailViewModel
@@ -50,29 +52,72 @@ namespace TourisManager.Controllers
                         r.Rating, r.CreateAt.ToString("dd/MM/yyyy"), r.Content ?? "")).ToList()
                 }
             };
-            model.MenuGroups = foods.GroupBy(f => string.IsNullOrWhiteSpace(f.TypeFood?.Name) ? "Món khác" : f.TypeFood.Name)
-                .Select(g => new RestaurantMenuGroup
-                {
-                    Name = g.Key,
-                    Items = g.OrderBy(f => f.Name).Select(f => new RestaurantMenuItem
-                    {
-                        Id = f.FoodId,
-                        Name = f.Name,
-                        Description = f.Description ?? "",
-                        ImageUrl = f.ImageUrl ?? "",
-                        Price = f.FoodSizes.Where(s => s.Price > 0).Select(s => (decimal?)s.Price).Min()
-                    }).ToList()
-                }).ToList();
-            if (foods.Count == 0 && reference != null && catalog.BrandMenus.TryGetValue(reference.Brand, out var groups))
-            {
-                model.IsReferenceMenu = true;
-                model.MenuGroups = groups.Select(g => new RestaurantMenuGroup
-                {
-                    Name = g.Name,
-                    Items = g.Items.Select(n => new RestaurantMenuItem { Name = n }).ToList()
-                }).ToList();
-            }
+            var menu = await RestaurantMenuCatalog.GetAsync(_db, _environment, location);
+            model.MenuGroups = menu.Groups;
+            model.IsReferenceMenu = menu.IsReference;
+            model.MenuNotice = menu.Notice;
+            model.MenuSourceUrl = menu.SourceUrl;
+            model.MenuSourceLabel = menu.SourceLabel;
+            model.MenuCheckedAt = menu.CheckedAt;
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PrepareCheckout([FromBody] RestaurantCheckoutRequest request)
+        {
+            if (request == null || !ModelState.IsValid || request.Items == null || request.Items.Count < 1 || request.Items.Count > 80
+                || request.Items.Any(i => i == null || string.IsNullOrWhiteSpace(i.MenuItemId) || i.Quantity < 1 || i.Quantity > 99)
+                || request.Items.Select(i => i.MenuItemId).Distinct(StringComparer.Ordinal).Count() != request.Items.Count)
+                return BadRequest(new { success = false, message = "Giỏ món không hợp lệ. Mỗi món được chọn từ 1 đến 99 phần." });
+            var location = await _db.Locations.AsNoTracking().FirstOrDefaultAsync(l => l.LocationId == request.LocationId);
+            if (location == null) return NotFound(new { success = false, message = "Không tìm thấy nhà hàng." });
+            var menu = await RestaurantMenuCatalog.GetAsync(_db, _environment, location);
+            var available = menu.Groups.SelectMany(g => g.Items).Where(i => i.CanOrder).ToDictionary(i => i.Id, StringComparer.Ordinal);
+            var draft = new RestaurantCheckoutDraft
+            {
+                LocationId = location.LocationId,
+                RestaurantName = location.Name,
+                RestaurantAddress = location.Address ?? ""
+            };
+            foreach (var line in request.Items)
+            {
+                if (!available.TryGetValue(line.MenuItemId, out var item))
+                    return BadRequest(new { success = false, message = "Một món đã thay đổi hoặc không thuộc nhà hàng này. Hãy tải lại thực đơn." });
+                draft.Items.Add(new RestaurantCheckoutDraftItem
+                {
+                    MenuItemId = item.Id,
+                    FoodId = item.FoodId,
+                    SizeId = item.SizeId,
+                    Name = item.Name,
+                    Unit = item.Unit,
+                    ImageUrl = item.ImageUrl,
+                    UnitPrice = item.Price!.Value,
+                    Quantity = line.Quantity
+                });
+                draft.IsIllustrative |= item.IsIllustrative;
+            }
+            // Prices and totals come exclusively from server data, never the posted browser values.
+            HttpContext.Session.SetString(RestaurantCheckoutDraft.SessionKey, JsonSerializer.Serialize(draft));
+            return Json(new
+            {
+                success = true,
+                draftId = draft.DraftId,
+                redirectUrl = Url.Action("Invoice", "Shop", new { area = "", draftId = draft.DraftId }),
+                draft
+            });
+        }
+
+        [HttpGet]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public IActionResult CheckoutDraft(string? draftId)
+        {
+            var json = HttpContext.Session.GetString(RestaurantCheckoutDraft.SessionKey);
+            var draft = string.IsNullOrWhiteSpace(json) ? null : JsonSerializer.Deserialize<RestaurantCheckoutDraft>(json);
+            if (draft == null || (!string.IsNullOrWhiteSpace(draftId) && !string.Equals(draftId, draft.DraftId, StringComparison.Ordinal))
+                || draft.CreatedAtUtc < DateTime.UtcNow.AddHours(-2))
+                return NotFound(new { message = "Giỏ đặt món đã hết hạn. Vui lòng chọn lại món." });
+            return Json(draft);
         }
 
         [HttpPost]

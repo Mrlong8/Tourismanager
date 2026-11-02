@@ -7,6 +7,7 @@ namespace TourisManager.Data.Seed
     {
         public static void Initialize(AppDbContext context)
         {
+
             context.Database.Migrate();
             if (!context.Accounts.Any())
             {

@@ -15,10 +15,14 @@ namespace TourisManager.Models
     public class RestaurantMenuItem
     {
         public string Id { get; set; } = "";
+        public string? FoodId { get; set; }
+        public string? SizeId { get; set; }
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public string ImageUrl { get; set; } = "";
+        public string Unit { get; set; } = "phần";
         public decimal? Price { get; set; }
+        public bool IsIllustrative { get; set; }
         public bool CanOrder => !string.IsNullOrEmpty(Id) && Price > 0;
     }
     public class RestaurantMenuGroup
@@ -40,6 +44,10 @@ namespace TourisManager.Models
         public string SourceUrl { get; set; } = "";
         public string MenuSourceUrl { get; set; } = "";
         public bool IsReferenceMenu { get; set; }
+        public string MenuNotice { get; set; } = "";
+        public string MenuSourceLabel { get; set; } = "";
+        public string MenuCheckedAt { get; set; } = "";
+        public int MenuItemCount => MenuGroups.Sum(g => g.Items.Count);
         public List<RestaurantMenuGroup> MenuGroups { get; set; } = new();
         public LocationExtra Extra { get; set; } = new();
     }

@@ -16,48 +16,13 @@
         groups.forEach(group => { group.open = open; });
         syncToggle();
     });
-    document.getElementById('order-start').addEventListener('click', () => {
-        groups.forEach(group => { group.open = true; });
-        syncToggle();
-    });
     root.querySelectorAll('img').forEach(img => {
-        img.addEventListener('error', () => img.remove(), { once: true });
-        if (img.complete && img.naturalWidth === 0) img.remove();
+        img.addEventListener('error', () => {
+            if (img.classList.contains('ld-food-image')) {
+                if (!img.dataset.failed) { img.dataset.failed = 'true'; img.src = root.dataset.imageFallback || '/Image/menu/image-unavailable.svg'; }
+            } else { img.remove(); }
+        });
     });
-    const message = document.getElementById('order-message');
-    root.addEventListener('click', async event => {
-        const button = event.target.closest('[data-food-id]');
-        if (!button || button.disabled) return;
-        button.disabled = true;
-        message.textContent = 'Đang mở món ăn…';
-        try {
-            if (!window.jQuery || !window.bootstrap?.Modal) throw new Error('Thiếu thư viện đặt món. Vui lòng tải lại trang.');
-            const url = new URL(root.dataset.quickOrderUrl, window.location.origin);
-            url.searchParams.set('id', button.dataset.foodId);
-            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            if (!response.ok) throw new Error('Chưa tải được món ăn. Vui lòng thử lại.');
-            // The existing partial contains checkout functions; jQuery executes those scripts.
-            window.jQuery('#quickOrderContent').html(await response.text());
-            window.bootstrap.Modal.getOrCreateInstance(document.getElementById('quickOrderModal')).show();
-            message.textContent = '';
-        } catch (error) { message.textContent = error.message || 'Không thể mở món ăn.'; }
-        finally { button.disabled = false; }
-    });
-    window.updateModalPrice = function () {
-        const modal = document.getElementById('quickOrderModal');
-        const price = Number(modal.querySelector('input[name="foodSize"]:checked')?.value) || 0;
-        const quantity = Number(modal.querySelector('#inputQty')?.value) || 1;
-        const format = value => new Intl.NumberFormat('vi-VN').format(value) + ' đ';
-        const display = modal.querySelector('#modalDisplayPrice');
-        const total = modal.querySelector('#modalTotalPrice');
-        if (display) display.textContent = format(price);
-        if (total) total.textContent = format(price * quantity);
-    };
-    window.updateQty = function (step) {
-        const input = document.querySelector('#quickOrderModal #inputQty');
-        if (input) input.value = Math.max(1, Math.min(99, (Number(input.value) || 1) + Number(step)));
-        window.updateModalPrice();
-    };
     const form = document.getElementById('review-form');
     if (form) {
         const rating = document.getElementById('rvRating');
@@ -85,7 +50,7 @@
         });
     }
     const share = document.getElementById('btnShare');
-    share.addEventListener('click', async () => {
+    if (share) share.addEventListener('click', async () => {
         try {
             if (navigator.share) await navigator.share({ title: document.title, url: location.href });
             else if (navigator.clipboard) { await navigator.clipboard.writeText(location.href); share.textContent = 'Đã chép link'; }

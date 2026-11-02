@@ -919,3 +919,795 @@ html {
         height: 180px
     }
 }
+
+/* Menu cards and restaurant cart */
+.ld-container {
+    max-width: 1440px;
+    padding: 0 28px
+}
+
+.ld-hero {
+    height: 230px
+}
+
+.ld-grid {
+    grid-template-columns: minmax(0,1fr) 350px;
+    gap: 24px
+}
+
+.ld-main {
+    min-width: 0
+}
+
+.ld-side {
+    position: sticky;
+    top: 92px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding-bottom: 4px
+}
+
+.ld-card {
+    padding: 24px;
+    border-color: #e8eeeb;
+    box-shadow: 0 5px 22px rgba(21,54,40,.035)
+}
+
+.ld-menu {
+    padding: 24px
+}
+
+.ld-menu-total {
+    font-size: 12px;
+    color: #638274;
+    background: #edf6f1;
+    padding: 5px 9px;
+    border-radius: 20px;
+    margin-left: 8px;
+    font-weight: 600
+}
+
+.ld-menu-source {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #7e8d84;
+    margin: 8px 0 20px
+}
+
+    .ld-menu-source a {
+        color: #108653;
+        text-decoration: underline;
+        text-underline-offset: 3px
+    }
+
+.ld-reference-note {
+    margin: 12px 0;
+    align-items: flex-start;
+    font-size: 12px;
+    line-height: 1.65;
+    padding: 12px 14px;
+    background: #f2f8f5;
+    border: 1px solid #e4eee8;
+    border-radius: 10px;
+    color: #63796c;
+    display: flex;
+    gap: 8px
+}
+
+    .ld-reference-note p {
+        margin: 0
+    }
+
+.ld-menu-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #e1e9e4;
+    background: #f9fbfa;
+    border-radius: 12px;
+    padding: 11px 14px;
+    margin: 20px 0 16px
+}
+
+    .ld-menu-search i {
+        color: #7b8f83
+    }
+
+    .ld-menu-search input {
+        background: transparent;
+        border: 0;
+        outline: 0;
+        width: 100%;
+        font-size: 14px;
+        min-width: 0;
+        color: #234233
+    }
+
+    .ld-menu-search:focus-within {
+        border-color: #11945d;
+        box-shadow: 0 0 0 3px #ecf8f1
+    }
+
+    .ld-menu-search button {
+        background: none;
+        border: 0;
+        color: #617e6a;
+        font-size: 21px;
+        padding: 0 4px
+    }
+
+.ld-menu-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding: 0 0 12px
+}
+
+    .ld-menu-tabs a {
+        white-space: nowrap;
+        padding: 8px 14px;
+        border: 1px solid #e2eae5;
+        border-radius: 30px;
+        color: #466454;
+        font-size: 12px;
+        font-weight: 650;
+        text-decoration: none;
+        background: #fff
+    }
+
+        .ld-menu-tabs a:hover, .ld-menu-tabs a:focus-visible {
+            background: #ecf8f1;
+            border-color: #179a61;
+            color: #087b48
+        }
+
+.ld-menu-group {
+    border: 0;
+    border-radius: 0;
+    margin: 16px 0 26px;
+    overflow: visible;
+    scroll-margin-top: 100px
+}
+
+    .ld-menu-group summary {
+        background: #f4f8f5;
+        border-radius: 10px;
+        padding: 13px 15px;
+        margin-bottom: 16px;
+        color: #234b36;
+        font-size: 16px
+    }
+
+.ld-menu-sign {
+    width: 26px;
+    height: 26px;
+    background: #e1eee5
+}
+
+    .ld-menu-sign::before {
+        font-size: 21px
+    }
+
+.ld-food-list {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 20px 16px
+}
+
+.ld-food-card {
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid #e8eeea;
+    border-radius: 13px;
+    overflow: hidden;
+    background: #fff;
+    transition: border-color .15s,box-shadow .15s;
+    min-width: 0
+}
+
+    .ld-food-card:hover {
+        border-color: #bbdbc8;
+        box-shadow: 0 4px 16px #183d2910
+    }
+
+    .ld-food-card.is-selected {
+        border-color: #19a46b;
+        box-shadow: 0 0 0 1px #19a46b
+    }
+
+.ld-food-photo {
+    aspect-ratio: 4/3;
+    background: #f1f4f2;
+    overflow: hidden;
+    flex: none
+}
+
+.ld-food-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    object-fit: cover;
+    display: block
+}
+
+.ld-food-copy {
+    padding: 13px 13px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px
+}
+
+    .ld-food-copy h3 {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.45;
+        margin: 0;
+        color: #193c2c;
+        min-height: 40px;
+        overflow-wrap: anywhere
+    }
+
+    .ld-food-copy p {
+        font-size: 12px;
+        line-height: 1.55;
+        color: #829087;
+        margin: 0;
+        min-height: 36px
+    }
+
+.ld-food-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 7px;
+    flex-wrap: wrap
+}
+
+.ld-food-price {
+    color: #0b8550;
+    font-size: 17px;
+    line-height: 1.2;
+    font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    gap: 4px
+}
+
+    .ld-food-price small {
+        font-size: 10px;
+        color: #7a8d80;
+        font-weight: 500
+    }
+
+.ld-quantity {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #d9e9df;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    flex-shrink: 0;
+    height: 32px
+}
+
+    .ld-quantity button {
+        height: 30px;
+        width: 29px;
+        padding: 0;
+        border: 0;
+        background: #edf7f0;
+        color: #0c8d54;
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 1;
+        cursor: pointer;
+        display: grid;
+        place-items: center
+    }
+
+        .ld-quantity button:hover:not(:disabled) {
+            background: #0d945a;
+            color: #fff
+        }
+
+        .ld-quantity button:disabled {
+            background: #f6f8f6;
+            color: #bbc7bf;
+            cursor: default
+        }
+
+    .ld-quantity output, .ld-quantity > span {
+        min-width: 23px;
+        text-align: center;
+        font-size: 13px;
+        color: #224b33;
+        font-weight: 650
+    }
+
+    .ld-quantity button:focus-visible, .ld-btn:focus-visible, .ld-cart-clear:focus-visible {
+        outline: 3px solid #84cca4;
+        outline-offset: 3px
+    }
+
+.ld-cart-card {
+    padding: 22px;
+    scroll-margin-top: 100px
+}
+
+.ld-cart-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px
+}
+
+    .ld-cart-heading .ld-h2 {
+        font-size: 20px;
+        margin: 0
+    }
+
+    .ld-cart-heading .ld-menu-eyebrow {
+        font-size: 9px;
+        letter-spacing: 1.6px;
+        margin-bottom: 9px
+    }
+
+#cart-count {
+    font-size: 11px;
+    background: #e4f6eb;
+    color: #0a8a4d;
+    border-radius: 20px;
+    min-width: 23px;
+    height: 23px;
+    display: grid;
+    place-items: center;
+    padding: 0 5px
+}
+
+.ld-cart-clear {
+    padding: 6px 0;
+    color: #789084;
+    background: none;
+    border: 0;
+    font-size: 12px;
+    text-decoration: underline;
+    text-underline-offset: 3px
+}
+
+.ld-cart-restaurant {
+    font-size: 12px;
+    color: #7b8c80;
+    border-bottom: 1px dashed #e1e9e4;
+    padding-bottom: 17px;
+    margin: 12px 0 0;
+    line-height: 1.6
+}
+
+.ld-cart-empty {
+    padding: 27px 0 22px;
+    text-align: center;
+    color: #8ba193;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px
+}
+
+    .ld-cart-empty > i {
+        font-size: 38px;
+        color: #a7c9b5;
+        background: #f1f8f3;
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center
+    }
+
+    .ld-cart-empty b {
+        font-size: 14px;
+        font-weight: 600;
+        color: #6c8977
+    }
+
+    .ld-cart-empty p {
+        font-size: 12px;
+        line-height: 1.75;
+        margin: 0
+    }
+
+.ld-cart-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 340px;
+    overflow: auto;
+    scrollbar-width: thin
+}
+
+.ld-cart-row {
+    padding: 17px 0;
+    border-bottom: 1px solid #edf1ee
+}
+
+.ld-cart-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 13px
+}
+
+    .ld-cart-line strong {
+        font-size: 13px;
+        white-space: nowrap;
+        color: #234d35
+    }
+
+.ld-cart-name {
+    font-weight: 650;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    flex: 1
+}
+
+.ld-cart-row-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 9px;
+    gap: 10px
+}
+
+    .ld-cart-row-foot small {
+        font-size: 11px;
+        color: #86978b
+    }
+
+.ld-cart-quantity {
+    height: 27px
+}
+
+    .ld-cart-quantity button {
+        height: 25px;
+        width: 26px;
+        font-size: 18px
+    }
+
+    .ld-cart-quantity > span {
+        font-size: 11px;
+        min-width: 21px
+    }
+
+.ld-cart-total {
+    padding-top: 20px;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px
+}
+
+    .ld-cart-total span {
+        font-size: 13px;
+        font-weight: 600;
+        color: #627d6c
+    }
+
+    .ld-cart-total strong {
+        font-size: 24px;
+        color: #0b8851;
+        letter-spacing: -.6px;
+        white-space: nowrap
+    }
+
+.ld-cart-fee {
+    font-size: 10px;
+    line-height: 1.6;
+    color: #92a095;
+    margin: 8px 0 15px
+}
+
+.ld-cart-card .ld-btn {
+    font-size: 13px;
+    padding: 12px 8px;
+    border-radius: 10px
+}
+
+.ld-cart-card .ld-btn-primary {
+    background: #0f965c;
+    box-shadow: none;
+    justify-content: space-between
+}
+
+    .ld-cart-card .ld-btn-primary:disabled {
+        background: #dcebe1;
+        color: #7b9d88;
+        cursor: default;
+        box-shadow: none
+    }
+
+.ld-cart-card .ld-btn-outline {
+    border-width: 1px
+}
+
+.ld-cart-card .ld-btn-ghost {
+    background: #f3f8f5
+}
+
+.ld-restaurant-info {
+    padding: 20px
+}
+
+    .ld-restaurant-info .ld-info-box {
+        margin: 0;
+        padding: 0;
+        background: none
+    }
+
+.ld-location-card {
+    padding: 20px
+}
+
+    .ld-location-card .ld-map {
+        height: 170px
+    }
+
+#checkout-message:empty, #order-message:empty {
+    display: none
+}
+
+.ld-sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0
+}
+
+.ld-mobile-cart {
+    display: none
+}
+
+.ld-page [hidden] {
+    display: none !important
+}
+
+@media(min-width:1600px) {
+    .ld-container {
+        max-width: 1500px
+    }
+}
+
+@media(max-width:1180px) {
+    .ld-grid {
+        grid-template-columns: minmax(0,1fr) 320px;
+        gap: 18px
+    }
+
+    .ld-container {
+        padding: 0 20px
+    }
+
+    .ld-menu {
+        padding: 18px
+    }
+
+    .ld-food-list {
+        grid-template-columns: repeat(2,minmax(0,1fr))
+    }
+
+    .ld-side {
+        top: 85px
+    }
+
+    .ld-card {
+        padding: 20px
+    }
+}
+
+@media(max-width:900px) {
+    .ld-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 18px
+    }
+
+    .ld-main {
+        display: contents
+    }
+
+    .ld-intro {
+        order: 0
+    }
+
+    .ld-menu {
+        order: 1;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .ld-side {
+        order: 2;
+        position: static;
+        max-height: none;
+        overflow: visible;
+        width: 100%;
+        padding: 0
+    }
+
+    .ld-main > #comments {
+        order: 3;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .ld-container {
+        padding: 0 16px
+    }
+
+    .ld-hero {
+        height: 190px
+    }
+
+    .ld-cart-items {
+        max-height: 350px
+    }
+
+    .ld-mobile-cart:not([hidden]) {
+        position: fixed;
+        z-index: 1050;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: #0e955a;
+        color: #fff;
+        border-radius: 13px;
+        text-decoration: none;
+        box-shadow: 0 5px 24px #0a4d3c33;
+        font-size: 14px;
+        font-weight: 650
+    }
+
+    .ld-page {
+        padding-bottom: 110px
+    }
+
+    .ld-restaurant-info, .ld-location-card {
+        display: none
+    }
+
+    .ld-menu-heading {
+        align-items: flex-start
+    }
+
+        .ld-menu-heading .ld-h2 {
+            font-size: 19px;
+            flex-wrap: wrap
+        }
+
+    .ld-menu-total {
+        margin-left: 0
+    }
+
+    .ld-menu-heading .ld-btn-outline-sm {
+        font-size: 11px;
+        white-space: nowrap;
+        padding: 6px 10px
+    }
+}
+
+@media(max-width:500px) {
+    .ld-container {
+        padding: 0 12px
+    }
+
+    .ld-card, .ld-menu {
+        padding: 16px;
+        border-radius: 14px
+    }
+
+    .ld-food-list {
+        gap: 14px 10px
+    }
+
+    .ld-food-copy {
+        padding: 10px;
+        gap: 6px
+    }
+
+        .ld-food-copy h3 {
+            font-size: 13px;
+            min-height: 38px
+        }
+
+        .ld-food-copy p {
+            font-size: 11px;
+            min-height: 34px
+        }
+
+    .ld-food-price {
+        font-size: 16px
+    }
+
+    .ld-food-bottom {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column
+    }
+
+    .ld-quantity {
+        height: 34px;
+        align-self: flex-end
+    }
+
+        .ld-quantity button {
+            height: 32px;
+            width: 33px
+        }
+
+    .ld-cart-quantity {
+        height: 28px
+    }
+
+        .ld-cart-quantity button {
+            width: 29px;
+            height: 26px
+        }
+
+    .ld-menu-group summary {
+        padding: 12px;
+        font-size: 15px
+    }
+
+    .ld-title {
+        font-size: 24px
+    }
+
+    .ld-hero {
+        height: 165px;
+        border-radius: 14px
+    }
+
+    .ld-menu-source {
+        font-size: 11px
+    }
+
+    .ld-menu-eyebrow {
+        font-size: 9px;
+        letter-spacing: 1.3px
+    }
+
+    .ld-cart-total strong {
+        font-size: 26px
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    html {
+        scroll-behavior: auto
+    }
+
+    .ld-food-card, .ld-quantity button {
+        transition: none
+    }
+}
