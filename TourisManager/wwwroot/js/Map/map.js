@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     "use strict";
 
     function initMapPage() {
@@ -53,17 +53,6 @@
             return Number.isFinite(parsed) && Math.abs(parsed) <= limit ? parsed : null;
         }
 
-        function isRestaurant(row, categories) {
-            const restaurantCategory = categories.some(category => {
-                const name = normalize(category);
-                return ["am thuc", "an uong", "food", "food and drink", "food & drink", "cafe", "ca phe"].includes(name)
-                    || /(^|[\s/&-])(nha hang|quan an|quan nhau|restaurant|restaurants|eatery|quan ca phe)([\s/&-]|$)/.test(name);
-            });
-            if (restaurantCategory) return true;
-            const placeCategory = categories.some(category => /(^|\s)(dia diem|du lich|tham quan|di tich|bao tang|pho di bo)(\s|$)/.test(normalize(category)));
-            return !placeCategory && row.hasMenu === true;
-        }
-
         try {
             const data = JSON.parse(byId("map-locations-data").textContent || "[]");
             if (!Array.isArray(data)) throw new Error("Invalid locations data");
@@ -80,16 +69,19 @@
                     imageUrl: String(row.imageUrl || ""),
                     areaName,
                     areaKey: row.areaId ? "id:" + row.areaId : areaName ? "name:" + normalize(areaName) : "",
-                    type: isRestaurant(row, categoryNames) ? "restaurant" : "place",
+                    type: "restaurant",
+                    categories: new Set(categoryNames.map(normalize)),
                     latitude,
                     longitude,
-                    hasCoordinates: latitude !== null && longitude !== null
+                    hasCoordinates: latitude !== null && longitude !== null && latitude >= 8 && latitude <= 24 && longitude >= 102 && longitude <= 110
                 };
-                item.searchText = normalize([item.name, item.address, item.areaName, ...categoryNames].join(" "));
+                item.categories.add(normalize("Nhà hàng"));
+                const menuNames = Array.isArray(row.menuNames) ? row.menuNames : [];
+                item.searchText = normalize([item.name, item.address, item.areaName, ...categoryNames, ...menuNames].join(" "));
                 return item;
             }).sort((a, b) => collator.compare(a.name, b.name));
         } catch (error) {
-            showMessage("Không đọc được dữ liệu địa điểm. Bạn thử tải lại trang nhé.", true);
+            showMessage("Không đọc được dữ liệu nhà hàng. Bạn thử tải lại trang nhé.", true);
         }
 
         const locationsById = new Map(rows.map(row => [row.id, row]));
@@ -136,7 +128,7 @@
         }
 
         function typeLabel(row) {
-            return row.type === "restaurant" ? "Nhà hàng" : "Địa điểm";
+            return "Nhà hàng";
         }
 
         function makeBadge(row) {
@@ -180,9 +172,7 @@
             const actions = makeElement("div", "tm-popup-actions");
             const details = makeElement("a", "tm-place-action", "Xem chi tiết ↗");
             details.href = detailsUrl(row);
-            const reviews = makeElement("a", "tm-place-action is-secondary", "Đánh giá");
-            reviews.href = detailsUrl(row) + "#comments";
-            actions.append(details, reviews);
+            actions.append(details);
             body.append(makeBadge(row), makeElement("h2", "tm-popup-title", row.name), makeElement("p", "tm-popup-address", row.address), actions);
             popup.append(makePhoto(row, true), body);
             return popup;
@@ -214,7 +204,7 @@
         function mapPadding() {
             const mobile = window.matchMedia("(max-width: 767px)").matches;
             return {
-                paddingTopLeft: [state.sidebarOpen && !mobile ? sidebar.offsetWidth + 42 : 24, mobile ? 165 : 125],
+                paddingTopLeft: [state.sidebarOpen && !mobile ? sidebar.offsetWidth + 42 : 24, Math.min(root.clientHeight * .35, root.querySelector(".tm-toolbar").offsetHeight + 42)],
                 paddingBottomRight: [66, state.sidebarOpen && mobile ? sidebar.offsetHeight + 43 : 45]
             };
         }
@@ -242,7 +232,7 @@
             if (!row) return;
             setSelected(id, true);
             if (!row.hasCoordinates) {
-                showMessage("Địa điểm này chưa được cập nhật tọa độ. Bạn vẫn có thể mở trang chi tiết.");
+                showMessage("Nhà hàng này chưa được cập nhật tọa độ. Bạn vẫn có thể mở trang chi tiết.");
                 return;
             }
             if (!map) {
@@ -265,7 +255,7 @@
             const empty = makeElement("div", "tm-empty");
             empty.innerHTML = searchSvg;
             empty.append(makeElement("h2", "", rows.length ? "Không tìm thấy kết quả" : "Chưa có dữ liệu"));
-            empty.append(makeElement("p", "", rows.length ? "Thử tên, địa chỉ khác hoặc bỏ bớt bộ lọc để tìm được nhiều nơi hơn." : "Địa điểm và nhà hàng sẽ xuất hiện khi được thêm vào hệ thống."));
+            empty.append(makeElement("p", "", rows.length ? "Thử tên, địa chỉ khác hoặc bỏ bớt bộ lọc để tìm được nhiều nơi hơn." : "Nhà hàng sẽ xuất hiện khi được thêm vào hệ thống."));
             if (rows.length) {
                 const reset = makeElement("button", "tm-place-action", "Xóa bộ lọc");
                 reset.type = "button";
@@ -278,12 +268,12 @@
         function renderResults(shouldFit) {
             const tokens = normalize(state.keyword).split(" ").filter(Boolean);
             const scope = rows.filter(row => (!state.area || row.areaKey === state.area) && tokens.every(token => row.searchText.includes(token)));
-            filtered = scope.filter(row => !state.type || row.type === state.type);
-            const placeCount = scope.filter(row => row.type === "place").length;
-            byId("map-place-count").textContent = numberFormat.format(placeCount);
-            byId("map-restaurant-count").textContent = numberFormat.format(scope.length - placeCount);
+            filtered = scope.filter(row => !state.type || row.categories.has(normalize(state.type)));
+            root.querySelectorAll("[data-category-count]").forEach(counter => {
+                counter.textContent = numberFormat.format(scope.filter(row => row.categories.has(normalize(counter.dataset.categoryCount))).length);
+            });
             byId("map-list-badge").textContent = numberFormat.format(filtered.length);
-            byId("map-list-title").textContent = state.type === "restaurant" ? "Nhà hàng" : state.type === "place" ? "Địa điểm" : "Địa điểm & nhà hàng";
+            byId("map-list-title").textContent = state.type || "Nhà hàng toàn quốc";
             const count = byId("map-result-count");
             count.replaceChildren(makeElement("strong", "", numberFormat.format(filtered.length)), document.createTextNode(" kết quả"));
             byId("map-reset").hidden = !state.type && !state.area && !state.keyword.trim();
@@ -321,6 +311,8 @@
         function resizeMap() {
             const height = document.fullscreenElement === root ? window.innerHeight : window.innerHeight - root.getBoundingClientRect().top;
             root.style.height = Math.max(260, height) + "px";
+            const toolbar = root.querySelector(".tm-toolbar");
+            root.style.setProperty("--tm-toolbar-bottom", (toolbar.offsetTop + toolbar.offsetHeight + 10) + "px");
             if (map) map.invalidateSize({ pan: false });
         }
 
@@ -484,7 +476,7 @@
             resizeMap();
         });
 
-        renderResults(false);
+        renderResults(true);
         window.requestAnimationFrame(resizeMap);
     }
 
