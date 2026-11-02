@@ -1,4 +1,4 @@
-﻿/* ===== Trang chi tiết địa điểm - phong cách TourisManager (xanh lục bảo, card bo tròn) ===== */
+﻿
 :root {
     --ld-green: #10b981;
     --ld-green-dark: #059669;
@@ -28,7 +28,6 @@ html {
     padding: 0 16px;
 }
 
-/* Breadcrumb */
 .ld-breadcrumb {
     display: flex;
     align-items: center;
@@ -57,7 +56,6 @@ html {
         font-weight: 600;
     }
 
-/* Hero */
 .ld-hero {
     height: 300px;
     border-radius: 20px;
@@ -87,7 +85,6 @@ html {
         font-size: 56px;
     }
 
-/* Grid */
 .ld-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 340px;
@@ -101,7 +98,6 @@ html {
     gap: 20px;
 }
 
-/* Card */
 .ld-card {
     background: #fff;
     border: 1px solid #f0f0f0;
@@ -208,6 +204,7 @@ html {
     border: 0;
     border-top: 1px solid #eef0f3;
     margin: 20px 0;
+    opacity: 1;
 }
 
 .ld-h2 {
@@ -237,7 +234,6 @@ html {
     margin: 16px 0 0;
 }
 
-/* Pills (giống "Danh sách sân") */
 .ld-pills {
     display: flex;
     flex-wrap: wrap;
@@ -278,7 +274,6 @@ html {
         margin-top: 2px;
     }
 
-/* Rating */
 .ld-stars {
     color: #f59e0b;
     display: inline-flex;
@@ -359,7 +354,6 @@ html {
     text-align: right;
 }
 
-/* Form */
 .ld-form {
     background: #f9fafb;
     border: 1px solid #eef0f3;
@@ -393,6 +387,7 @@ html {
         }
 
 .ld-input {
+    display: block;
     width: 100%;
     border: 1px solid var(--ld-border);
     border-radius: 10px;
@@ -428,7 +423,6 @@ html {
         color: var(--ld-green-dark);
     }
 
-/* Review list */
 .ld-reviews {
     display: flex;
     flex-direction: column;
@@ -472,7 +466,6 @@ html {
     line-height: 1.6;
 }
 
-/* Sidebar */
 .ld-side-rating {
     display: flex;
     align-items: center;
@@ -570,13 +563,13 @@ html {
     }
 
 .ld-map {
+    display: block;
     width: 100%;
     height: 220px;
     border: 0;
     border-radius: 12px;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
     .ld-grid {
         grid-template-columns: 1fr;
@@ -592,5 +585,337 @@ html {
 
     .ld-title {
         font-size: 24px;
+    }
+}
+
+.ld-hero {
+    position: relative
+}
+
+    .ld-hero img {
+        position: absolute;
+        inset: 0
+    }
+
+.ld-hero-empty {
+    background: linear-gradient(135deg,#ecfdf5,#e6eee8);
+    color: #38745a;
+    padding: 24px;
+    text-align: center;
+    box-sizing: border-box
+}
+
+.ld-menu {
+    scroll-margin-top: 90px
+}
+
+.ld-menu-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px
+}
+
+    .ld-menu-heading .ld-h2 {
+        margin: 0
+    }
+
+.ld-menu-eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--ld-green-dark);
+    font-weight: 800;
+    margin: 0 0 6px
+}
+
+.ld-menu-group {
+    border: 1px solid var(--ld-border);
+    border-radius: 12px;
+    margin: 12px 0;
+    overflow: hidden
+}
+
+    .ld-menu-group summary {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        list-style: none;
+        background: #f9fbfa;
+        font-size: 16px;
+        font-weight: 750;
+        gap: 8px
+    }
+
+        .ld-menu-group summary::-webkit-details-marker {
+            display: none
+        }
+
+        .ld-menu-group summary small {
+            color: var(--ld-muted);
+            font-weight: 500;
+            font-size: 12px;
+            margin-left: 8px
+        }
+
+.ld-menu-sign {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #e2f5eb;
+    color: #07804f;
+    flex-shrink: 0
+}
+
+    .ld-menu-sign::before {
+        content: '+';
+        font-size: 22px;
+        line-height: 1
+    }
+
+.ld-menu-group[open] .ld-menu-sign::before {
+    content: '−'
+}
+
+.ld-food-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-top: 1px solid #edf1ee
+}
+
+.ld-food-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0
+}
+
+.ld-food-copy {
+    min-width: 0;
+    flex: 1
+}
+
+    .ld-food-copy h3 {
+        font-size: 15px;
+        margin: 0 0 5px;
+        font-weight: 700;
+        overflow-wrap: anywhere
+    }
+
+    .ld-food-copy p {
+        font-size: 13px;
+        color: #768178;
+        margin: 0 0 7px;
+        white-space: pre-line
+    }
+
+.ld-food-price {
+    font-weight: 750;
+    color: #07804f;
+    font-size: 14px
+}
+
+.ld-food-unavailable {
+    font-size: 12px;
+    color: #768178
+}
+
+.ld-order-food {
+    border: 1px solid #cce9da;
+    border-radius: 8px;
+    background: #f2fbf6;
+    color: #07804f;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 10px;
+    cursor: pointer;
+    flex-shrink: 0
+}
+
+    .ld-order-food span {
+        font-size: 18px;
+        margin-left: 4px
+    }
+
+    .ld-order-food:disabled {
+        opacity: .6;
+        cursor: wait
+    }
+
+.ld-menu-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: #6b7280
+}
+
+    .ld-menu-empty i {
+        font-size: 32px
+    }
+
+    .ld-menu-empty h3 {
+        font-size: 17px;
+        color: #374151;
+        margin: 12px 0 8px
+    }
+
+.ld-reference-note {
+    display: flex;
+    gap: 10px;
+    background: #f0f8f4;
+    color: #466451;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.65
+}
+
+    .ld-reference-note p {
+        margin: 0
+    }
+
+    .ld-reference-note i {
+        color: #15915d
+    }
+
+.ld-review-label {
+    display: block;
+    font-size: 13px;
+    margin: 10px 0 6px;
+    font-weight: 600
+}
+
+.ld-login-note {
+    background: #f3f8f5;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 14px
+}
+
+    .ld-login-note a, .ld-note a, .ld-meta a {
+        color: #07804f
+    }
+
+.ld-intro, .ld-side, .ld-main {
+    min-width: 0
+}
+
+.ld-title {
+    overflow-wrap: anywhere
+}
+
+#comments {
+    scroll-margin-top: 90px
+}
+
+.ld-review-body p, .ld-address {
+    overflow-wrap: anywhere
+}
+
+.ld-info-box b {
+    overflow-wrap: anywhere;
+    text-align: right
+}
+
+.ld-btn:focus-visible, .ld-menu-group summary:focus-visible, .ld-order-food:focus-visible {
+    outline: 3px solid #2eab76;
+    outline-offset: 3px
+}
+
+@media(max-width:900px) {
+    .ld-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px
+    }
+
+    .ld-main, .ld-side {
+        display: contents
+    }
+
+    .ld-intro {
+        order: 0;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .ld-restaurant-actions {
+        order: 1;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .ld-menu {
+        order: 2;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    #comments {
+        order: 3;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .ld-location-card {
+        order: 4;
+        width: 100%;
+        box-sizing: border-box
+    }
+}
+
+@media(max-width:480px) {
+    .ld-card {
+        padding: 18px
+    }
+
+    .ld-food-card {
+        padding: 13px 10px;
+        gap: 9px
+    }
+
+    .ld-food-image {
+        width: 48px;
+        height: 48px
+    }
+
+    .ld-order-food {
+        font-size: 11px;
+        padding: 7px
+    }
+
+    .ld-menu-heading {
+        align-items: flex-start
+    }
+
+        .ld-menu-heading .ld-h2 {
+            font-size: 19px
+        }
+
+        .ld-menu-heading button {
+            font-size: 11px;
+            white-space: nowrap
+        }
+
+    .ld-rating-summary {
+        flex-direction: column
+    }
+
+    .ld-rating-bars {
+        width: 100%
+    }
+
+    .ld-title {
+        font-size: 24px
+    }
+
+    .ld-hero {
+        height: 180px
     }
 }

@@ -67,6 +67,13 @@ namespace TourisManager
             builder.Services.AddScoped<ChatAutoReplyService>();
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<TourisManager.Data.AppDbContext>();
+                TourisManager.Data.Seed.DbInitializer.Initialize(db);
+            }
+    
+
             // Initialize the database
             using (var scope = app.Services.CreateScope())
             {
