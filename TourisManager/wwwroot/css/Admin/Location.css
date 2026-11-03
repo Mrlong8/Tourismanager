@@ -1,0 +1,62 @@
+﻿/* Khung chứa thanh phân trang */
+.location-pagination-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Vùng có thể kéo ngang */
+.location-pagination-scroll {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: scroll !important;
+    overflow-y: hidden;
+    padding-bottom: 12px;
+    scrollbar-width: auto;
+    scrollbar-color: #929aa5 #e9edf2;
+}
+
+    /* Giữ tất cả nút trên một hàng */
+    .location-pagination-scroll .pagination {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        width: max-content;
+        min-width: max-content;
+        align-items: center;
+        margin: 0;
+    }
+
+    /* Không cho nút bị co lại */
+    .location-pagination-scroll .page-item {
+        flex: 0 0 auto;
+    }
+
+    /* Kích thước nút số trang */
+    .location-pagination-scroll .page-link {
+        min-width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Thanh cuộn ngang trên Edge và Chrome */
+    .location-pagination-scroll::-webkit-scrollbar {
+        height: 12px;
+    }
+
+    .location-pagination-scroll::-webkit-scrollbar-track {
+        background: #e9edf2;
+        border-radius: 10px;
+    }
+
+    .location-pagination-scroll::-webkit-scrollbar-thumb {
+        background: #929aa5;
+        border-radius: 10px;
+    }
+
+        .location-pagination-scroll::-webkit-scrollbar-thumb:hover {
+            background: #68717d;
+        }

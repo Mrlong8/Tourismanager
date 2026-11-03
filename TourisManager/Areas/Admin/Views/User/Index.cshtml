@@ -150,49 +150,50 @@
                         }
                     </tbody>
                 </table>
-                <!-- THANH PHÂN TRANG -->
-                <!-- Card Footer: Thanh Phân Trang Bootstrap (Đồng bộ với Location) -->
                 
-                <!-- Phân trang -->
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
-                    <div class="text-muted">
-                        Hiển thị trang @Model.PageIndex / @Model.TotalPages
-                        (Tổng @Model.TotalCount người dùng)
+                <!-- Phân trang User -->
+                <div class="user-pagination">
+                    <div class="pagination-info">
+                        Hiển thị trang <strong>@Model.PageIndex</strong> /
+                        @Model.TotalPages (Tổng @Model.TotalCount người dùng)
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <a asp-area="Admin"
-                           asp-controller="User"
-                           asp-action="Index"
-                           asp-route-pageIndex="@(Model.PageIndex - 1)"
-                           asp-route-searchString="@ViewBag.CurrentSearch"
-                           class="btn btn-outline-primary btn-sm @(Model.HasPreviousPage ? "" : "disabled")">
-                            <i class="bi bi-chevron-left"></i> Trước
-                        </a>
+                    <div class="pagination-scroll">
+                        <div class="pagination-buttons">
 
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
                             <a asp-area="Admin"
                                asp-controller="User"
                                asp-action="Index"
-                               asp-route-pageIndex="@i"
+                               asp-route-pageIndex="@(Model.PageIndex - 1)"
                                asp-route-searchString="@ViewBag.CurrentSearch"
-                               class="btn btn-sm @(i == Model.PageIndex ? "btn-primary" : "btn-outline-primary")">
-                                @i
+                               class="page-btn @(Model.HasPreviousPage ? "" : "disabled")">
+                                <i class="bi bi-chevron-left"></i> Trước
                             </a>
-                        }
 
-                        <a asp-area="Admin"
-                           asp-controller="User"
-                           asp-action="Index"
-                           asp-route-pageIndex="@(Model.PageIndex + 1)"
-                           asp-route-searchString="@ViewBag.CurrentSearch"
-                           class="btn btn-outline-primary btn-sm @(Model.HasNextPage ? "" : "disabled")">
-                            Tiếp <i class="bi bi-chevron-right"></i>
-                        </a>
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <a asp-area="Admin"
+                                   asp-controller="User"
+                                   asp-action="Index"
+                                   asp-route-pageIndex="@i"
+                                   asp-route-searchString="@ViewBag.CurrentSearch"
+                                   class="page-btn @(i == Model.PageIndex ? "active" : "")">
+                                    @i
+                                </a>
+                            }
+
+                            <a asp-area="Admin"
+                               asp-controller="User"
+                               asp-action="Index"
+                               asp-route-pageIndex="@(Model.PageIndex + 1)"
+                               asp-route-searchString="@ViewBag.CurrentSearch"
+                               class="page-btn @(Model.HasNextPage ? "" : "disabled")">
+                                Sau <i class="bi bi-chevron-right"></i>
+                            </a>
+
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
