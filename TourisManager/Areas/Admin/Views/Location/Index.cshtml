@@ -150,20 +150,27 @@
                 </table>
             </div>
         </div>
-
-        <!-- Card Footer: Thanh Phân Trang Bootstrap -->
+        
+        <!-- Card Footer: Thanh phân trang có thể kéo ngang -->
         @if (Model != null)
         {
-            <div class="card-footer bg-white border-top py-3 px-4 d-flex align-items-center justify-content-between">
-                <div class="text-muted small">
-                    Hiển thị trang <b>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</b> / <b>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</b> (Tổng <b>@Model.TotalCount</b> địa điểm)
+            <div class="card-footer bg-white border-top py-3 px-4">
+
+                <div class="location-pagination-info text-muted small mb-2">
+                    Hiển thị trang
+                    <b>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</b> /
+                    <b>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</b>
+                    (Tổng <b>@Model.TotalCount</b> địa điểm)
                 </div>
 
                 @if (Model.TotalPages > 1)
                 {
-                    <nav>
+                    <nav class="location-pagination-scroll"
+                         aria-label="Phân trang địa điểm">
+
                         <ul class="pagination pagination-sm mb-0">
-                            <!-- Nút Trang trước -->
+
+                            <!-- Trang trước -->
                             <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
                                 <a class="page-link rounded-pill px-3 me-1"
                                    asp-area="Admin"
@@ -172,7 +179,9 @@
                                    asp-route-pageIndex="@(Model.PageIndex - 1)"
                                    asp-route-searchString="@ViewBag.CurrentSearch"
                                    asp-route-categoryId="@ViewBag.CurrentCategory">
-                                    <i class="bi bi-chevron-left me-1"></i> Trước
+
+                                    <i class="bi bi-chevron-left me-1"></i>
+                                    Trước
                                 </a>
                             </li>
 
@@ -192,7 +201,7 @@
                                 </li>
                             }
 
-                            <!-- Nút Trang sau -->
+                            <!-- Trang sau -->
                             <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
                                 <a class="page-link rounded-pill px-3 ms-1"
                                    asp-area="Admin"
@@ -201,13 +210,18 @@
                                    asp-route-pageIndex="@(Model.PageIndex + 1)"
                                    asp-route-searchString="@ViewBag.CurrentSearch"
                                    asp-route-categoryId="@ViewBag.CurrentCategory">
-                                    Sau <i class="bi bi-chevron-right ms-1"></i>
+
+                                    Sau
+                                    <i class="bi bi-chevron-right ms-1"></i>
                                 </a>
                             </li>
+
                         </ul>
                     </nav>
                 }
             </div>
         }
+
+        
     </div>
 </div>
