@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
+﻿<link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
 <header class="sticky-top border-bottom">
     <nav class="navbar navbar-expand-sm navbar-light bg-white py-2">
         <div class="container-fluid">
@@ -70,7 +70,7 @@
                     </li>
 
                     <li class="nav-item mx-2">
-                        <a class="nav-link fw-bold shopee-text @(currentController == "Dashboard" ? "active" : "")"
+                        <a class="nav-link fw-bold shopee-text @(ViewContext.RouteData.Values["area"]?.ToString() == "Seller" || currentController == "Dashboard" ? "active" : "")"
                            asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
                             Kênh Chủ Quán
                         </a>

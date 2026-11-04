@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using TourisManager.Core.Entities;
-using TourisManager.Data; // Kéo thư viện Data để sử dụng AppDbContext
+using TourisManager.Data;
 
 namespace TourisManager.Areas.Seller.Controllers
 {
@@ -21,13 +22,13 @@ namespace TourisManager.Areas.Seller.Controllers
 
         // --- TRẠM KIỂM SOÁT KHI VÀO DASHBOARD ---
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // 1. Lấy AccountId của người đang đăng nhập (từ Cookie)
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // 2. Chọc vào Database kiểm tra xem Seller này đã có Location (gian hàng) nào chưa
-            var location = _context.Locations.FirstOrDefault(l => l.AccountId == userId);
+            var location = await _context.Locations.FirstOrDefaultAsync(l => l.AccountId == userId);
 
             // 3. Nếu chưa có -> Ép buộc chuyển hướng sang trang "Thêm nhà hàng mới"
             if (location == null)
@@ -35,15 +36,48 @@ namespace TourisManager.Areas.Seller.Controllers
                 return RedirectToAction("CreateLocation");
             }
 
-            // Nếu đã có -> Vào trang Dashboard bình thường
+            // Thống kê dữ liệu thực tế cho Seller
+            ViewBag.FoodCount = await _context.Foods.CountAsync(f => f.LocationId == location.LocationId);
+            ViewBag.OrderCount = await _context.Orders.CountAsync(o => o.LocationId == location.LocationId);
+            ViewBag.PendingOrderCount = await _context.Orders.CountAsync(o => o.LocationId == location.LocationId && o.OrderStatus == OrderStatus.Pending);
+            ViewBag.Revenue = await _context.Orders
+                .Where(o => o.LocationId == location.LocationId && o.OrderStatus == OrderStatus.Completed)
+                .SumAsync(o => (decimal?)o.TotalAmount) ?? 0m;
+
             return View(location);
+        }
+
+        // --- CẬP NHẬT HỒ SƠ QUÁN ĂN ---
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(Location model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var location = await _context.Locations.FirstOrDefaultAsync(l => l.LocationId == model.LocationId && l.AccountId == userId);
+
+            if (location == null)
+            {
+                TempData["Error"] = "Không tìm thấy thông tin gian hàng!";
+                return RedirectToAction("Index");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Name))
+            {
+                location.Name = model.Name;
+            }
+            location.Address = model.Address;
+            location.Description = model.Description;
+
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Cập nhật hồ sơ quán ăn thành công!";
+
+            return RedirectToAction("Index");
         }
 
         // --- MỞ GIAO DIỆN FORM THÊM NHÀ HÀNG ---
         [HttpGet]
         public IActionResult CreateLocation()
         {
-            // Khởi tạo một đối tượng Location rỗng để form HTML có thể binding (gắn kết) dữ liệu
             return View(new Location());
         }
 
@@ -52,25 +86,17 @@ namespace TourisManager.Areas.Seller.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateLocation(Location model)
         {
-            // Lấy ID tài khoản của Chủ quán hiện tại
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // RẤT QUAN TRỌNG: Gắn ID của người đăng nhập vào làm chủ của gian hàng này
             model.AccountId = userId;
 
-            // Vì bảng Location yêu cầu CategoryId (Danh mục) không được rỗng, ta tạm gán mã mặc định
-            // (Sau này bạn có thể cập nhật thành Dropdown list để Chủ quán chọn danh mục thực tế)
             if (string.IsNullOrEmpty(model.CategoryId))
             {
                 model.CategoryId = "CAT_DEFAULT";
             }
 
-            // Thêm bản ghi vào DbContext và lưu xuống cơ sở dữ liệu
             _context.Locations.Add(model);
             await _context.SaveChangesAsync();
 
-            // Tạo thành công thì tự động vòng lại trang Index. 
-            // Lúc này trạm kiểm soát Index sẽ cho qua vì Database đã có dữ liệu gian hàng.
             return RedirectToAction("Index");
         }
     }

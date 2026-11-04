@@ -1,0 +1,526 @@
+@model TourisManager.Areas.Seller.Models.FoodListViewModel
+
+@{
+    ViewData["Title"] = "Quản lý món ăn";
+    Layout = "~/Views/Shared/MyLayout.cshtml";
+    var location = ViewBag.Location as TourisManager.Core.Entities.Location;
+}
+
+<div class="container-fluid mt-4 mb-5">
+    <div class="row">
+        <!-- CỘT TRÁI: Sidebar Điều hướng chung -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <partial name="_SellerSidebar" />
+        </div>
+
+        <!-- CỘT PHẢI: Nội dung Quản lý món ăn -->
+        <div class="col-lg-9 col-md-8 px-4">
+            
+            <!-- Thông báo TempData -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Tiêu đề & Nút Thêm mới -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <h2 class="fw-bold text-dark mb-1">
+                        <i class="bi bi-egg-fried text-success me-2"></i>Quản lý món ăn
+                    </h2>
+                    <p class="text-muted small mb-0">Thêm mới, điều chỉnh giá và cập nhật thực đơn cho quán: <strong>@(location?.Name ?? "Quán ăn của bạn")</strong></p>
+                </div>
+                <button type="button" class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#createFoodModal">
+                    <i class="bi bi-plus-lg me-1"></i> Thêm món ăn mới
+                </button>
+            </div>
+
+            <!-- Thống kê nhanh thực đơn -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-success bg-opacity-10 text-success p-3 rounded-4">
+                                <i class="bi bi-cup-hot-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Tổng số món ăn</div>
+                                <h3 class="fw-bold mb-0 text-dark">@Model.TotalItems</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-4">
+                                <i class="bi bi-tags-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Danh mục phân loại</div>
+                                <h3 class="fw-bold mb-0 text-dark">@Model.TotalCategories <span class="fs-6 fw-normal text-muted">nhóm món</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-4">
+                                <i class="bi bi-cash-stack fs-3"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-semibold">Giá trung bình</div>
+                                <h3 class="fw-bold mb-0 text-success">@Model.AvgPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thanh Tìm kiếm và Lọc danh mục -->
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3 mb-4">
+                <form method="get" asp-action="Index" class="row g-2 align-items-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="search" class="form-control bg-light border-0" placeholder="Tìm theo tên món hoặc mô tả..." value="@Model.SearchTerm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <select name="typeId" class="form-select bg-light border-0">
+                            <option value="">-- Tất cả danh mục món --</option>
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <option value="@cat.TypeFoodId" selected="@(Model.SelectedTypeId == cat.TypeFoodId ? "selected" : null)">
+                                    @cat.Name
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-lg-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-success rounded-pill px-3 flex-grow-1 shadow-sm">
+                            <i class="bi bi-funnel me-1"></i> Lọc
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.SelectedTypeId))
+                        {
+                            <a asp-action="Index" class="btn btn-light rounded-pill px-3" title="Xóa bộ lọc">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bảng danh sách món ăn -->
+            <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+                @if (Model.Foods != null && Model.Foods.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 5%;">#</th>
+                                    <th style="width: 12%;">Hình ảnh</th>
+                                    <th style="width: 28%;">Tên món & Mô tả</th>
+                                    <th style="width: 15%;">Danh mục</th>
+                                    <th style="width: 15%;">Giá bán & Kích cỡ</th>
+                                    <th style="width: 12%;">Ngày tạo</th>
+                                    <th class="text-end pe-4" style="width: 13%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int stt = 1;
+                                    foreach (var food in Model.Foods)
+                                    {
+                                        var primarySize = food.FoodSizes.FirstOrDefault();
+                                        var price = primarySize?.Price ?? 0m;
+                                        var sizeName = primarySize?.Size?.Name ?? "Tiêu chuẩn";
+
+                                        <tr>
+                                            <td class="ps-4 text-muted fw-semibold">@stt</td>
+                                            <td>
+                                                <div class="position-relative" style="width: 60px; height: 60px;">
+                                                    <img src="@(string.IsNullOrWhiteSpace(food.ImageUrl) ? "/Image/Food/default_food.jpg" : food.ImageUrl)" 
+                                                         alt="@food.Name" 
+                                                         class="w-100 h-100 rounded-3 object-fit-cover shadow-sm border"
+                                                         onerror="this.onerror=null; this.src='/Image/Food/default_food.jpg';" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark fs-6">@food.Name</div>
+                                                <div class="text-muted small text-truncate" style="max-width: 250px;">
+                                                    @(string.IsNullOrWhiteSpace(food.Description) ? "Chưa có mô tả chi tiết" : food.Description)
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-medium">
+                                                    @(food.TypeFood?.Name ?? "Chưa phân loại")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-danger fs-6">@price.ToString("N0") đ</div>
+                                                <span class="badge bg-light text-secondary border rounded-pill small">@sizeName</span>
+                                            </td>
+                                            <td class="text-muted small">
+                                                @food.CreateAt.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <div class="btn-group">
+                                                    <button type="button" 
+                                                            class="btn btn-outline-success btn-sm rounded-pill me-1 btn-edit-food" 
+                                                            data-id="@food.FoodId"
+                                                            title="Chỉnh sửa món ăn">
+                                                        <i class="bi bi-pencil-square"></i> Sửa
+                                                    </button>
+                                                    <button type="button" 
+                                                            class="btn btn-outline-danger btn-sm rounded-pill btn-delete-food" 
+                                                            data-id="@food.FoodId" 
+                                                            data-name="@food.Name"
+                                                            title="Xóa món ăn">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        stt++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5 px-3">
+                        <div class="mb-3 text-muted">
+                            <i class="bi bi-egg-fried display-1 text-black-50"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Chưa có món ăn nào trong thực đơn</h5>
+                        <p class="text-muted small mb-4">Hãy thêm các món ăn hấp dẫn để thu hút thực khách đặt món từ quán của bạn!</p>
+                        <button type="button" class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#createFoodModal">
+                            <i class="bi bi-plus-lg me-1"></i> Thêm món ăn ngay
+                        </button>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL THÊM MỚI MÓN ĂN -->
+<!-- ======================================================== -->
+<div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark" id="createFoodModalLabel">
+                        <i class="bi bi-plus-circle-fill text-success me-2"></i>Thêm món ăn mới vào thực đơn
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Tên món ăn -->
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold">Tên món ăn <span class="text-danger">*</span></label>
+                            <input type="text" name="Name" class="form-control rounded-3" placeholder="Ví dụ: Phở bò đặc biệt, Cơm tấm sườn bì..." required />
+                        </div>
+
+                        <!-- Loại món ăn -->
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">Danh mục phân loại <span class="text-danger">*</span></label>
+                            <select name="TypeFoodId" id="createTypeSelect" class="form-select rounded-3" required>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.TypeFoodId">@cat.Name</option>
+                                }
+                                <option value="NEW">+ Tạo danh mục mới...</option>
+                            </select>
+                        </div>
+
+                        <!-- Input tạo danh mục mới (ẩn mặc định) -->
+                        <div class="col-12 d-none" id="createCustomTypeDiv">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-success small mb-1">
+                                    <i class="bi bi-tag me-1"></i>Nhập tên danh mục mới của quán:
+                                </label>
+                                <input type="text" name="NewTypeName" id="createCustomTypeInput" class="form-control rounded-3" placeholder="Ví dụ: Món nướng đặc sản, Trà sữa Đài Loan..." />
+                            </div>
+                        </div>
+
+                        <!-- Giá bán -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" name="Price" class="form-control rounded-start-3" placeholder="50000" min="0" step="1000" required />
+                                <span class="input-group-text bg-light text-muted fw-bold rounded-end-3">VNĐ</span>
+                            </div>
+                        </div>
+
+                        <!-- Kích cỡ / Quy cách -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kích cỡ / Quy cách</label>
+                            <input type="text" name="SizeName" class="form-control rounded-3" placeholder="Tiêu chuẩn, Size M, Suất lớn..." value="Tiêu chuẩn" />
+                        </div>
+
+                        <!-- Hình ảnh món ăn -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Hình ảnh món ăn</label>
+                            <div class="row align-items-center g-3">
+                                <div class="col-auto">
+                                    <div class="border rounded-3 p-1 bg-light text-center" style="width: 90px; height: 90px; overflow: hidden;">
+                                        <img id="createImgPreview" src="/Image/Food/default_food.jpg" class="w-100 h-100 object-fit-cover rounded-2" alt="Preview" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="file" name="imageFile" id="createImgInput" class="form-control rounded-3 mb-2" accept="image/*" />
+                                    <input type="text" name="ImageUrl" class="form-control form-control-sm rounded-3" placeholder="Hoặc dán URL hình ảnh từ internet..." />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mô tả món ăn -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mô tả món ăn</label>
+                            <textarea name="Description" class="form-control rounded-3" rows="3" placeholder="Thành phần, hương vị đặc sắc của món ăn..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                        <i class="bi bi-check-lg me-1"></i> Lưu món ăn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL CHỈNH SỬA MÓN ĂN -->
+<!-- ======================================================== -->
+<div class="modal fade" id="editFoodModal" tabindex="-1" aria-labelledby="editFoodModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="FoodId" id="editFoodId" />
+                <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-dark" id="editFoodModalLabel">
+                        <i class="bi bi-pencil-square text-success me-2"></i>Chỉnh sửa món ăn
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold">Tên món ăn <span class="text-danger">*</span></label>
+                            <input type="text" name="Name" id="editName" class="form-control rounded-3" required />
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">Danh mục phân loại <span class="text-danger">*</span></label>
+                            <select name="TypeFoodId" id="editTypeSelect" class="form-select rounded-3" required>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.TypeFoodId">@cat.Name</option>
+                                }
+                                <option value="NEW">+ Tạo danh mục mới...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 d-none" id="editCustomTypeDiv">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <label class="form-label fw-bold text-success small mb-1">
+                                    <i class="bi bi-tag me-1"></i>Nhập tên danh mục mới của quán:
+                                </label>
+                                <input type="text" name="NewTypeName" id="editCustomTypeInput" class="form-control rounded-3" placeholder="Tên danh mục..." />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" name="Price" id="editPrice" class="form-control rounded-start-3" min="0" step="1000" required />
+                                <span class="input-group-text bg-light text-muted fw-bold rounded-end-3">VNĐ</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kích cỡ / Quy cách</label>
+                            <input type="text" name="SizeName" id="editSizeName" class="form-control rounded-3" placeholder="Tiêu chuẩn..." />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Hình ảnh món ăn</label>
+                            <div class="row align-items-center g-3">
+                                <div class="col-auto">
+                                    <div class="border rounded-3 p-1 bg-light text-center" style="width: 90px; height: 90px; overflow: hidden;">
+                                        <img id="editImgPreview" src="/Image/Food/default_food.jpg" class="w-100 h-100 object-fit-cover rounded-2" alt="Preview" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="file" name="imageFile" id="editImgInput" class="form-control rounded-3 mb-2" accept="image/*" />
+                                    <input type="text" name="ImageUrl" id="editImageUrl" class="form-control form-control-sm rounded-3" placeholder="Hoặc dán URL hình ảnh..." />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mô tả món ăn</label>
+                            <textarea name="Description" id="editDescription" class="form-control rounded-3" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                        <i class="bi bi-save me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL XÁC NHẬN XÓA MÓN ĂN -->
+<!-- ======================================================== -->
+<div class="modal fade" id="deleteFoodModal" tabindex="-1" aria-labelledby="deleteFoodModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="deleteFoodId" />
+                <div class="modal-body p-4 text-center">
+                    <div class="text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle-fill display-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Xác nhận xóa món ăn?</h5>
+                    <p class="text-muted small mb-3">
+                        Bạn có chắc chắn muốn xóa món <strong id="deleteFoodName" class="text-danger"></strong> khỏi thực đơn? Thao tác này không thể hoàn tác.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Không xóa</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm fw-semibold">
+                            <i class="bi bi-trash3 me-1"></i> Xác nhận xóa
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Live Preview ảnh khi chọn file trong Thêm mới
+            $('#createImgInput').on('change', function () {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#createImgPreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Live Preview ảnh khi chọn file trong Chỉnh sửa
+            $('#editImgInput').on('change', function () {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#editImgPreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Hiện/Ẩn ô nhập danh mục mới khi chọn 'NEW'
+            $('#createTypeSelect').on('change', function () {
+                if ($(this).val() === 'NEW') {
+                    $('#createCustomTypeDiv').removeClass('d-none');
+                    $('#createCustomTypeInput').focus();
+                } else {
+                    $('#createCustomTypeDiv').addClass('d-none');
+                }
+            });
+
+            $('#editTypeSelect').on('change', function () {
+                if ($(this).val() === 'NEW') {
+                    $('#editCustomTypeDiv').removeClass('d-none');
+                    $('#editCustomTypeInput').focus();
+                } else {
+                    $('#editCustomTypeDiv').addClass('d-none');
+                }
+            });
+
+            // Mở Modal Sửa & Lấy thông tin qua AJAX
+            $('.btn-edit-food').on('click', function () {
+                var foodId = $(this).data('id');
+                $.ajax({
+                    url: '@Url.Action("GetFoodJson", "Food", new { area = "Seller" })',
+                    type: 'GET',
+                    data: { id: foodId },
+                    success: function (res) {
+                        if (res.success) {
+                            $('#editFoodId').val(res.foodId);
+                            $('#editName').val(res.name);
+                            $('#editDescription').val(res.description);
+                            $('#editPrice').val(res.price);
+                            $('#editSizeName').val(res.sizeName);
+                            $('#editImageUrl').val(res.imageUrl);
+                            $('#editImgPreview').attr('src', res.imageUrl || '/Image/Food/default_food.jpg');
+                            
+                            $('#editTypeSelect').val(res.typeFoodId);
+                            $('#editCustomTypeDiv').addClass('d-none');
+
+                            var modal = new bootstrap.Modal(document.getElementById('editFoodModal'));
+                            modal.show();
+                        } else {
+                            alert(res.message || 'Không thể tải thông tin món ăn');
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra khi lấy dữ liệu món ăn.');
+                    }
+                });
+            });
+
+            // Mở Modal Xóa
+            $('.btn-delete-food').on('click', function () {
+                var foodId = $(this).data('id');
+                var foodName = $(this).data('name');
+
+                $('#deleteFoodId').val(foodId);
+                $('#deleteFoodName').text(foodName);
+
+                var modal = new bootstrap.Modal(document.getElementById('deleteFoodModal'));
+                modal.show();
+            });
+        });
+    </script>
+}
+
