@@ -1,0 +1,73 @@
+﻿@model TourisManager.Core.Entities.Location
+
+@{
+    ViewData["Title"] = "Khởi tạo gian hàng";
+    Layout = null; // Tắt Layout chung nhưng tự nhúng CSS bên dưới
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TourisManager</title>
+    <!-- Nhúng trực tiếp Bootstrap 5 và Icons vào đây để không bị mất giao diện -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
+                        <h4 class="mb-0"><i class="bi bi-shop me-2"></i>Thông tin nhà hàng của bạn</h4>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="alert alert-warning border-0 shadow-sm mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            Chào mừng bạn! Vui lòng cung cấp thông tin gian hàng/nhà hàng để bắt đầu kinh doanh.
+                        </div>
+
+                        <form asp-action="CreateLocation" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <!-- Tên nhà hàng -->
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label fw-bold">Tên nhà hàng / Quán ăn <span class="text-danger">*</span></label>
+                                <input asp-for="Name" class="form-control form-control-lg" placeholder="Ví dụ: Phở bò gia truyền..." required />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Địa chỉ -->
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label fw-bold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                                <input asp-for="Address" class="form-control form-control-lg" placeholder="Số nhà, Tên đường, Quận/Huyện..." required />
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Mô tả -->
+                            <div class="mb-4">
+                                <label asp-for="Description" class="form-label fw-bold">Mô tả ngắn</label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Giới thiệu vài nét đặc sắc về quán của bạn..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Nút Submit -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm">
+                                    <i class="bi bi-check-circle-fill me-2"></i> Hoàn tất & Vào trang quản lý
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

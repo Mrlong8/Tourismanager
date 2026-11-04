@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -47,5 +48,47 @@ namespace TourisManager.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(f => f.FoodId == id);
         }
+        public async Task<bool> InsertInvoidAsync(string accountId, CheckoutReques request)
+        {
+            var food = await _db.Foods.FirstOrDefaultAsync(f => f.FoodId == request.FoodId);
+            if (food == null) return false;
+
+            var newOrder = new Order
+            {
+                OrderId = Guid.NewGuid().ToString(),
+                AccountId = accountId,
+                LocationId = food.LocationId,
+                TotalAmount = request.TotalPrice,
+
+               
+                PaymentMethodId = request.PaymentMethodID.ToString(), 
+
+                PaymentStatus = false,
+                OrderStatus = 0,       
+                CreateAt = DateTime.Now,
+
+                OrderDetails = new List<OrderDetail>
+                {
+                    new OrderDetail
+                    {
+                        FoodId = request.FoodId,
+                        Quantity = request.Quantity,
+                        TotalPrice = request.TotalPrice
+                    }
+                }
+            };
+            try
+            {
+                await _db.Orders.AddAsync(newOrder);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
+        
+

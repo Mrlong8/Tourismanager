@@ -1,62 +1,60 @@
-﻿
- 
-<div class="dropdown">
-    <!-- Nút bấm màu xanh lá chuyển tiếp Gradient (Đã tối ưu data-bs-display="static") -->
-    <button class="btn btn-account-dropdown dropdown-toggle d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fw-semibold shadow-sm" 
-            type="button" 
-            id="userMenuDropdown" 
-            data-bs-toggle="dropdown" 
+﻿<div class="dropdown">
+    <!-- Nút bấm màu cam Shopee (Góc vuông, không bóng) -->
+    <button class="btn btn-account-dropdown dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 fw-semibold"
+            type="button"
+            id="userMenuDropdown"
+            data-bs-toggle="dropdown"
             data-bs-display="static"
             data-bs-auto-close="true"
             aria-expanded="false">
         <i class="bi bi-person-circle fs-5"></i>
         <span>@(User.Identity?.Name ?? "Account")</span>
     </button>
- 
-    <!-- Menu xổ xuống màu trắng (Light Theme) căn lề phải chuẩn xác -->
-    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu shadow-lg border-0 mt-2" 
+
+    <!-- Menu xổ xuống màu trắng (Góc vuông, viền mỏng) -->
+    <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu mt-0"
         aria-labelledby="userMenuDropdown">
- 
-        <!-- MỤC DÀNH CHO ADMIN (Chỉ hiển thị khi có Role Admin) -->
+
+        <!-- MỤC DÀNH CHO ADMIN -->
         @if (User.IsInRole("Admin"))
         {
             <li>
-                <a class="dropdown-item d-flex align-items-center gap-2 text-primary fw-semibold" 
-                   asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                <a class="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                   asp-area="Admin" asp-controller="Admin" asp-action="Index" style="color: var(--shopee-orange);">
                     <i class="bi bi-speedometer2"></i>
                     <span>Trang quản lý</span>
                 </a>
             </li>
-            <li><hr class="dropdown-divider my-1 border-light-subtle"></li>
+            <li><hr class="dropdown-divider m-0 border-light-subtle"></li>
         }
- 
+
         <!-- Trang cá nhân -->
         <li>
             <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
-                <i class="bi bi-person-vcard text-success"></i>
+                <i class="bi bi-person-vcard"></i>
                 <span>Trang cá nhân</span>
             </a>
         </li>
- 
+
         <!-- Đổi mật khẩu / Cài đặt tài khoản -->
         <li>
             <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="ChangePassword">
-                <i class="bi bi-shield-lock text-secondary"></i>
+                <i class="bi bi-shield-lock"></i>
                 <span>Đổi mật khẩu</span>
             </a>
         </li>
- 
+
         <!-- Địa điểm & chuyến đi đã lưu -->
         <li>
             <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
-                <i class="bi bi-heart text-danger"></i>
+                <i class="bi bi-heart"></i>
                 <span>Địa điểm đã lưu</span>
             </a>
         </li>
- 
-        <li><hr class="dropdown-divider my-1 border-light-subtle"></li>
- 
-        <!-- Nút Đăng xuất an toàn có AntiForgeryToken -->
+
+        <li><hr class="dropdown-divider m-0 border-light-subtle"></li>
+
+        <!-- Nút Đăng xuất an toàn -->
         <li>
             <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                 @Html.AntiForgeryToken()

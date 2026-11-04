@@ -1,4 +1,4 @@
-﻿
+
 :root {
     /* Bảng màu xanh lá chủ đạo hiện đại */
     --tm-primary: #059669; /* Emerald-600 */
@@ -479,4 +479,44 @@ body.tm-auth-body {
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
+}
+
+
+/* ==========================================================================
+   Role Switcher (Người dùng / Người bán)
+   ========================================================================== */
+.role-switch-group {
+    background-color: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    display: flex;
+    gap: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.role-btn {
+    flex: 1;
+    border: none;
+    border-radius: 9px !important;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    background-color: transparent;
+    transition: all 0.25s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.role-btn:hover {
+    color: var(--tm-primary);
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.role-btn.active {
+    color: #ffffff;
+    background: var(--tm-gradient-btn);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
 }

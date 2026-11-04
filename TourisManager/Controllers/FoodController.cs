@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using System.Security.Claims;
 using TourisManager.Core.Entities;
 using TourisManager.Core.Interfaces;
 using TourisManager.Data;
 using TourisManager.Helpers;
+using TourisManager.Services;
 
 namespace TourisManager.Controllers
 {
@@ -61,6 +64,32 @@ namespace TourisManager.Controllers
             }
 
             return PartialView("_QuickOrderModal", food);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitOrder([FromBody] CheckoutReques request)
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(accountId))
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập để đặt hàng!" });
+            }
+
+            if (request == null || string.IsNullOrEmpty(request.FoodId) || request.Quantity <= 0)
+            {
+                return Json(new { success = false, message = "Dữ liệu đơn hàng không hợp lệ." });
+            }
+
+            bool isSuccess = await _foodService.InsertInvoidAsync(accountId,request);
+            if (isSuccess)
+            {
+                return Json(new { success = true, message = "Đặt hàng thành công!" ,
+                                  redirectUrl = Url.Action("Invoice","Shop") });
+            }
+
+            return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình đặt hàng." });
+
         }
     }
 }

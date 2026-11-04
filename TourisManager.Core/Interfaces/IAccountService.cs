@@ -1,4 +1,4 @@
-﻿using TourisManager.Core.Entities;
+using TourisManager.Core.Entities;
 
 namespace TourisManager.Services
 {
@@ -8,6 +8,8 @@ namespace TourisManager.Services
         Task<Account?> LoginAsync(string usernameOrEmail, string password);
         Task<Account?> FindByUsernameOrEmailAsync(string usernameOrEmail);
         Task<bool> UpdateAsync(Account account);
+        Task<bool> UpdateProfileAsync(Account account);
+        Task<bool> UpdateProfileAsync(string accountId, string name, string? sdt, string? address, double? latitude, double? longitude);
         Task<Account?> FindByIdAsync(string accountId);
 
         Task<bool> IsUserNameExistsAsync(string userName);

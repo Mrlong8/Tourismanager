@@ -1,0 +1,1254 @@
+{
+  "version": 2,
+  "checkedAt": "02/11/2026",
+  "defaultMenu": "vietnamese",
+  "brandMenus": {
+    "Kichi-Kichi": "hotpot",
+    "Manwah": "hotpot",
+    "Dao Niu Guo": "hotpot",
+    "Cloud Pot": "hotpot",
+    "Man Tang Guo": "hotpot",
+    "Ashima": "hotpot",
+    "Ashima Forest": "hotpot",
+    "Hutong": "hotpot",
+    "Bò Vui": "hotpot",
+    "GoGi House": "korean",
+    "K-Pub": "korean",
+    "SUMOGOYA": "korean",
+    "Sakura Yakiniku": "korean",
+    "WOW! Yakiniku": "korean",
+    "Woomaster": "korean",
+    "iSushi": "japanese",
+    "Shogun": "japanese",
+    "Sushi X": "japanese",
+    "Daruma": "japanese",
+    "Chibo": "japanese",
+    "Yu Tang": "yutang-reference",
+    "Union Pizza": "union-reference",
+    "Pizza360": "pizza",
+    "Phở Inn": "pho",
+    "Lách Ca Lách Cách": "vegetarian",
+    "Crystal Jade": "chinese",
+    "Hàng Cuốn": "vietnamese",
+    "Vuvuzela": "vietnamese",
+    "Chixmax": "korean"
+  },
+  "restaurantMenus": {
+    "fm-caobang-16": "vietnamese",
+    "fm-caobang-92": "vietnamese",
+    "fm-caobang-84": "vietnamese",
+    "fm-caobang-85": "vietnamese",
+    "fm-caobang-54": "seafood",
+    "fm-caobang-93": "vietnamese",
+    "fm-caobang-87": "vietnamese",
+    "fm-caobang-38": "vietnamese",
+    "fm-caobang-86": "vietnamese",
+    "fm-laichau-16": "vietnamese",
+    "fm-qt-changchangseafood": "seafood",
+    "fm-qt-nhahangtanchau": "vietnamese",
+    "fm-qt-nhahangluamoi": "vietnamese",
+    "fm-qt-lochuong": "seafood",
+    "fm-qt-nhahangnhuy": "vietnamese",
+    "fm-qt-nhahangnamthanh": "vietnamese",
+    "fm-sonla-73": "seafood",
+    "fm-sonla-3": "hotpot",
+    "fm-sonla-5": "vietnamese",
+    "fm-sonla-12": "seafood",
+    "fm-sonla-9": "vietnamese",
+    "fm-sonla-7": "vietnamese",
+    "fm-sonla-8": "vegetarian",
+    "fm-sonla-130": "seafood",
+    "fm-sonla-72": "vietnamese",
+    "fm-sonla-6": "seafood",
+    "fm-sonla-74": "hotpot",
+    "fm-sonla-39": "vietnamese",
+    "fm-sonla-37": "vietnamese",
+    "fm-sonla-11": "vietnamese",
+    "fm-sonla-140": "seafood",
+    "fm-sonla-71": "seafood",
+    "fm-sonla-10": "vietnamese",
+    "fm-sonla-4": "vietnamese",
+    "fm-sonla-76": "vietnamese",
+    "fm-sonla-129": "vietnamese",
+    "fm-tuyenquang-2151": "seafood",
+    "fm-dienbien-dongdoi": "vietnamese"
+  },
+  "menus": {
+    "vietnamese": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Phở & cơm",
+          "items": [
+            {
+              "id": "pho-xao",
+              "name": "Phở xào bò",
+              "price": 59000,
+              "unit": "phần",
+              "description": "Bánh phở xào cùng thịt bò và rau.",
+              "imageUrl": "/Image/menu/pho-xao.jpg"
+            },
+            {
+              "id": "pho-bo",
+              "name": "Phở bò",
+              "price": 55000,
+              "unit": "tô",
+              "description": "",
+              "imageUrl": "/Image/menu/pho-bo.jpg"
+            },
+            {
+              "id": "com-rang",
+              "name": "Cơm chiên",
+              "price": 45000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/com-rang.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Thịt bò",
+          "items": [
+            {
+              "id": "bo-luc-lac",
+              "name": "Bò lúc lắc",
+              "price": 109000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/bo-luc-lac.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Thịt lợn",
+          "items": [
+            {
+              "id": "thit-kho",
+              "name": "Thịt kho trứng",
+              "price": 69000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/thit-kho.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Lẩu",
+          "items": [
+            {
+              "id": "lau-thai",
+              "name": "Lẩu Thái",
+              "price": 259000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-thai.jpg"
+            },
+            {
+              "id": "lau-nam",
+              "name": "Lẩu nấm",
+              "price": 229000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-nam.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Rau & món ăn kèm",
+          "items": [
+            {
+              "id": "rau-muong",
+              "name": "Rau muống xào tỏi",
+              "price": 39000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/rau-muong.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Đồ ăn vặt",
+          "items": [
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            },
+            {
+              "id": "nem-ran",
+              "name": "Nem rán",
+              "price": 45000,
+              "unit": "đĩa 4 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/nem-ran.jpg"
+            },
+            {
+              "id": "goi-cuon",
+              "name": "Gỏi cuốn tôm thịt",
+              "price": 39000,
+              "unit": "đĩa 2 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/goi-cuon.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "korean": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Thịt bò",
+          "items": [
+            {
+              "id": "thit-bo",
+              "name": "Bò Bulgogi",
+              "price": 129000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/thit-bo.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Thịt lợn",
+          "items": [
+            {
+              "id": "thit-nuong",
+              "name": "Ba chỉ heo nướng Hàn Quốc",
+              "price": 99000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/thit-nuong.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Món Hàn",
+          "items": [
+            {
+              "id": "bibimbap",
+              "name": "Cơm trộn Bibimbap",
+              "price": 69000,
+              "unit": "tô",
+              "description": "",
+              "imageUrl": "/Image/menu/bibimbap.jpg"
+            },
+            {
+              "id": "kimchi",
+              "name": "Canh kimchi",
+              "price": 79000,
+              "unit": "tô",
+              "description": "",
+              "imageUrl": "/Image/menu/kimchi.jpg"
+            },
+            {
+              "id": "tokbokki",
+              "name": "Tokbokki",
+              "price": 49000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/tokbokki.jpg"
+            },
+            {
+              "id": "ga-chien",
+              "name": "Gà chiên giòn",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/ga-chien.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "hotpot": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Lẩu",
+          "items": [
+            {
+              "id": "lau-thai",
+              "name": "Lẩu Thái",
+              "price": 259000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-thai.jpg"
+            },
+            {
+              "id": "lau-nam",
+              "name": "Lẩu nấm",
+              "price": 229000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-nam.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Món ăn kèm",
+          "items": [
+            {
+              "id": "ha-cao",
+              "name": "Há cảo tôm",
+              "price": 49000,
+              "unit": "đĩa 4 viên",
+              "description": "",
+              "imageUrl": "/Image/menu/ha-cao.jpg"
+            },
+            {
+              "id": "com-rang",
+              "name": "Cơm chiên",
+              "price": 45000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/com-rang.jpg"
+            },
+            {
+              "id": "ga-chien",
+              "name": "Gà chiên giòn",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/ga-chien.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Đồ ăn vặt",
+          "items": [
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            },
+            {
+              "id": "nem-ran",
+              "name": "Nem rán",
+              "price": 45000,
+              "unit": "đĩa 4 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/nem-ran.jpg"
+            },
+            {
+              "id": "goi-cuon",
+              "name": "Gỏi cuốn tôm thịt",
+              "price": 39000,
+              "unit": "đĩa 2 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/goi-cuon.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "japanese": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Sushi & sashimi",
+          "items": [
+            {
+              "id": "sushi",
+              "name": "Sushi tổng hợp",
+              "price": 119000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/sushi.jpg"
+            },
+            {
+              "id": "sashimi",
+              "name": "Sashimi cá hồi",
+              "price": 159000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/sashimi.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Món nóng",
+          "items": [
+            {
+              "id": "ha-cao",
+              "name": "Há cảo tôm",
+              "price": 49000,
+              "unit": "đĩa 4 viên",
+              "description": "",
+              "imageUrl": "/Image/menu/ha-cao.jpg"
+            },
+            {
+              "id": "ga-chien",
+              "name": "Gà chiên giòn",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/ga-chien.jpg"
+            },
+            {
+              "id": "lau-nam",
+              "name": "Lẩu nấm",
+              "price": 229000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-nam.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "chinese": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Dim sum",
+          "items": [
+            {
+              "id": "ha-cao",
+              "name": "Há cảo tôm",
+              "price": 49000,
+              "unit": "đĩa 4 viên",
+              "description": "",
+              "imageUrl": "/Image/menu/ha-cao.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Cơm & món nóng",
+          "items": [
+            {
+              "id": "com-rang",
+              "name": "Cơm chiên",
+              "price": 55000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/com-rang.jpg"
+            },
+            {
+              "id": "thit-kho",
+              "name": "Thịt kho trứng",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/thit-kho.jpg"
+            },
+            {
+              "id": "ga-chien",
+              "name": "Gà chiên giòn",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/ga-chien.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Lẩu",
+          "items": [
+            {
+              "id": "lau-thai",
+              "name": "Lẩu Thái",
+              "price": 259000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-thai.jpg"
+            },
+            {
+              "id": "lau-nam",
+              "name": "Lẩu nấm",
+              "price": 229000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-nam.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "seafood": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Hải sản",
+          "items": [
+            {
+              "id": "sashimi",
+              "name": "Sashimi cá hồi",
+              "price": 169000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/sashimi.jpg"
+            },
+            {
+              "id": "muc-chien",
+              "name": "Mực chiên giòn",
+              "price": 99000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/muc-chien.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Lẩu",
+          "items": [
+            {
+              "id": "lau-thai",
+              "name": "Lẩu Thái",
+              "price": 259000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-thai.jpg"
+            },
+            {
+              "id": "lau-nam",
+              "name": "Lẩu nấm",
+              "price": 229000,
+              "unit": "nồi 2–3 người",
+              "description": "",
+              "imageUrl": "/Image/menu/lau-nam.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Rau & món ăn kèm",
+          "items": [
+            {
+              "id": "rau-muong",
+              "name": "Rau muống xào tỏi",
+              "price": 39000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/rau-muong.jpg"
+            },
+            {
+              "id": "com-rang",
+              "name": "Cơm chiên",
+              "price": 45000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/com-rang.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Đồ ăn vặt",
+          "items": [
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            },
+            {
+              "id": "nem-ran",
+              "name": "Nem rán",
+              "price": 45000,
+              "unit": "đĩa 4 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/nem-ran.jpg"
+            },
+            {
+              "id": "goi-cuon",
+              "name": "Gỏi cuốn tôm thịt",
+              "price": 39000,
+              "unit": "đĩa 2 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/goi-cuon.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "pizza": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Pizza & mì Ý",
+          "items": [
+            {
+              "id": "pizza",
+              "name": "Pizza Margherita",
+              "price": 99000,
+              "unit": "bánh",
+              "description": "",
+              "imageUrl": "/Image/menu/pizza.jpg"
+            },
+            {
+              "id": "mi-y",
+              "name": "Mì Ý sốt bò bằm",
+              "price": 69000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/mi-y.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Món ăn kèm",
+          "items": [
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            },
+            {
+              "id": "ga-chien",
+              "name": "Gà chiên giòn",
+              "price": 79000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/ga-chien.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "vegetarian": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Món chay",
+          "items": [
+            {
+              "id": "mon-chay",
+              "name": "Cơm chiên khoai tây",
+              "price": 45000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/mon-chay.jpg"
+            },
+            {
+              "id": "rau-muong",
+              "name": "Rau muống xào tỏi",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/rau-muong.jpg"
+            },
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 30000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "pho": {
+      "isIllustrative": true,
+      "notice": "Thực đơn minh họa cho tính năng chọn món; chưa xác nhận là thực đơn của nhà hàng. Giá gợi ý, ảnh đúng món và không nhất thiết chụp tại quán.",
+      "sourceLabel": "Thực đơn minh họa",
+      "sourceUrl": "",
+      "groups": [
+        {
+          "name": "Phở",
+          "items": [
+            {
+              "id": "pho-bo",
+              "name": "Phở bò",
+              "price": 55000,
+              "unit": "tô",
+              "description": "",
+              "imageUrl": "/Image/menu/pho-bo.jpg"
+            },
+            {
+              "id": "pho-xao",
+              "name": "Phở xào bò",
+              "price": 59000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/pho-xao.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Đồ ăn vặt",
+          "items": [
+            {
+              "id": "khoai-tay",
+              "name": "Khoai tây chiên",
+              "price": 35000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/khoai-tay.jpg"
+            },
+            {
+              "id": "nem-ran",
+              "name": "Nem rán",
+              "price": 45000,
+              "unit": "đĩa 4 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/nem-ran.jpg"
+            },
+            {
+              "id": "goi-cuon",
+              "name": "Gỏi cuốn tôm thịt",
+              "price": 39000,
+              "unit": "đĩa 2 cuốn",
+              "description": "",
+              "imageUrl": "/Image/menu/goi-cuon.jpg"
+            }
+          ]
+        },
+        {
+          "name": "Nước uống",
+          "items": [
+            {
+              "id": "tra-chanh",
+              "name": "Trà chanh đá",
+              "price": 15000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/tra-chanh.jpg"
+            },
+            {
+              "id": "nuoc-cam",
+              "name": "Nước cam tươi",
+              "price": 30000,
+              "unit": "ly",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-cam.jpg"
+            },
+            {
+              "id": "coca",
+              "name": "Coca-Cola",
+              "price": 20000,
+              "unit": "lon",
+              "description": "",
+              "imageUrl": "/Image/menu/coca.jpg"
+            },
+            {
+              "id": "nuoc-suoi",
+              "name": "Nước suối",
+              "price": 10000,
+              "unit": "chai",
+              "description": "",
+              "imageUrl": "/Image/menu/nuoc-suoi.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "yutang-reference": {
+      "isIllustrative": false,
+      "notice": "Tên món và giá tham khảo từ Yu Tang Thái Phiên / beFood. Mức giá có thể khác theo chi nhánh, thời điểm và kích cỡ; chưa xác nhận tình trạng phục vụ. Ảnh theo thực đơn nguồn.",
+      "sourceUrl": "https://food.be.com.vn/ha-noi/yu-tang-tra-sua-my-dai-loan-thai-phien-58656",
+      "sourceLabel": "Yu Tang Thái Phiên / beFood",
+      "groups": [
+        {
+          "name": "Mỳ Đài Loan",
+          "items": [
+            {
+              "id": "yutang-8724081",
+              "name": "Mỳ bò Đài Loan bắp - gân - tổ ong",
+              "price": 125000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724081.webp"
+            },
+            {
+              "id": "yutang-8724082",
+              "name": "Mỳ bò Đài Loan bắp - gân",
+              "price": 109000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724082.webp"
+            },
+            {
+              "id": "yutang-8724083",
+              "name": "Mỳ bò cay Mala",
+              "price": 95000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724083.webp"
+            },
+            {
+              "id": "yutang-8724086",
+              "name": "Mỳ bò kho",
+              "price": 95000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724086.webp"
+            }
+          ]
+        },
+        {
+          "name": "Ăn vặt",
+          "items": [
+            {
+              "id": "yutang-8724103",
+              "name": "Gà chiên khổng lồ XXL",
+              "price": 99000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724103.webp"
+            },
+            {
+              "id": "yutang-8889931",
+              "name": "Guabao thịt ba chỉ kho miếng",
+              "price": 65000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8889931.webp"
+            }
+          ]
+        },
+        {
+          "name": "Cơm Đài Loan",
+          "items": [
+            {
+              "id": "yutang-8724097",
+              "name": "Cơm thịt kho miếng",
+              "price": 75000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724097.webp"
+            },
+            {
+              "id": "yutang-8724098",
+              "name": "Cơm rang bắp bò kiểu Đài Loan",
+              "price": 100000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724098.webp"
+            },
+            {
+              "id": "yutang-8724093",
+              "name": "Cơm rang gà chiên khổng lồ sốt xá xíu",
+              "price": 99000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/yutang-8724093.webp"
+            }
+          ]
+        }
+      ]
+    },
+    "union-reference": {
+      "isIllustrative": false,
+      "notice": "Tên món và giá tham khảo từ Union Pizza Hoàng Đạo Thúy / beFood. Mức giá có thể khác theo chi nhánh, thời điểm và kích cỡ; chưa xác nhận tình trạng phục vụ. Ảnh theo thực đơn nguồn.",
+      "sourceUrl": "https://food.be.com.vn/ha-noi/union-pizza-pizza-my-y-hoang-dao-thuy-109754",
+      "sourceLabel": "Union Pizza Hoàng Đạo Thúy / beFood",
+      "groups": [
+        {
+          "name": "Pizza",
+          "items": [
+            {
+              "id": "union-9148224",
+              "name": "Pizza hải sản chanh tỏi",
+              "price": 302400,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-9148224.webp"
+            },
+            {
+              "id": "union-12168220",
+              "name": "Pizza Chicago Kebab",
+              "price": 313200,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12168220.webp"
+            },
+            {
+              "id": "union-12846126",
+              "name": "Pizza Hawaii",
+              "price": 194400,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12846126.webp"
+            },
+            {
+              "id": "union-12845366",
+              "name": "Pizza Hải Sản Tomyum",
+              "price": 291600,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12845366.webp"
+            },
+            {
+              "id": "union-9148223",
+              "name": "Pizza sườn heo BBQ",
+              "price": 302400,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-9148223.webp"
+            },
+            {
+              "id": "union-12845254",
+              "name": "Pizza 3 Loại Nấm Xốt Truffle",
+              "price": 280800,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12845254.webp"
+            },
+            {
+              "id": "union-12845251",
+              "name": "Pizza Bò Trứng Onsen Kiểu Nhật",
+              "price": 291600,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12845251.webp"
+            },
+            {
+              "id": "union-12845249",
+              "name": "Pizza 5 Loại Phô Mai",
+              "price": 291600,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12845249.webp"
+            }
+          ]
+        },
+        {
+          "name": "Mì Ý",
+          "items": [
+            {
+              "id": "union-12168314",
+              "name": "Mỳ Cua",
+              "price": 270000,
+              "unit": "phần",
+              "description": "",
+              "imageUrl": "/Image/menu/union-12168314.webp"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

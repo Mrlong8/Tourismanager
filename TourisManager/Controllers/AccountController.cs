@@ -33,21 +33,24 @@ namespace TourisManager.Controllers
             return View();
         }
 
-     
         [HttpGet]
         [Route("login")]
-        public async Task<IActionResult> Login() // Cần đổi thành async Task vì gọi SignOutAsync
+        public async Task<IActionResult> Login()
         {
             if (User.Identity?.IsAuthenticated == true)
             {
                 // Lấy Id từ Cookie
-                string? userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                // Kiểm tra xem Id này có tồn tại trong CSDL không
                 var account = await _accountService.FindByIdAsync(userId);
                 if (account != null)
                 {
-                    return RedirectToAction("index","profile"); // Có trong CSDL thì vào Profile
+                    // Nếu đã đăng nhập là Seller, chuyển thẳng vào Dashboard
+                    if (account.Role == "Seller")
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+                    }
+                    return RedirectToAction("index", "profile"); // Có trong CSDL thì vào Profile
                 }
                 else
                 {
@@ -80,7 +83,7 @@ namespace TourisManager.Controllers
                 new Claim(ClaimTypes.Role,account.Role)
             };
 
-            // xác   thực danh tính, Tạo bộ hồ sơ danh tính chính thức cho User dựa trên Scheme Cookie.
+            // xác thực danh tính, Tạo bộ hồ sơ danh tính chính thức cho User dựa trên Scheme Cookie.
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity); // sau khi đăng nhập
 
@@ -89,13 +92,20 @@ namespace TourisManager.Controllers
                 new AuthenticationProperties
                 {
                     IsPersistent = true
-                    //nghĩa là authentication cookie là persistent
-                    //Tức là bạn đang nói
-                    //"Hãy duy trì đăng nhập sau khi trình duyệt đóng/mở lại, theo thời hạn cookie."
                 }
                 );
+
+            // BƯỚC 5: Đăng nhập hoàn tất, kiểm tra Role để chuyển hướng
+            if (account.Role == "Seller")
+            {
+                // Nếu là chủ quán, đưa thẳng vào khu vực quản lý
+                return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+            }
+
+            // Nếu là khách hàng bình thường, đưa về Profile
             return RedirectToAction("index", "profile");
         }
+
         [HttpPost]
         [Route("logout")]
         [ValidateAntiForgeryToken]// thủ tục bảo mật chống tấn công
@@ -120,6 +130,7 @@ namespace TourisManager.Controllers
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
+
         // hàm xử lý
         public async Task<IActionResult> GoogleResponse()
         {
@@ -127,7 +138,7 @@ namespace TourisManager.Controllers
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (!result.Succeeded)
             {
-                return RedirectToAction("Login", new { error = "Lỗi đăng nhập"});
+                return RedirectToAction("Login", new { error = "Lỗi đăng nhập" });
             }
             // lấy danh sách thông tin mà google gửi về
             var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
@@ -143,7 +154,7 @@ namespace TourisManager.Controllers
             {
                 return RedirectToAction("Login", new { error = "Không lấy được Email từ Google!" });
             }
-            //  Kiểm tra trong CSDL xem Email này đã tồn tại trong hệ thống chưa
+            // Kiểm tra trong CSDL xem Email này đã tồn tại trong hệ thống chưa
             var account = await _accountService.FindByUsernameOrEmailAsync(email);
             if (account == null)
             {
@@ -197,7 +208,6 @@ namespace TourisManager.Controllers
             };
 
             // Đóng gói danh sách Claims vào danh tính (ClaimsIdentity) với sơ đồ Cookie
-
             var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Ghi Cookie đăng nhập vào Trình duyệt của người dùng
@@ -206,14 +216,22 @@ namespace TourisManager.Controllers
                 new ClaimsPrincipal(claimsIdentity));
 
             // BƯỚC 5: Đăng nhập hoàn tất, chuyển hướng người dùng về trang chủ (Home/Index)
+            if (account.Role == "Seller")
+            {
+                return RedirectToAction("Index", "Dashboard", new { area = "Seller" });
+            }
             return RedirectToAction("index", "profile");
         }
 
         [HttpGet]
         [Route("signup")]
-        public IActionResult Signup()
+        public IActionResult Signup(string role = "User") // Nhận tham số từ URL, mặc định là User
         {
-            return View(new SignupViewModel());
+            var model = new SignupViewModel
+            {
+                Role = role // Gán vai trò ngay từ lúc mở form
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -224,19 +242,14 @@ namespace TourisManager.Controllers
             {
                 return View(model);
             }
-            //  KIỂM TRA TRÙNG username  TRONG DATABASE
             if (await _accountService.IsUserNameExistsAsync(model.Username))
             {
                 ModelState.AddModelError("Username", "Tên tài khoản này đã được sử dụng.");
             }
-
-            // KIỂM TRA TRÙNG EMAIL TRONG DATABASE
             if (await _accountService.IsUserEmailExistsAsync(model.Email))
             {
                 ModelState.AddModelError("Email", "Email này đã được đăng ký.");
             }
-
-         
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -247,7 +260,9 @@ namespace TourisManager.Controllers
                 Username = model.Username,
                 Name = model.FullName,
                 Email = model.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                // Chỗ này cực kỳ ăn tiền: Nếu frontend truyền Role="Seller", nó sẽ lấy "Seller", ngược lại mặc định là "User"
+                Role = string.IsNullOrEmpty(model.Role) ? "User" : model.Role
             };
 
 
@@ -259,8 +274,5 @@ namespace TourisManager.Controllers
             TempData["Msg"] = "Đăng ký thất bại!";
             return RedirectToAction("login");
         }
-     
-
-
     }
 }

@@ -1,16 +1,20 @@
-﻿
-@using TourisManager.Core.Entities
+﻿ @using TourisManager.Core.Entities
+@using System.Security.Claims
 @model IEnumerable<RoomChat>
 
 @{
-    ViewData["Title"] = "Tin nhắn"; 
+    ViewData["Title"] = "Tin nhắn";
     Layout = "~/Views/Shared/MyLayout.cshtml";
 
+    var locations = ViewBag.Locations as IEnumerable<Location>
+                    ?? Enumerable.Empty<Location>();
+
+    var currentRole = User.FindFirstValue(ClaimTypes.Role);
 }
 
 <div class="container py-4">
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-header bg-success text-white p-3 rounded-top-4">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-success text-white p-3">
             <h4 class="mb-1">
                 <i class="bi bi-chat-dots-fill me-2"></i>
                 Tin nhắn
@@ -18,17 +22,70 @@
             <small>Trao đổi với nhà hàng của bạn</small>
         </div>
 
-        <div class="card-body p-0">
+        <div class="card-body p-4">
+            @if (currentRole != "Seller")
+            {
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-shop me-2 text-success"></i>
+                    Chọn nhà hàng để trò chuyện
+                </h5>
+
+                @if (locations.Any())
+                {
+                    <div class="row g-3 mb-4">
+                        @foreach (var location in locations)
+                        {
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card h-100 border rounded-3">
+                                    <div class="card-body d-flex flex-column">
+                                        <h6 class="fw-bold">
+                                            @(location.Name ?? "Địa điểm")
+                                        </h6>
+
+                                        <p class="text-muted small mb-3">
+                                            @(location.Address ?? "Chưa có địa chỉ")
+                                        </p>
+
+                                        <div class="mt-auto">
+                                            <a asp-controller="Chat"
+                                               asp-action="Start"
+                                               asp-route-locationId="@location.LocationId"
+                                               class="btn btn-success rounded-pill w-100">
+                                                <i class="bi bi-chat-dots me-1"></i>
+                                                Nhắn tin
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">
+                        Hiện chưa có địa điểm nào để trò chuyện.
+                    </p>
+                }
+
+                <hr class="my-4" />
+            }
+
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-chat-left-text me-2 text-success"></i>
+                Cuộc trò chuyện của bạn
+            </h5>
+
             @if (Model != null && Model.Any())
             {
                 @foreach (var room in Model)
                 {
                     <div class="d-flex align-items-center justify-content-between
-                                border-bottom p-3">
+                                border-bottom py-3 gap-3">
                         <div class="d-flex align-items-center gap-3">
                             <div class="rounded-circle bg-success-subtle
                                         text-success d-flex align-items-center
-                                        justify-content-center"
+                                        justify-content-center flex-shrink-0"
                                  style="width:50px;height:50px;">
                                 <i class="bi bi-shop fs-4"></i>
                             </div>
@@ -46,23 +103,23 @@
                         <a asp-controller="Chat"
                            asp-action="Room"
                            asp-route-id="@room.RoomChatId"
-                           class="btn btn-outline-success rounded-pill">
+                           class="btn btn-outline-success rounded-pill flex-shrink-0">
                             <i class="bi bi-chat me-1"></i>
-                            Nhắn tin
+                            Mở chat
                         </a>
                     </div>
                 }
             }
             else
             {
-                <div class="text-center py-5">
+                <div class="text-center py-4">
                     <i class="bi bi-chat-square-text text-secondary"
-                       style="font-size:3rem;"></i>
+                       style="font-size:2.5rem;"></i>
 
-                    <h5 class="mt-3">Chưa có cuộc trò chuyện</h5>
+                    <h6 class="mt-3">Chưa có cuộc trò chuyện</h6>
 
                     <p class="text-muted mb-0">
-                        Các cuộc trò chuyện sẽ hiển thị tại đây.
+                        Chọn một nhà hàng ở phía trên để bắt đầu trò chuyện.
                     </p>
                 </div>
             }

@@ -1,0 +1,176 @@
+﻿@model TourisManager.Models.LocationDetailViewModel
+@using System.Linq
+@functions {
+    static string Stars(double rating) {
+        var sb = new System.Text.StringBuilder();
+        for (int i = 1; i <= 5; i++) {
+            if (rating >= i) sb.Append("<i class=\"bi bi-star-fill\"></i>");
+            else if (rating >= i - .5) sb.Append("<i class=\"bi bi-star-half\"></i>");
+            else sb.Append("<i class=\"bi bi-star\"></i>");
+        }
+        return sb.ToString();
+    }
+}
+@{
+    ViewData["Title"] = Model.Name;
+    var x = Model.Extra;
+    var total = x.Reviews.Count;
+    var ci = System.Globalization.CultureInfo.InvariantCulture;
+    var destination = Model.HasCoordinates ? Model.Latitude.ToString(ci) + "," + Model.Longitude.ToString(ci) : Model.Name + ", " + Model.Address;
+    var directionUrl = "https://www.google.com/maps/dir/?api=1&destination=" + System.Uri.EscapeDataString(destination);
+    var embedUrl = "https://maps.google.com/maps?q=" + System.Uri.EscapeDataString(destination) + "&z=15&output=embed";
+    var loginUrl = Url.Action("Login", "Account", new { returnUrl = Url.Action("Details", "Location", new { id = Model.Id }) });
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/location-details.css" asp-append-version="true" />
+}
+<div class="ld-page" data-image-fallback="@Url.Content("~/Image/menu/image-unavailable.svg")" data-location-id="@Model.Id" data-checkout-url="@Url.Action("PrepareCheckout", "Location")" data-checkout-draft-url="@Url.Action("CheckoutDraft", "Location")">
+ <div class="ld-container">
+    <nav class="ld-breadcrumb" aria-label="Đường dẫn">
+        <a href="@Url.Content("~/")">Trang chủ</a><i class="bi bi-chevron-right"></i>
+        <a href="@Url.Action("Index", "Map")">Bản đồ ẩm thực</a><i class="bi bi-chevron-right"></i><span>@Model.Name</span>
+    </nav>
+    <div class="ld-hero">
+        <div class="ld-hero-empty"><i class="bi bi-shop"></i><span>@Model.Name</span></div>
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl)) { <img src="@Model.ImageUrl" alt="@Model.Name" referrerpolicy="no-referrer" /> }
+    </div>
+    <div class="ld-grid">
+     <div class="ld-main">
+        <section class="ld-card ld-intro">
+            <div class="ld-card-top">
+                <div class="ld-chips">
+                    <span class="ld-chip ld-chip-green"><i class="bi bi-tag-fill"></i> @Model.CategoryName</span>
+                    @if(total > 0) { <span class="ld-chip"><i class="bi bi-star-fill"></i> @x.AvgRating.ToString("0.0")</span> }
+                    else { <span class="ld-chip">Chưa có đánh giá</span> }
+                </div>
+                <div class="ld-actions-mini"><button type="button" class="ld-btn-outline-sm" id="btnShare"><i class="bi bi-share"></i> Chia sẻ</button></div>
+            </div>
+            <h1 class="ld-title">@Model.Name</h1>
+            <p class="ld-address"><i class="bi bi-geo-alt-fill"></i> @Model.Address</p>
+            <div class="ld-meta">
+                <span><i class="bi bi-clock"></i> Giờ mở cửa: <b>@x.OpenHours</b></span>
+                @if (!string.IsNullOrWhiteSpace(Model.Phone)) { <span><i class="bi bi-telephone"></i> <a href="tel:@Model.Phone">@Model.Phone</a></span> }
+            </div>
+            <hr class="ld-hr" />
+            <h2 class="ld-h2">Giới thiệu</h2><p class="ld-text">@x.Description</p>
+            @if (!string.IsNullOrWhiteSpace(Model.SourceUrl)) {
+                <p class="ld-note"><a href="@Model.SourceUrl" target="_blank" rel="noopener noreferrer">Thông tin từ nguồn công khai ↗</a></p>
+            }
+        </section>
+        <section class="ld-card ld-menu" id="menu" tabindex="-1">
+            <div class="ld-menu-heading">
+                <div><p class="ld-menu-eyebrow">ĂN NGON THEO CÁCH CỦA BẠN</p><h2 class="ld-h2">Danh sách món ăn <span class="ld-menu-total">@Model.MenuItemCount món</span></h2></div>
+                @if (Model.MenuGroups.Count > 0) { <button type="button" id="menu-toggle-all" class="ld-btn-outline-sm" aria-expanded="false">Mở tất cả</button> }
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.MenuNotice)) {
+                <div class="ld-reference-note"><i class="bi bi-info-circle"></i><p>@Model.MenuNotice</p></div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.MenuSourceUrl)) {
+                <p class="ld-menu-source"><a href="@Model.MenuSourceUrl" target="_blank" rel="noopener noreferrer">@Model.MenuSourceLabel ↗</a><span>Đối chiếu: @Model.MenuCheckedAt</span></p>
+            }
+            @if (Model.MenuGroups.Count > 0) {
+                <div class="ld-menu-search"><i class="bi bi-search" aria-hidden="true"></i><label class="ld-sr-only" for="menu-search">Tìm món trong thực đơn</label><input id="menu-search" type="search" placeholder="Hôm nay bạn muốn ăn gì?" autocomplete="off" /><button type="button" id="menu-search-clear" aria-label="Xóa tìm kiếm" hidden>×</button></div>
+                <nav class="ld-menu-tabs" aria-label="Nhóm món ăn">
+                    @for (var gi = 0; gi < Model.MenuGroups.Count; gi++) { <a href="#menu-group-@gi" data-open-group="menu-group-@gi">@Model.MenuGroups[gi].Name</a> }
+                </nav>
+            }
+            @if (Model.MenuGroups.Count == 0) {
+                <div class="ld-menu-empty"><i class="bi bi-journal-text"></i><h3>Thực đơn đang được cập nhật</h3><p>Liên hệ nhà hàng để biết món phục vụ và giá hiện tại.</p></div>
+            }
+            @for (var gi = 0; gi < Model.MenuGroups.Count; gi++) {
+                var group = Model.MenuGroups[gi];
+                <details class="ld-menu-group" id="menu-group-@gi" open="@(gi == 0)">
+                    <summary><span>@group.Name <small>@group.Items.Count món</small></span><span class="ld-menu-sign" aria-hidden="true"></span></summary>
+                    <div class="ld-food-list">
+                        @foreach (var food in group.Items) {
+                            <article class="ld-food-card" data-menu-id="@food.Id" data-search-name="@food.Name">
+                                <div class="ld-food-photo"><img class="ld-food-image" src="@(string.IsNullOrWhiteSpace(food.ImageUrl) ? Url.Content("~/Image/menu/image-unavailable.svg") : Url.Content(food.ImageUrl))" alt="@food.Name" loading="lazy" width="480" height="360" /></div>
+                                <div class="ld-food-copy"><h3>@food.Name</h3>
+                                    @if (!string.IsNullOrWhiteSpace(food.Description)) { <p>@food.Description</p> }
+                                    <div class="ld-food-bottom">
+                                        @if (food.Price.HasValue) { <span class="ld-food-price">@food.Price.Value.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))<small>đ / @food.Unit</small></span> }
+                                        else { <span class="ld-food-unavailable">Chưa mở bán</span> }
+                                        @if (food.CanOrder) {
+                                            <div class="ld-quantity" role="group" aria-label="Số lượng @food.Name">
+                                                <button type="button" data-quantity-step="-1" data-item-id="@food.Id" aria-label="Bớt @food.Name" disabled>−</button>
+                                                <output data-quantity-for="@food.Id" aria-label="Số lượng @food.Name">0</output>
+                                                <button type="button" data-quantity-step="1" data-item-id="@food.Id" aria-label="Thêm @food.Name">+</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </details>
+            }
+            <p id="menu-no-results" class="ld-menu-empty" hidden>Không tìm thấy món phù hợp. Bạn thử từ khóa khác nhé.</p>
+            <p id="order-message" class="ld-form-msg" role="status" aria-live="polite"></p>
+            <p class="ld-note">Ảnh minh họa món ăn · <a href="@Url.Content("~/menu-image-credits.html")" target="_blank" rel="noopener noreferrer">Nguồn ảnh</a></p>
+            <noscript><p class="ld-form-msg err">Vui lòng bật JavaScript để chọn số lượng và đặt món.</p></noscript>
+        </section>
+        <section class="ld-card" id="comments">
+            <h2 class="ld-h2"><i class="bi bi-chat-square-heart-fill"></i> Đánh giá từ thực khách (<span id="reviewCount">@total</span>)</h2>
+            @if (total > 0) {
+                <div class="ld-rating-summary"><div class="ld-rating-big"><div class="ld-rating-num">@x.AvgRating.ToString("0.0")</div><div class="ld-stars">@Html.Raw(Stars(x.AvgRating))</div><div class="ld-rating-sub">@total lượt đánh giá</div></div>
+                <div class="ld-rating-bars">
+                @for (int s = 5; s >= 1; s--) {
+                    var count = x.Reviews.Count(r => r.Rating == s); var pct = count * 100 / total;
+                    <div class="ld-bar-row"><span>@s <i class="bi bi-star-fill"></i></span><div class="ld-bar"><div style="width:@(pct)%"></div></div><span class="ld-bar-count">@count</span></div>
+                }
+                </div></div>
+            }
+            else { <p class="ld-text">Chưa có đánh giá. Hãy chia sẻ trải nghiệm của bạn tại nhà hàng.</p> }
+            @if (User.Identity?.IsAuthenticated == true) {
+                <form id="review-form" class="ld-form" method="post" action="@Url.Action("SubmitReview", "Location")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="LocationId" value="@Model.Id" />
+                    <input type="hidden" name="Rating" id="rvRating" value="0" />
+                    <h3 class="ld-h3">Viết đánh giá của bạn</h3>
+                    <div class="ld-star-pick" id="starPick" role="group" aria-label="Chọn số sao">
+                        @for(int i=1;i<=5;i++) { <button type="button" data-v="@i" aria-label="@i sao" aria-pressed="false"><i class="bi bi-star-fill"></i></button> }
+                    </div>
+                    <label class="ld-review-label" for="rvText">Trải nghiệm của bạn</label>
+                    <textarea id="rvText" class="ld-input" name="Content" rows="3" maxlength="500" required placeholder="Chia sẻ cảm nhận về món ăn và phục vụ…"></textarea>
+                    <div class="ld-form-foot"><span id="rvMsg" class="ld-form-msg" role="status" aria-live="polite"></span><button type="submit" id="rvSubmit" class="ld-btn ld-btn-primary">Gửi đánh giá</button></div>
+                </form>
+            }
+            else { <p class="ld-login-note"><a href="@loginUrl">Đăng nhập</a> để viết đánh giá.</p> }
+            <div id="reviewList" class="ld-reviews">
+                @foreach (var r in x.Reviews) {
+                    <article class="ld-review"><div class="ld-avatar">@(string.IsNullOrEmpty(r.Author) ? "K" : r.Author.Substring(0, 1).ToUpper())</div>
+                        <div class="ld-review-body"><div class="ld-review-head"><b>@r.Author</b><span class="ld-stars sm">@Html.Raw(Stars(r.Rating))</span><span class="ld-review-date">@r.Date</span></div><p>@r.Content</p></div>
+                    </article>
+                }
+            </div>
+        </section>
+     </div>
+     <aside class="ld-side">
+        <section class="ld-card ld-cart-card" id="restaurant-cart" aria-labelledby="cart-title">
+            <div class="ld-cart-heading"><div><p class="ld-menu-eyebrow">BỮA NGON CỦA BẠN</p><h2 id="cart-title" class="ld-h2">Món đã chọn <span id="cart-count">0</span></h2></div><button id="cart-clear" type="button" class="ld-cart-clear" hidden>Xóa hết</button></div>
+            <p class="ld-cart-restaurant">@Model.Name</p>
+            <div id="cart-empty" class="ld-cart-empty"><i class="bi bi-bag-heart" aria-hidden="true"></i><b>Giỏ món đang chờ bạn</b><p>Bấm dấu + ở món yêu thích.<br />Món bạn chọn sẽ xuất hiện tại đây.</p></div>
+            <ul id="cart-items" class="ld-cart-items" aria-label="Danh sách món đã chọn"></ul>
+            <div class="ld-cart-total"><span>Tổng tiền món</span><strong id="cart-total">0 đ</strong></div>
+            <p class="ld-cart-fee">Phí giao hàng và phụ phí sẽ được xác định tại bước hóa đơn.</p>
+            <form id="checkout-token" hidden>@Html.AntiForgeryToken()</form>
+            <button type="button" id="checkout-submit" class="ld-btn ld-btn-primary ld-block" disabled><i class="bi bi-bag-check" aria-hidden="true"></i> Đặt hàng ngay <span aria-hidden="true">→</span></button>
+            <p id="checkout-message" class="ld-form-msg err" role="status" aria-live="polite"></p>
+            <a class="ld-btn ld-btn-outline ld-block" href="@directionUrl" target="_blank" rel="noopener noreferrer"><i class="bi bi-sign-turn-right-fill"></i> Chỉ đường tới đây</a>
+            <a class="ld-btn ld-btn-ghost ld-block" href="#comments"><i class="bi bi-pencil-square"></i> Viết đánh giá</a>
+            <p id="cart-status" class="ld-sr-only" role="status" aria-live="polite"></p>
+        </section>
+        <section class="ld-card ld-restaurant-info"><h3 class="ld-h3">Thông tin nhà hàng</h3><div class="ld-info-box"><div><span>Giờ mở cửa</span><b>@x.OpenHours</b></div>
+            @if(!string.IsNullOrWhiteSpace(Model.Phone)) { <div><span>Điện thoại</span><a href="tel:@Model.Phone">@Model.Phone</a></div> }
+        </div></section>
+        <section class="ld-card ld-location-card"><h3 class="ld-h3">Vị trí nhà hàng</h3><iframe class="ld-map" title="Vị trí @Model.Name" src="@embedUrl" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><p class="ld-address">@Model.Address</p></section>
+     </aside>
+    </div>
+ </div>
+    <a id="mobile-cart" class="ld-mobile-cart" href="#restaurant-cart" hidden><span>Giỏ món · <span id="mobile-cart-count">0</span> món</span><strong id="mobile-cart-total">0 đ</strong><span aria-hidden="true">↑</span></a>
+</div>
+<script type="application/json" id="restaurant-menu-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MenuGroups.SelectMany(g => g.Items).Where(i => i.CanOrder).Select(i => new { id = i.Id, name = i.Name, price = i.Price, unit = i.Unit, imageUrl = Url.Content(i.ImageUrl) })))</script>
+@section Scripts {
+    <script src="~/js/location/details.js" asp-append-version="true"></script>
+    <script src="~/js/location/cart.js" asp-append-version="true"></script>
+}

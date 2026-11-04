@@ -1,14 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using TourisManager.Models;
+using TourisManager.Data;
+using TourisManager.Core.Entities;
 
 namespace TourisManager.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly AppDbContext _context;
+
+        public HomeController(AppDbContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            // Truy vấn 5 địa điểm (quán ăn) từ Database
+            // Bạn có thể dùng thêm .OrderByDescending(x => x.CreateAt) để lấy quán mới nhất
+            var locations = await _context.Locations
+                                          .Take(5)
+                                          .ToListAsync();
+
+            // Truyền danh sách dữ liệu ra View
+            return View(locations);
         }
 
         public IActionResult Privacy()
@@ -19,7 +35,7 @@ namespace TourisManager.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(); // Trả về trang lỗi mặc định
         }
     }
 }

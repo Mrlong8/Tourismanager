@@ -19,9 +19,9 @@ namespace TourisManager.Core.Entities
         public decimal TotalAmount { get; set; }
         [ForeignKey(nameof(PaymentMethod))]
         public string PaymentMethodId { get; set; } = string.Empty;
-        public string PaymentStatus { get; set; } = string.Empty;
+        public bool PaymentStatus { get; set; } 
         public DateTime CreateAt { get; set; } = DateTime.Now;
-        public string OrderStatus { get; set; } = string.Empty;
+        public OrderStatus OrderStatus { get; set; } 
 
 
         // Navigation

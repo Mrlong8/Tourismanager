@@ -28,11 +28,9 @@
             var $btn = $(this);
             currentTypeId = $btn.data('id') || "";
 
-            $('.btn-category-filter')
-                .removeClass('btn-success text-white fw-bold')
-                .addClass('btn-outline-secondary text-dark');
-            $btn.removeClass('btn-outline-secondary text-dark')
-                .addClass('btn-success text-white fw-bold');
+            // Xóa class active ở tất cả các nút danh mục và gán active cho nút vừa click
+            $('.btn-category-filter').removeClass('active');
+            $btn.addClass('active');
 
             loadFoods(currentTypeId, 1);
         });
@@ -110,14 +108,6 @@
             $('#modalTotalPrice').text(total.toLocaleString('vi-VN') + ' đ');
         }
 
-        // Hàm thanh toán / xác nhận (tuỳ chọn)
-        function processCheckout() {
-            let foodId = $('#modalFoodId').val();
-            let selectedSize = $('input[name="foodSize"]:checked');
-            let sizeId = selectedSize.data('size-id');
-            let qty = parseInt($('#inputQty').val()) || 1;
-
-            alert('Đã chọn món: ' + foodId + ' | Size ID: ' + sizeId + ' | Số lượng: ' + qty);
-        }
+      
     </script>
 }
