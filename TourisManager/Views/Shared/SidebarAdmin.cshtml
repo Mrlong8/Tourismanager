@@ -1,194 +1,155 @@
-﻿
-@{
-    // Kế thừa giao diện gốc MyLayout của bạn (không đổi tên mặc định)
-     Layout = "~/Views/Shared/MyLayout.cshtml";
+﻿@{
+    // 1. Không kế thừa MyLayout nữa để trang Admin hiển thị riêng biệt hoàn toàn
+    Layout = null;
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
 }
- 
-@section Styles {
-    <!-- File CSS Quản lý: SidebarAdmin.css (Tông xanh nước biển, liền khối không hở trên dưới) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Dashboard</title>
+
+    <!-- Các thư viện cơ bản cần thiết (Bootstrap, Icons) -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Các file CSS dùng chung toàn cục nếu cần -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- CSS dành riêng cho Admin -->
     <link rel="stylesheet" href="~/css/Shared/SidebarAdmin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/Location.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/User.css" asp-append-version="true" />
+
+    <!-- Cho phép các View con chèn thêm CSS nếu cần -->
     @await RenderSectionAsync("Styles", required: false)
-}
- 
-<!-- KHUNG TOÀN BỘ BỐ CỤC QUẢN LÝ (DÍNH LIỀN DƯỚI TOPNAV, CHIẾM TRỌN 100% CHIỀU CAO) -->
-<div class="admin-layout-wrapper">
-    <!-- 1. CỘT TRÁI: SIDEBAR QUẢN LÝ 1/5 (CỐ ĐỊNH & CUỘN RIÊNG) -->
-    <aside class="admin-sidebar" id="adminSidebar">
-        <!-- Vùng cuộn riêng cho menu khi danh sách dài -->
-        <div class="admin-sidebar-scrollable">
-            <!-- Thẻ tóm tắt thông tin Quản trị viên -->
-            <div class="admin-user-card">
-                <div class="admin-avatar">
-                    <i class="bi bi-shield-lock-fill"></i>
+</head>
+<body class="d-flex flex-column min-vh-100 m-0 p-0">
+
+    <!-- KHUNG TOÀN BỘ BỐ CỤC QUẢN LÝ -->
+    <div class="admin-layout-wrapper">
+        <!-- 1. CỘT TRÁI: SIDEBAR QUẢN LÝ -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-scrollable">
+                <div class="admin-user-card">
+                    <div class="admin-avatar">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div class="admin-user-info">
+                        <span class="admin-user-name">@(User.Identity?.Name ?? "Quản trị viên")</span>
+                        <span class="admin-user-role">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                @:Hệ thống Admin
+                            }
+                            else if (User.IsInRole("Seller"))
+                            {
+                                @:Tài khoản Chủ quán
+                            }
+                            else
+                            {
+                                @:Tài khoản Người dùng
+                            }
+                        </span>
+                    </div>
                 </div>
-                <div class="admin-user-info">
-                    <span class="admin-user-name">@(User.Identity?.Name ?? "Quản trị viên")</span>
-                    <span class="admin-user-role">
-                        @if (User.IsInRole("Admin"))
-                        {
-                            @:Hệ thống Admin
-                        }
-                        else if (User.IsInRole("Seller"))
-                        {
-                            @: Tài khoản Khách hàng
-                        }
-                        else
-                        {
-                            @:Tài khoản Người dùng
-                        }
-                    </span>
-                </div>
-            </div>
- 
-            <!-- NHÓM 1: QUẢN LÝ CHỨC NĂNG CHÍNH -->
-            <div class="admin-group-label">Quản lý Chức năng</div>
-            <nav class="admin-menu-nav">
-                <!-- Tổng quan -->
-                <a class="admin-link-item @(currentController == "Admin" && currentAction == "Index" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Admin" asp-action="Index" 
-                   data-title="Tổng quan Dashboard">
-                    <i class="bi bi-speedometer2"></i>
-                    <span class="admin-item-text">Bảng tổng quan</span>
-                </a>
- 
-               
-                <!-- Quản lý Người dùng -->
-                <a class="admin-link-item @(currentController == "User" ? "active" : "")"
-                   asp-area="Admin"
-                   asp-controller="User"
-                   asp-action="Index"
-                   data-title="Quản lý Người dùng">
-                    <i class="bi bi-people-fill"></i>
-                    <span class="admin-item-text">Quản lý Người dùng</span>
 
-                    @await Component.InvokeAsync("AdminSidebar", new { item = "Users" })
-                </a>
+                <div class="admin-group-label">Quản lý Chức năng</div>
+                <nav class="admin-menu-nav">
+                    <!-- Tổng quan -->
+                    <a class="admin-link-item @(currentController == "Admin" && currentAction == "Index" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Admin" asp-action="Index"
+                       data-title="Tổng quan Dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="admin-item-text">Bảng tổng quan</span>
+                    </a>
 
-                <!-- Quản lý Địa điểm -->
-                <a class="admin-link-item @(currentController == "Location" ? "active" : "")"
-                   asp-area="Admin"
-                   asp-controller="Location"
-                   asp-action="Index"
-                   data-title="Quản lý Địa điểm">
-                    <i class="bi bi-geo-alt-fill"></i>
-                    <span class="admin-item-text">Quản lý Địa điểm</span>
+                    <!-- Quản lý Người dùng -->
+                    <a class="admin-link-item @(currentController == "User" ? "active" : "")"
+                       asp-area="Admin" asp-controller="User" asp-action="Index"
+                       data-title="Quản lý Người dùng">
+                        <i class="bi bi-people-fill"></i>
+                        <span class="admin-item-text">Quản lý Người dùng</span>
+                        @await Component.InvokeAsync("AdminSidebar", new { item = "Users" })
+                    </a>
 
-                    @await Component.InvokeAsync("AdminSidebar", new { item = "Locations" })
-                </a>
+                    <!-- Quản lý Địa điểm -->
+                    <a class="admin-link-item @(currentController == "Location" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Location" asp-action="Index"
+                       data-title="Quản lý Địa điểm">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span class="admin-item-text">Quản lý Địa điểm</span>
+                        @await Component.InvokeAsync("AdminSidebar", new { item = "Locations" })
+                    </a>
+                </nav>
 
- 
-                <!-- Quản lý Nhà hàng -->
-                @* <a class="admin-link-item @(currentController == "Restaurant" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Restaurant" asp-action="Index" 
-                   data-title="Quản lý Nhà hàng">
-                    <i class="bi bi-cup-hot-fill"></i>
-                    <span class="admin-item-text">Quản lý Nhà hàng</span>
-                    <span class="admin-item-badge">156</span>
-                </a> *@
-            </nav>
- 
-            @* <!-- NHÓM 2: VẬN HÀNH & TOUR DU LỊCH -->
-            <div class="admin-group-label">Vận hành & Du lịch</div>
-            <nav class="admin-menu-nav">
-                <a class="admin-link-item @(currentController == "Tour" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Tour" asp-action="Index" 
-                   data-title="Tour & Lịch trình">
-                    <i class="bi bi-compass-fill"></i>
-                    <span class="admin-item-text">Tour & Lịch trình</span>
-                </a>
- 
-                <a class="admin-link-item @(currentController == "Booking" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Booking" asp-action="Index" 
-                   data-title="Đặt chỗ & Vé">
-                    <i class="bi bi-ticket-perforated-fill"></i>
-                    <span class="admin-item-text">Đặt chỗ & Vé</span>
-                </a>
- 
-                <a class="admin-link-item @(currentController == "Report" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Report" asp-action="Index" 
-                   data-title="Báo cáo & Thống kê">
-                    <i class="bi bi-bar-chart-line-fill"></i>
-                    <span class="admin-item-text">Báo cáo & Thống kê</span>
-                </a>
-            </nav> *@
- 
-            <!-- NHÓM 3: HỆ THỐNG & ĐIỀU HƯỚNG -->
-            <div class="admin-group-label">Hệ thống</div>
-            <nav class="admin-menu-nav">
-                @* <a class="admin-link-item @(currentController == "Setting" ? "active" : "")" 
-                   asp-area="Admin" asp-controller="Setting" asp-action="Index" 
-                   data-title="Cài đặt hệ thống">
-                    <i class="bi bi-sliders"></i>
-                    <span class="admin-item-text">Cài đặt hệ thống</span>
-                </a> *@
- 
-                <!-- Nút quay lại trang chủ Tour du lịch -->
-                <a class="admin-link-item text-primary" 
-                   asp-area="" asp-controller="Home" asp-action="Index" 
-                   data-title="Về Website Khách hàng">
-                    <i class="bi bi-arrow-left-circle-fill"></i>
-                    <span class="admin-item-text">Về Web Khách hàng</span>
-                </a>
-            </nav>
-        </div>
- 
-        <!-- Chân Sidebar: Nút Đăng xuất -->
-        <div class="admin-sidebar-footer">
-            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="admin-logout-btn" title="Đăng xuất">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span class="admin-item-text">Đăng xuất Admin</span>
-                </button>
-            </form>
-        </div>
-    </aside>
- 
-    <!-- 2. CỘT PHẢI: NỘI DUNG CHÍNH 4/5 (LIỀN MẠCH, CUỘN RIÊNG DANH SÁCH) -->
-    <main class="admin-main-content">
-        <!-- Sub-Header cố định ở đầu cột nội dung: Nút thụt vào, Breadcrumb & Đồng hồ -->
-        <header class="admin-sub-header">
-            <div class="d-flex align-items-center gap-3">
-                <!-- Nút bấm thu gọn / thụt vào (Collapse 1/5 -> 70px) -->
-                <button type="button" 
-                        class="btn-toggle-admin-sidebar" 
-                        id="btnToggleAdminSidebar" 
-                        title="Thu gọn thanh Menu">
-                    <i class="bi bi-layout-sidebar-inset"></i>
-                </button>
- 
-                <!-- Đường dẫn phân cấp (Breadcrumb) -->
-                <nav class="admin-breadcrumb" aria-label="breadcrumb">
-                    <span class="admin-breadcrumb-parent">Trang Quản lý</span>
-                    <i class="bi bi-chevron-right admin-breadcrumb-separator"></i>
-                    <span class="admin-breadcrumb-current">@(ViewData["Title"] ?? "Quản lý Chức năng")</span>
+                <div class="admin-group-label">Hệ thống</div>
+                <nav class="admin-menu-nav">
+                    <a class="admin-link-item text-primary"
+                       asp-area="" asp-controller="Home" asp-action="Index"
+                       data-title="Về Website Khách hàng">
+                        <i class="bi bi-arrow-left-circle-fill"></i>
+                        <span class="admin-item-text">Về Web Khách hàng</span>
+                    </a>
                 </nav>
             </div>
- 
-            <!-- Góc phải: Trạng thái & Đồng hồ thời gian thực -->
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small px-3 py-1.5 d-none d-sm-inline-flex align-items-center gap-1.5">
-                    <span class="spinner-grow spinner-grow-sm text-primary" style="width: 7px; height: 7px;" role="status"></span>
-                    <span>Admin Mode</span>
-                </span>
-                <div class="admin-header-clock" id="adminLiveClock" title="Giờ hệ thống">
-                    --:--:--
-                </div>
+
+            <div class="admin-sidebar-footer">
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="admin-logout-btn" title="Đăng xuất">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="admin-item-text">Đăng xuất Admin</span>
+                    </button>
+                </form>
             </div>
-        </header>
- 
-        <!-- KHU VỰC RENDER TOÀN BỘ PHẦN TRỐNG & CUỘN RIÊNG BIỆT (DATA VIEWPORT) -->
-        <div class="admin-content-viewport">
-            @RenderBody()
-        </div>
-    </main>
-</div>
- 
-@section Scripts {
-    <!-- File JavaScript Quản lý: SidebarAdmin.js (Xử lý thu gọn, đồng hồ, ghi nhớ trạng thái) -->
+        </aside>
+
+        <!-- 2. CỘT PHẢI: NỘI DUNG CHÍNH -->
+        <main class="admin-main-content">
+            <header class="admin-sub-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="btn-toggle-admin-sidebar" id="btnToggleAdminSidebar" title="Thu gọn thanh Menu">
+                        <i class="bi bi-layout-sidebar-inset"></i>
+                    </button>
+
+                    <!-- Breadcrumb hiển thị trên Desktop -->
+                    <nav class="admin-breadcrumb" aria-label="breadcrumb">
+                        <span class="admin-breadcrumb-parent">Trang Quản lý</span>
+                        <i class="bi bi-chevron-right admin-breadcrumb-separator"></i>
+                        <span class="admin-breadcrumb-current">@(ViewData["Title"] ?? "Quản lý Chức năng")</span>
+                    </nav>
+
+                    <!-- Tiêu đề ngắn gọn hiển thị riêng cho Mobile (thay cho Breadcrumb) -->
+                    <span class="mobile-header-title d-none">Admin Panel</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small px-3 py-1.5 d-none d-sm-inline-flex align-items-center gap-1.5">
+                        <span class="spinner-grow spinner-grow-sm text-primary" style="width: 7px; height: 7px;" role="status"></span>
+                        <span>Admin Mode</span>
+                    </span>
+                    <div class="admin-header-clock" id="adminLiveClock" title="Giờ hệ thống">--:--:--</div>
+                </div>
+            </header>
+
+            <div class="admin-content-viewport">
+                <!-- Nội dung các trang con (User, Location,...) sẽ render vào đây -->
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <!-- Thư viện Javascript -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Script riêng biệt của Admin -->
     <script src="~/js/Shared/SidebarAdmin.js" asp-append-version="true"></script>
+
+    <!-- Render thêm các Script từ các trang con -->
     @await RenderSectionAsync("Scripts", required: false)
-}
- 
+</body>
+</html>

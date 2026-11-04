@@ -1,27 +1,47 @@
-﻿/* Tối ưu bo góc 0 và viền vuông vức */
+﻿/* =========================================================
+   ĐỒNG BỘ MÀU CAM VÀ BO TRÒN GÓC CHO KHU VỰC MÓN ĂN
+   ========================================================= */
+
+/* 1. TỐI ƯU BO TRÒN GÓC THAY CHO GÓC VUÔNG */
 .rounded-0 {
-    border-radius: 0px !important;
+    border-radius: 12px !important;
 }
 
-/* Đảm bảo hình ảnh co giãn đẹp không bị méo */
+/* 2. ĐẢM BẢO HÌNH ẢNH CO GIÃN ĐẸP KHÔNG BỊ MÉO */
 .object-fit-cover {
     object-fit: cover;
 }
 
-/* Hiệu ứng rê chuột vào card sản phẩm */
+/* 3. HIỆU ỨNG RÊ CHUỘT VÀO CARD SẢN PHẨM (ĐỔI SANG MÀU CAM) */
 .card-hover {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
     .card-hover:hover {
-        border-color: #198754 !important; /* Viền đổi sang màu xanh lá */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        border-color: #f97316 !important; /* Viền chuyển sang màu cam */
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important; /* Bóng mờ màu cam nhẹ */
     }
 
+/* 4. HIỆU ỨNG NỀN KHI RÊ CHUỘT (CHUYỂN SANG CAM NHẠT) */
 .bg-light-hover:hover {
-    background-color: #f8f9fa !important;
+    background-color: #fff7ed !important;
 }
 
 .fs-7 {
     font-size: 0.85rem;
 }
+
+/* 5. ÉP CÁC MỤC ACTIVE VÀ NÚT BẤM (ĐẶT HÀNG NGAY / DANH MỤC) SANG MÀU CAM */
+.sidebar .active,
+.list-group-item.active,
+.bg-success,
+.btn-success {
+    background-color: #f97316 !important;
+    border-color: #f97316 !important;
+    color: #ffffff !important;
+}
+
+    .btn-success:hover {
+        background-color: #ea580c !important;
+        border-color: #ea580c !important;
+    }

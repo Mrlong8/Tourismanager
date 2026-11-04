@@ -1,58 +1,86 @@
-﻿/* Khung cuộn riêng cho phần món ăn */
-.food-scroll-container {
-    /* 100vh trừ đi chiều cao TopNav (~60px) + Tiêu đề (~60px) + khoảng cách lề */
-    height: calc(100vh - 165px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 6px; /* Khoảng đệm nhỏ để không bị thanh cuộn che mất card */
+﻿/* =========================================================
+   ĐỒNG BỘ MÀU CAM TOÀN BỘ GIAO DIỆN MÓN ĂN (FOOD PAGE)
+   ========================================================= */
+
+/* Khai báo biến màu sắc cục bộ cho trang món ăn */
+:root {
+    --tm-primary: #f97316;
+    --tm-primary-hover: #ea580c;
+    --tm-primary-subtle: #fff7ed;
+    --tm-border-color: #e2e8f0;
+    --tm-text-main: #0f172a;
 }
 
-    /* Tùy chỉnh thanh cuộn cho đẹp và mảnh */
+/* 1. KHUNG CUỘN RIÊNG CHO PHẦN MÓN ĂN */
+.food-scroll-container {
+    max-height: calc(100vh - 170px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
     .food-scroll-container::-webkit-scrollbar {
-        width: 6px;
+        display: none;
+        width: 0;
+        height: 0;
     }
 
-    .food-scroll-container::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-    }
-
-    .food-scroll-container::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 4px;
-    }
-
-        .food-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
+/* 2. KHUNG SIDEBAR VÀ TOOLBAR CỐ ĐỊNH (STICKY) */
 .food-sidebar-sticky {
     position: sticky;
-    top: 15px; /* Ghim sát đỉnh màn hình */
+    top: 15px;
     max-height: calc(100vh - 30px);
     overflow-y: auto;
 }
 
 .food-toolbar-sticky {
     position: sticky;
-    top: 15px; /* Ghim sát đỉnh màn hình */
+    top: 15px;
     z-index: 1020;
 }
-/* Khung chứa món ăn: Giới hạn chiều cao vừa vặn màn hình */
-.food-scroll-container {
-    /* 100vh trừ đi TopNav (~60px) + Tiêu đề (~60px) + lề đệm */
-    max-height: calc(100vh - 170px);
-    overflow-y: auto;
-    overflow-x: hidden;
-    /* 1. Ẩn thanh cuộn trên Firefox */
-    scrollbar-width: none;
-    /* 2. Ẩn thanh cuộn trên IE / Edge cũ */
-    -ms-overflow-style: none;
+
+/* 3. TIỆN ÍCH BO TRÒN GÓC & HIỂN THỊ HÌNH ẢNH */
+.tm-rounded {
+    border-radius: 12px !important;
 }
 
-    /* 3. Ẩn thanh cuộn trên Chrome, Edge mới, Safari, Cốc Cốc */
-    .food-scroll-container::-webkit-scrollbar {
-        display: none;
-        width: 0;
-        height: 0;
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* 4. HIỆU ỨNG RÊ CHUỘT VÀO CARD SẢN PHẨM & NỀN */
+.card-hover {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+}
+
+    .card-hover:hover {
+        border-color: var(--tm-primary) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important;
+    }
+
+.bg-light-hover:hover {
+    background-color: var(--tm-primary-subtle) !important;
+}
+
+.fs-7 {
+    font-size: 0.85rem;
+}
+
+/* 5. GHI ĐÈ VÀ ĐỊNH NGHĨA RIÊNG CHO SIDEBAR & NÚT BẤM (ACTIVE / ĐẶT HÀNG) */
+.sidebar .active,
+.list-group-item.active,
+.tm-btn-primary {
+    background-color: var(--tm-primary) !important;
+    border-color: var(--tm-primary) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+}
+
+    .tm-btn-primary:hover {
+        background-color: var(--tm-primary-hover) !important;
+        border-color: var(--tm-primary-hover) !important;
+        color: #ffffff !important;
     }

@@ -1,51 +1,14 @@
 @{
-    Layout = "~/Views/Shared/MyLayout.cshtml"; // Kế thừa từ MyLayout.cshtml chính của bạn
+    Layout = "~/Views/Shared/MyLayout.cshtml";
 }
 
-<!-- Liên kết CSS độc lập cho Layout Profile 1/5 và Giao diện hiện đại -->
+<!-- Liên kết CSS độc lập cho Layout Profile -->
 <link rel="stylesheet" href="~/css/Shared/_ProfileLayout.css" asp-append-version="true" />
 
-<!-- 1. GIAO DIỆN MOBILE MENU (Dropdown) -->
-<div class="d-md-none bg-white border-bottom p-3 shadow-xs">
-    <div class="dropdown d-grid">
-        <button class="btn btn-outline-secondary dropdown-toggle d-flex justify-content-between align-items-center text-start py-2.5 px-3 rounded-3" 
-                type="button" id="mobileProfileMenu" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="text-dark fw-bold d-flex align-items-center">
-                <i class="bi bi-list me-2 fs-5 text-success"></i> Menu Tài khoản
-            </span>
-        </button>
-        <ul class="dropdown-menu w-100 shadow-lg border-0 mt-2 p-2 rounded-3" aria-labelledby="mobileProfileMenu">
-            <li>
-                <a class="dropdown-item py-2 px-3 rounded-2 fw-semibold @(ViewData["Title"]?.ToString() == "Profile" ? "active bg-success text-white" : "")" 
-                   asp-controller="Profile" asp-action="Index">
-                    <i class="bi bi-person me-2 fs-5"></i> Profile
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item py-2 px-3 rounded-2 fw-semibold @(ViewData["Title"]?.ToString() == "ChangePassword" ? "active bg-success text-white" : "")" 
-                   asp-controller="Profile" asp-action="ChangePassword">
-                    <i class="bi bi-key me-2 fs-5"></i> Đổi mật khẩu
-                </a>
-            </li>
-            <li><hr class="dropdown-divider my-2"></li>
-            <li>
-                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="dropdown-item py-2 px-3 text-danger fw-semibold d-flex align-items-center rounded-2">
-                        <i class="bi bi-box-arrow-right me-2"></i> Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<!-- =========================================================================
-     2. KHUNG BỐ CỤC 1/5 & 4/5
-     ========================================================================= -->
+<!-- KHUNG BỐ CỤC -->
 <div class="profile-layout-wrapper" id="profileLayoutWrapper">
 
-    <!-- CỘT TRÁI: SIDEBAR (1/5) -->
+    <!-- CỘT TRÁI: SIDEBAR -->
     <aside class="profile-sidebar" aria-label="Sidebar Menu">
         <div>
             <!-- Header User -->
@@ -62,15 +25,15 @@
             <div class="sidebar-group-label">Quản lý tài khoản</div>
 
             <nav class="sidebar-menu-nav">
-                <a asp-controller="Profile" asp-action="Index" 
-                   class="sidebar-link-item @(ViewData["Title"]?.ToString() == "Profile" ? "active" : "")" 
+                <a asp-controller="Profile" asp-action="Index"
+                   class="sidebar-link-item @(ViewData["Title"]?.ToString() == "Profile" ? "active" : "")"
                    data-title="Profile (Thông tin cá nhân)">
                     <i class="bi bi-person-circle"></i>
                     <span class="sidebar-item-text">Profile</span>
                 </a>
 
-                <a asp-controller="Profile" asp-action="ChangePassword" 
-                   class="sidebar-link-item @(ViewData["Title"]?.ToString() == "ChangePassword" ? "active" : "")" 
+                <a asp-controller="Profile" asp-action="ChangePassword"
+                   class="sidebar-link-item @(ViewData["Title"]?.ToString() == "ChangePassword" ? "active" : "")"
                    data-title="Đổi mật khẩu">
                     <i class="bi bi-shield-lock"></i>
                     <span class="sidebar-item-text">Đổi mật khẩu</span>
@@ -101,16 +64,17 @@
         </div>
     </aside>
 
-    <!-- CỘT PHẢI: NỘI DUNG CHÍNH (4/5) -->
+    <!-- CỘT PHẢI: NỘI DUNG CHÍNH -->
     <main class="profile-main-content">
+        <!-- HEADER CỘT PHẢI -->
         <div class="profile-sub-header">
             <div class="d-flex align-items-center gap-3">
-                <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" title="Thụt vào / Mở rộng menu (1/5)">
-                    <i class="bi bi-list"></i>
+                <button type="button" class="btn-toggle-sidebar" id="btnToggleSidebar" title="Mở rộng menu">
+                    <i class="bi bi-list text-orange"></i>
                 </button>
-                <div class="d-none d-sm-flex align-items-center gap-2 small">
-                    <span class="text-muted">Tài khoản</span>
-                    <i class="bi bi-chevron-right text-muted" style="font-size: 11px;"></i>
+                <div class="d-flex align-items-center gap-2 small">
+                    <span class="text-muted d-none d-sm-inline">Tài khoản</span>
+                    <i class="bi bi-chevron-right text-muted d-none d-sm-inline" style="font-size: 11px;"></i>
                     <span class="fw-bold text-dark">@(ViewData["Title"]?.ToString() == "ChangePassword" ? "Đổi mật khẩu" : "Hồ sơ cá nhân")</span>
                 </div>
             </div>
@@ -121,7 +85,7 @@
             </div>
         </div>
 
-        <!-- Khung Card bảo vệ nội dung view con -->
+        <!-- VÙNG RENDER NỘI DUNG VIEW CON -->
         <div class="profile-content-body">
             <div class="profile-card-container">
                 @RenderBody()

@@ -1,20 +1,17 @@
-﻿<link rel="stylesheet"
-      href="~/css/Shared/TopNav.css"
-      asp-append-version="true" />
+﻿<link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
 
-<header class="sticky-top">
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow py-2">
+<header class="sticky-top border-bottom">
+    <nav class="navbar navbar-expand-sm navbar-light bg-white py-2">
         <div class="container-fluid">
-
-            <a class="navbar-brand fw-bold text-success fs-4"
-               asp-area=""
-               asp-controller="Home"
-               asp-action="Index">
-                <i class="bi bi-compass-fill me-1"></i>
-                FoodieMap
+            <!-- Brand -->
+            <a class="navbar-brand fw-bold fs-4 shopee-brand"
+               asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-shop me-1"></i> 
+                SuperFood
             </a>
 
-            <button class="navbar-toggler border-0 shadow-none"
+            <!-- Toggler -->
+            <button class="navbar-toggler border-0"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarMainContent"
@@ -24,71 +21,50 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between"
-                 id="navbarMainContent">
-
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" id="navbarMainContent">
                 <ul class="navbar-nav flex-grow-1">
+                    <!-- Ghim trạng thái Active bằng Razor -->
+                    @{
+                        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+                    }
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-medium"
-                           asp-area=""
-                           asp-controller="Home"
-                           asp-action="Index">
+                        <a class="nav-link fw-medium @(currentController == "Home" ? "active" : "")"
+                           asp-area="" asp-controller="Home" asp-action="Index">
                             Home
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-medium"
-                           asp-area=""
-                           asp-controller="Home"
-                           asp-action="Privacy">
-                            Privacy
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link text-dark fw-medium"
-                           asp-area=""
-                           asp-controller="Map"
-                           asp-action="Index">
+                        <a class="nav-link fw-medium @(currentController == "Map" ? "active" : "")"
+                           asp-area="" asp-controller="Map" asp-action="Index">
                             Map
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-medium"
-                           asp-area=""
-                           asp-controller="Food"
-                           asp-action="Index">
+                        <a class="nav-link fw-medium @(currentController == "Food" ? "active" : "")"
+                           asp-area="" asp-controller="Food" asp-action="Index">
                             Food
                         </a>
                     </li>
 
-                  
-
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-medium"
-                           asp-area=""
-                           asp-controller="Shop"
-                           asp-action="Invoice">
+                        <a class="nav-link fw-medium @(currentController == "Shop" ? "active" : "")"
+                           asp-area="" asp-controller="Shop" asp-action="Invoice">
                             Hóa Đơn
                         </a>
                     </li>
 
                     <li class="nav-item mx-2">
-                        <a class="nav-link fw-bold text-success"
-                           asp-area="Seller"
-                           asp-controller="Dashboard"
-                           asp-action="Index">
+                        <a class="nav-link fw-bold shopee-text @(currentController == "Dashboard" ? "active" : "")"
+                           asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
                             Kênh Chủ Quán
                         </a>
                     </li>
-
                 </ul>
 
                 <ul class="navbar-nav align-items-center gap-2">
-
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <li class="nav-item">
@@ -98,26 +74,19 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-success text-success fw-semibold px-3 py-1 rounded-pill me-1"
-                               asp-area=""
-                               asp-controller="Account"
-                               asp-action="Login">
+                            <a class="btn btn-outline-shopee fw-semibold px-4 py-1"
+                               asp-area="" asp-controller="Account" asp-action="Login">
                                 LogIn
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="btn btn-success text-white fw-semibold px-3 py-1 rounded-pill shadow-sm"
-                               asp-area=""
-                               asp-controller="Account"
-                               asp-action="Signup">
+                            <a class="btn btn-shopee fw-semibold px-4 py-1"
+                               asp-area="" asp-controller="Account" asp-action="Signup">
                                 SignUp
                             </a>
                         </li>
                     }
-
                 </ul>
-
             </div>
         </div>
     </nav>
