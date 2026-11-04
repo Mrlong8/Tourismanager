@@ -70,7 +70,7 @@ function initProfileMap() {
     if (!mapElement || typeof L === 'undefined') return;
 
     if (L.Icon && L.Icon.Default) {
-        L.Icon.Default.imagePath = '/lib/leaflet/images/';
+        L.Icon.Default.imagePath = '/lib/leaflet/Image/';
     }
 
     const latData = mapElement.getAttribute('data-lat');

@@ -1,14 +1,12 @@
 ﻿/* =========================================================
-   BẢNG MÀU DỄ CHỈNH SỬA (LIGHT THEME)
+   ĐỒNG BỘ MÀU CAM TRANG CÁ NHÂN CHO NAVBAR DROPDOWN
    ========================================================= */
 :root {
-    /* Nút bấm Xanh lá Gradient */
-    --btn-green-start: #10b981; /* Xanh lá tươi */
-    --btn-green-end: #059669; /* Xanh lá đậm */
-    /* Khung Menu xổ xuống màu Trắng */
-    --menu-bg-color: #ffffff; /* Nền trắng sạch */
-    --menu-text-color: #334155; /* Chữ xám đen dễ đọc */
-    --menu-hover-bg: #f1f5f9; /* Nền màu xám nhẹ khi hover */
+    --tm-primary: #f97316;
+    --tm-primary-hover: #ea580c;
+    --tm-primary-subtle: #fff7ed;
+    --tm-border-color: #e2e8f0;
+    --tm-text-main: #0f172a;
 }
 
 .dropdown-menu.show {
@@ -17,52 +15,61 @@
     visibility: visible !important;
     pointer-events: auto !important;
 }
-/* 1. STYLES NÚT BẤM (Màu xanh lá chuyển tiếp) */
+
+/* 1. NÚT BẤM TÀI KHOẢN (Màu cam, bo tròn góc 12px giống phong cách thẻ) */
 .btn-account-dropdown {
-    background: linear-gradient(135deg, var(--btn-green-start), var(--btn-green-end)) !important;
+    background-color: var(--tm-primary) !important;
     color: #ffffff !important;
-    border-radius: 50px !important;
+    border-radius: 30px !important;
     font-weight: 600;
-    border: none !important;
-    transition: all 0.25s ease-in-out !important;
+    border: 1px solid var(--tm-primary) !important;
+    box-shadow: none !important;
+    transition: background-color 0.15s ease-in-out !important;
+    padding: 0.5rem 1rem;
 }
 
     .btn-account-dropdown:hover,
-    .btn-account-dropdown:focus {
-        background: linear-gradient(135deg, #059669, #047857) !important;
+    .btn-account-dropdown:focus,
+    .btn-account-dropdown.show {
+        background-color: var(--tm-primary-hover) !important;
+        border-color: var(--tm-primary-hover) !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+        box-shadow: none !important;
     }
 
-/* 2. STYLES MENU TRẮNG */
+/* 2. MENU DROPDOWN TRẮNG (Bo tròn góc 16px, viền mềm mại) */
 .custom-dropdown-menu {
-    background-color: var(--menu-bg-color) !important;
-    border-radius: 10px !important;
-    min-width: 190px;
-    padding: 6px !important;
-    /*box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;*/ /* Đổ bóng nhẹ nhàng */
+    background-color: #ffffff !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--tm-border-color) !important;
+    min-width: 220px;
+    padding: 8px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05) !important;
+    margin-top: 8px !important;
 }
 
     .custom-dropdown-menu .dropdown-item {
-        color: var(--menu-text-color);
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 0.92rem;
+        color: var(--tm-text-main);
+        border-radius: 10px !important;
+        padding: 10px 16px;
+        font-size: 0.95rem;
         font-weight: 500;
-        transition: background-color 0.15s ease;
+        transition: background-color 0.1s ease;
     }
 
-        /* Hiệu ứng di chuột vào mục */
+        /* Hiệu ứng di chuột đổi sang màu nền cam nhạt */
         .custom-dropdown-menu .dropdown-item:hover {
-            background-color: var(--menu-hover-bg) !important;
-            color: #0f172a !important;
+            background-color: var(--tm-primary-subtle) !important;
+            color: var(--tm-primary) !important;
         }
 
         .custom-dropdown-menu .dropdown-item i {
             font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
         }
 
-/* Bắt buộc căn lề menu sát lề phải */
+/* Căn lề menu sát lề phải */
 .navbar-nav .dropdown-menu-end {
     right: 0 !important;
     left: auto !important;

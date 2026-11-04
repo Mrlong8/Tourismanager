@@ -16,11 +16,12 @@ namespace TourisManager.Core.Entities
         public string MessageText { get; set; } = string.Empty;
 
         // Tài khoản gửi tin nhắn
+        [Column(TypeName = "varchar(36)")]
         public string? SenderAccountId { get; set; }
+
         // Tài khoản gửi tin nhắn (null nếu là trợ lý tự động)
         [ForeignKey(nameof(SenderAccountId))]
         public Account? SenderAccount { get; set; }
-
         // Thời gian gửi tin nhắn
         public DateTime SentAt { get; set; } = DateTime.Now;
 

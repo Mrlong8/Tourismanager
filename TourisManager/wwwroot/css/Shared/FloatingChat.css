@@ -1,0 +1,44 @@
+﻿/* Nút Chat nổi */
+.floating-chat-button {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #198754, #20c997);
+    color: white;
+    font-size: 27px;
+    text-decoration: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    z-index: 9999;
+    cursor: grab;
+    transition: background 0.2s, box-shadow 0.2s;
+    touch-action: none;
+    user-select: none;
+}
+
+    /* Khi rê chuột */
+    .floating-chat-button:hover {
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Khi nhấn giữ */
+    .floating-chat-button:active {
+        cursor: grabbing;
+    }
+
+/* Giao diện điện thoại */
+@media (max-width: 576px) {
+    .floating-chat-button {
+        width: 54px;
+        height: 54px;
+        right: 16px;
+        bottom: 16px;
+        font-size: 24px;
+    }
+}

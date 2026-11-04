@@ -1,4 +1,3 @@
-﻿
 .card-food-link {
     text-decoration: none !important;
     color: inherit !important;
@@ -11,10 +10,10 @@
     cursor: pointer;
 }
 
-    .card-food-item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
-    }
+.card-food-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
 
 .transition-img {
     transition: transform 0.35s ease;
@@ -25,23 +24,38 @@
 }
 
 .food-scroll-container {
-    /* Trừ đi chiều cao của thanh header + bộ lọc (ví dụ 250px). 
-           Bạn có thể tăng/giảm số 250px này cho vừa với giao diện thực tế */
     height: calc(100vh - 250px);
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-    /* Làm đẹp thanh cuộn (Tùy chọn) */
-    .food-scroll-container::-webkit-scrollbar {
-        width: 6px;
-    }
+/* Tùy chỉnh thanh cuộn */
+.food-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
 
-    .food-scroll-container::-webkit-scrollbar-thumb {
-        background: #ccc;
-        border-radius: 10px;
-    }
+.food-scroll-container::-webkit-scrollbar-thumb {
+    background: #fdba74;
+    border-radius: 10px;
+}
 
-        .food-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
+.food-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #f97316;
+}
+
+/* Phân trang tông màu cam SuperFood */
+.pagination .page-item.active .page-link {
+    background-color: #f97316 !important;
+    border-color: #f97316 !important;
+    color: #ffffff !important;
+}
+
+.pagination .page-link {
+    color: #f97316;
+}
+
+.pagination .page-link:hover {
+    color: #ea580c;
+    background-color: #fff7ed;
+    border-color: #fed7aa;
+}

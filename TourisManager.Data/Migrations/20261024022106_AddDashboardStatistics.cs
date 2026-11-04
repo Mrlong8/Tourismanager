@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,38 +10,34 @@ namespace TourisManager.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // 1. TẠO CỘT TRƯỚC ĐỂ TRÁNH LỖI
+            // Tạo cột SenderAccountId trong bảng Chat
+            // Cột cho phép NULL vì tin nhắn hệ thống có thể không có tài khoản gửi
             migrationBuilder.AddColumn<string>(
                 name: "SenderAccountId",
                 table: "Chat",
                 type: "varchar(36)",
+                maxLength: 36,
                 nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "SentAt",
-                table: "Chat",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            // 2. SAU KHI CỘT ĐÃ TỒN TẠI, MỚI GẮN INDEX VÀ KHÓA NGOẠI
+            // Tạo chỉ mục cho SenderAccountId
             migrationBuilder.CreateIndex(
                 name: "IX_Chat_SenderAccountId",
                 table: "Chat",
                 column: "SenderAccountId");
 
+            // Tạo khóa ngoại từ Chat sang Account
             migrationBuilder.AddForeignKey(
                 name: "FK_Chat_Account_SenderAccountId",
                 table: "Chat",
                 column: "SenderAccountId",
                 principalTable: "Account",
-                principalColumn: "AccountId");
+                principalColumn: "AccountId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Khi rollback thì làm ngược lại: Xóa khóa ngoại và index trước
             migrationBuilder.DropForeignKey(
                 name: "FK_Chat_Account_SenderAccountId",
                 table: "Chat");
@@ -51,13 +46,8 @@ namespace TourisManager.Data.Migrations
                 name: "IX_Chat_SenderAccountId",
                 table: "Chat");
 
-            // Sau đó mới xóa cột
             migrationBuilder.DropColumn(
                 name: "SenderAccountId",
-                table: "Chat");
-
-            migrationBuilder.DropColumn(
-                name: "SentAt",
                 table: "Chat");
         }
     }

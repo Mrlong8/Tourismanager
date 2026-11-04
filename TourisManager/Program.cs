@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.DataProtection; // Thêm thư viện này
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Interfaces;
 using TourisManager.Core.Services;
@@ -15,32 +16,33 @@ namespace TourisManager
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
 
-            // AppDbContext to Dependency Injection
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("TourisManagerDb")));
 
-            // Đăng ký dịch vụ (Dependency Injection - DI)
+            // FIX 1: Cấu hình Data Protection để lưu Key mã hóa Cookie cố định
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")));
+
+            // FIX 2: Xóa các phần đăng ký DI trùng lặp
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddScoped<IFoodService, FoodService>();
-            builder.Services.AddScoped<ITypeOfFoodService,TypeOfFoodService>();
+            builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ChatAutoReplyService>();
 
-            // CẤU HÌNH AUTHENTICATION
             builder.Services
                  .AddAuthentication(options =>
                  {
                      options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                     // 1. Đổi dòng này từ GoogleDefaults thành Cookie
                      options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
-                     // 2. Thêm dòng này để xử lý cấm truy cập (Forbid)
                      options.DefaultForbidScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                  })
                  .AddCookie(options =>
@@ -57,17 +59,9 @@ namespace TourisManager
                      options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
 
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IAdminService, AdminService>();
-            builder.Services.AddScoped<IChatService, ChatService>();
-            builder.Services.AddScoped<IFoodService, FoodService>();
-            builder.Services.AddScoped<ILocationService, LocationService>();
-            builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<ChatAutoReplyService>();
             var app = builder.Build();
 
-            // Initialize the database
+            // FIX 3: Gộp chung thành 1 hàm khởi tạo Database (có bắt lỗi try-catch)
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -83,7 +77,6 @@ namespace TourisManager
                 }
             }
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -99,22 +92,21 @@ namespace TourisManager
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // FIX 4: Đổi tên route tránh trùng lặp ("areas" -> "areas_admin", "areas_dashboard"...)
             app.MapControllerRoute(
-                name: "areas",
+                name: "areas_admin",
                 pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+
             app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                name: "areas_dashboard",
+                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.Run();
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
-            
+            // FIX 5: app.Run() luôn luôn phải nằm ở dưới cùng
+            app.Run();
         }
     }
 }

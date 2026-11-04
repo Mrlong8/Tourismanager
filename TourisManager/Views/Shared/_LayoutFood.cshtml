@@ -5,25 +5,21 @@
 
 <link rel="stylesheet" href="~/css/Food/_FoodGirdPartial.css" asp-append-version="true" />
 
-
 <div class="container-fluid py-3 px-4 bg-light">
     <div class="row g-3">
       
         <div class="col-lg-3 col-md-4">
             <!-- Frame Loại đồ ăn -->
             <div class="bg-white border p-3 mb-3 rounded-0 shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="mb-3">
                     <h6 class="fw-bold mb-0 text-uppercase fs-7">Phân loại món</h6>
-                    <a href="javascript:void(0);" data-id="" class="btn-category-filter text-success text-decoration-none small">Tất cả</a>
                 </div>
 
                 <div class="d-flex flex-column gap-2">
-                   
                     @await Component.InvokeAsync("TypeOfFood")
                 </div>
             </div>
 
-          
             <div class="bg-white border p-3 rounded-0 shadow-sm">
                 <h6 class="fw-bold mb-3 text-uppercase fs-7">Sắp xếp</h6>
                 <select class="form-select rounded-0 border" id="sortSelect">
@@ -42,11 +38,11 @@
                 </div>
                 <div class="btn-group rounded-0" role="group">
                     <button type="button" class="btn btn-outline-secondary rounded-0 py-1 px-2"><i class="bi bi-list-ul"></i></button>
-                    <button type="button" class="btn btn-success rounded-0 py-1 px-2 active"><i class="bi bi-grid-3x3-gap-fill"></i></button>
+                    <button type="button" class="btn text-white rounded-0 py-1 px-2 active" style="background-color: #f97316; border-color: #f97316;"><i class="bi bi-grid-3x3-gap-fill"></i></button>
                 </div>
             </div>
 
-            <!-- ĐÂY LÀ VỊ TRÍ INDEX.CSHTML SẼ RENDER VÀO -->
+            <!-- Vùng Render danh sách món ăn từ Index.cshtml -->
             <div class="food-scroll-container">
                 @RenderBody()
             </div>
@@ -54,6 +50,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     @await RenderSectionAsync("Scripts", required: false)
 }
