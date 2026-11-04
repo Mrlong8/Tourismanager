@@ -99,6 +99,40 @@ namespace TourisManager.Data.Migrations
                     b.ToTable("Area");
                 });
 
+            modelBuilder.Entity("TourisManager.Core.Entities.BankAccount", b =>
+                {
+                    b.Property<string>("BankAccountId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountHolderName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("BankCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.HasKey("BankAccountId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("BankAccounts");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.Category", b =>
                 {
                     b.Property<string>("CategoryId")
@@ -568,6 +602,81 @@ namespace TourisManager.Data.Migrations
                     b.ToTable("TypeFood");
                 });
 
+            modelBuilder.Entity("TourisManager.Core.Entities.Wallet", b =>
+                {
+                    b.Property<string>("WalletId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<decimal>("FrozenBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("WalletId");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.WalletTransaction", b =>
+                {
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("WalletId")
+                        .IsRequired()
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("TransactionId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletTransactions");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.ActivityStatus", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Location", "Location")
@@ -577,6 +686,17 @@ namespace TourisManager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.BankAccount", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Chat", b =>
@@ -838,6 +958,35 @@ namespace TourisManager.Data.Migrations
                     b.Navigation("Food");
                 });
 
+            modelBuilder.Entity("TourisManager.Core.Entities.Wallet", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Account", "Account")
+                        .WithOne()
+                        .HasForeignKey("TourisManager.Core.Entities.Wallet", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.WalletTransaction", b =>
+                {
+                    b.HasOne("TourisManager.Core.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("TourisManager.Core.Entities.Wallet", "Wallet")
+                        .WithMany("WalletTransactions")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("TourisManager.Core.Entities.Account", b =>
                 {
                     b.Navigation("DetailAccount");
@@ -920,6 +1069,11 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.TypeFood", b =>
                 {
                     b.Navigation("Foods");
+                });
+
+            modelBuilder.Entity("TourisManager.Core.Entities.Wallet", b =>
+                {
+                    b.Navigation("WalletTransactions");
                 });
 #pragma warning restore 612, 618
         }
