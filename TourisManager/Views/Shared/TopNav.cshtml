@@ -1,8 +1,6 @@
-﻿
-<!-- Nhúng file CSS sửa lỗi Dropdown (z-index, overflow, căn lề phải) -->
+﻿<!-- Nhúng file CSS sửa lỗi Dropdown (z-index, overflow, căn lề phải) -->
 <link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
- 
-<header  class="sticky-top">
+<header class="sticky-top">
     <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow py-2">
         <div class="container-fluid">
             <!-- Brand Logo -->
@@ -35,20 +33,14 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark fw-medium" asp-area="" asp-controller="Chat" asp-action="Index">Chat</a>
                     </li>
-<<<<<<< HEAD
-                    <li class="nav-item mx-2">
-                        <a class="nav-link fw-bold" asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
-                                                        Kênh Chủ Quán
-                        </a>
-                    </li>
-=======
+                    <!-- Đã gộp thành công: Giữ lại nút Hóa Đơn từ GitHub -->
                     <li class="nav-item">
                         <a class="nav-link text-dark fw-medium" asp-area="" asp-controller="Shop" asp-action="Invoice">Hóa Đơn</a>
                     </li>
-                    
->>>>>>> a4d70896e930e6a896c51a355ead043ef064b4a3
-                
-
+                    <!-- Đã gộp thành công: Giữ lại nút Kênh Chủ Quán của bạn -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" asp-area="Seller" asp-controller="Dashboard" asp-action="Index">Kênh Chủ Quán</a>
+                    </li>
                 </ul>
  
                 <!-- Auth Status Menu Bên Phải -->
@@ -80,4 +72,3 @@
         </div>
     </nav>
 </header>
- 
