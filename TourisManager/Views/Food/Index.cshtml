@@ -28,11 +28,9 @@
             var $btn = $(this);
             currentTypeId = $btn.data('id') || "";
 
-            $('.btn-category-filter')
-                .removeClass('btn-success text-white fw-bold')
-                .addClass('btn-outline-secondary text-dark');
-            $btn.removeClass('btn-outline-secondary text-dark')
-                .addClass('btn-success text-white fw-bold');
+            // Xóa class active ở tất cả các nút danh mục và gán active cho nút vừa click
+            $('.btn-category-filter').removeClass('active');
+            $btn.addClass('active');
 
             loadFoods(currentTypeId, 1);
         });
