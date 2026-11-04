@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using System.Text;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -25,19 +28,75 @@ namespace TourisManager.Services
 
     public static class RestaurantMenuCatalog
     {
+        private const string SeedFoodPrefix = "fm-menu-";
+        private const string ImageFallback = "/Image/menu/image-unavailable.svg";
+        private const string SampleDescriptionPrefix = "Món và giá minh họa. ";
+        private const string ReferenceDescriptionPrefix = "Món và giá tham khảo theo chi nhánh đã đối chiếu. ";
+        private static readonly ConcurrentDictionary<string, Lazy<MenuCatalogFile>> MenuCache = new();
+        private static readonly ConcurrentDictionary<string, Lazy<Dictionary<string, RestaurantEntry>>> RestaurantCache = new();
+
+        public static RestaurantEntry? FindRestaurant(IWebHostEnvironment environment, string locationId)
+        {
+            var path = RestaurantSeed.FindCatalogPath(environment.WebRootPath);
+            var restaurants = RestaurantCache.GetOrAdd(path, file => new Lazy<Dictionary<string, RestaurantEntry>>(
+                () => RestaurantSeed.Load(file).Restaurants.ToDictionary(r => r.Id, StringComparer.OrdinalIgnoreCase))).Value;
+            return restaurants.TryGetValue(locationId, out var restaurant) ? restaurant : null;
+        }
+
+        private static string NormalizeImage(string? url)
+        {
+            const string oldFolder = "/images/menu/";
+            if (string.IsNullOrWhiteSpace(url)) return ImageFallback;
+            if (url.StartsWith(oldFolder, StringComparison.OrdinalIgnoreCase))
+                return "/Image/menu/" + url.Substring(oldFolder.Length);
+            if (url.StartsWith("~" + oldFolder, StringComparison.OrdinalIgnoreCase))
+                return "~/Image/menu/" + url.Substring(oldFolder.Length + 1);
+            return url;
+        }
+
+        private static string MakeSeedFoodId(string locationId, string key, string itemId)
+        {
+            var value = Encoding.UTF8.GetBytes(locationId + "|" + key + "|" + itemId);
+            return SeedFoodPrefix + Convert.ToHexString(SHA256.HashData(value)).Substring(0, 28).ToLowerInvariant();
+        }
+
         public static async Task<RestaurantMenuResult> GetAsync(AppDbContext db, IWebHostEnvironment environment, Location location)
         {
             var foods = await db.Foods.AsNoTracking().Include(f => f.TypeFood)
                 .Include(f => f.FoodSizes).ThenInclude(s => s.Size)
                 .Where(f => f.LocationId == location.LocationId).OrderBy(f => f.Name).ToListAsync();
 
-            // Existing restaurant data always takes precedence over the reference catalog.
+            var file = Path.Combine(environment.ContentRootPath, "App_Data", "restaurant-menus.v2.json");
+            var catalog = File.Exists(file) ? MenuCache.GetOrAdd(file, path => new Lazy<MenuCatalogFile>(
+                () => JsonSerializer.Deserialize<MenuCatalogFile>(File.ReadAllText(path),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new MenuCatalogFile())).Value : null;
+
+            var reference = FindRestaurant(environment, location.LocationId);
+            string key = catalog?.DefaultMenu ?? "";
+            if (catalog != null && reference != null && catalog.BrandMenus.TryGetValue(reference.Brand, out var brandKey))
+                key = brandKey;
+            if (catalog != null && catalog.RestaurantMenus.TryGetValue(location.LocationId, out var restaurantKey))
+                key = restaurantKey;
+            var menu = catalog != null && catalog.Menus.TryGetValue(key, out var found) ? found : null;
+
             if (foods.Count > 0)
             {
+                bool includesSeedFood = foods.Any(f => f.FoodId.StartsWith(SeedFoodPrefix, StringComparison.Ordinal));
+                var originalIds = new Dictionary<string, string>(StringComparer.Ordinal);
+                if (includesSeedFood && menu != null && reference != null)
+                {
+                    foreach (var item in menu.Groups.SelectMany(g => g.Items))
+                        originalIds[MakeSeedFoodId(reference.Id, key, item.Id)] = "catalog:" + key + ":" + item.Id;
+                }
                 return new RestaurantMenuResult
                 {
-                    Notice = "Giá theo thực đơn được lưu trong hệ thống. Tổng tiền món chưa gồm phí giao hàng hoặc phụ phí tại bước hóa đơn.",
-                    SourceLabel = "Thực đơn của nhà hàng",
+                    IsReference = includesSeedFood,
+                    Notice = includesSeedFood
+                        ? menu?.Notice ?? "Giá và món nhập từ dữ liệu tham khảo. Vui lòng xác nhận với nhà hàng trước khi đặt."
+                        : "Giá theo thực đơn được lưu trong hệ thống. Tổng tiền món chưa gồm phí giao hàng hoặc phụ phí tại bước hóa đơn.",
+                    SourceUrl = includesSeedFood ? menu?.SourceUrl ?? "" : "",
+                    SourceLabel = includesSeedFood ? menu?.SourceLabel ?? "Thực đơn tham khảo" : "Thực đơn của nhà hàng",
+                    CheckedAt = includesSeedFood ? catalog?.CheckedAt ?? "" : "",
                     Groups = foods.GroupBy(f => string.IsNullOrWhiteSpace(f.TypeFood?.Name) ? "Món khác" : f.TypeFood.Name)
                         .Select(g => new RestaurantMenuGroup
                         {
@@ -45,42 +104,54 @@ namespace TourisManager.Services
                             Items = g.Select(f =>
                             {
                                 var size = f.FoodSizes.Where(s => s.Price > 0).OrderBy(s => s.Price).ThenBy(s => s.SizeId).FirstOrDefault();
+                                var description = f.Description ?? "";
+                                var isSeed = f.FoodId.StartsWith(SeedFoodPrefix, StringComparison.Ordinal);
+                                var hasReferencePrice = description.StartsWith(ReferenceDescriptionPrefix, StringComparison.Ordinal);
+                                if (isSeed && hasReferencePrice)
+                                    description = description.Substring(ReferenceDescriptionPrefix.Length);
+                                else if (isSeed && description.StartsWith(SampleDescriptionPrefix, StringComparison.Ordinal))
+                                    description = description.Substring(SampleDescriptionPrefix.Length);
                                 return new RestaurantMenuItem
                                 {
-                                    Id = "db:" + f.FoodId, FoodId = f.FoodId, SizeId = size?.SizeId,
-                                    Name = f.Name, Description = f.Description ?? "",
-                                    ImageUrl = string.IsNullOrWhiteSpace(f.ImageUrl) ? "/Image/menu/image-unavailable.svg" : f.ImageUrl,
-                                    Unit = size?.Size?.Name ?? "phần", Price = size?.Price
+                                    Id = originalIds.TryGetValue(f.FoodId, out var originalId) ? originalId : "db:" + f.FoodId,
+                                    FoodId = f.FoodId,
+                                    SizeId = size?.SizeId,
+                                    Name = f.Name,
+                                    Description = description,
+                                    ImageUrl = NormalizeImage(f.ImageUrl),
+                                    Unit = size?.Size?.Name ?? "phần",
+                                    Price = size?.Price,
+                                    IsIllustrative = isSeed && !hasReferencePrice
                                 };
                             }).ToList()
                         }).ToList()
                 };
             }
 
-            var file = Path.Combine(environment.ContentRootPath, "App_Data", "restaurant-menus.v2.json");
-            if (!File.Exists(file))
-                return new RestaurantMenuResult { Notice = "Chưa tìm thấy dữ liệu thực đơn. Vui lòng chép thư mục App_Data của bản cập nhật vào project TourisManager." };
-            var catalog = JsonSerializer.Deserialize<MenuCatalogFile>(await File.ReadAllTextAsync(file),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new MenuCatalogFile();
-            var restaurantCatalog = RestaurantSeed.Load(RestaurantSeed.FindCatalogPath(environment.WebRootPath));
-            var reference = restaurantCatalog.Restaurants.FirstOrDefault(r => r.Id == location.LocationId);
-            string key = catalog.DefaultMenu;
-            if (reference != null && catalog.BrandMenus.TryGetValue(reference.Brand, out var brandKey)) key = brandKey;
-            if (catalog.RestaurantMenus.TryGetValue(location.LocationId, out var restaurantKey)) key = restaurantKey;
-            if (!catalog.Menus.TryGetValue(key, out var menu)) return new RestaurantMenuResult { Notice = "Thực đơn đang được cập nhật." };
+            if (catalog == null)
+                return new RestaurantMenuResult { Notice = "Chưa tìm thấy dữ liệu thực đơn. Vui lòng chép đủ thư mục App_Data." };
+            if (menu == null)
+                return new RestaurantMenuResult { Notice = "Thực đơn đang được cập nhật." };
             var result = new RestaurantMenuResult
             {
-                IsReference = true, Notice = menu.Notice, SourceUrl = menu.SourceUrl,
-                SourceLabel = menu.SourceLabel, CheckedAt = catalog.CheckedAt
+                IsReference = true,
+                Notice = menu.Notice,
+                SourceUrl = menu.SourceUrl,
+                SourceLabel = menu.SourceLabel,
+                CheckedAt = catalog.CheckedAt
             };
             foreach (var group in menu.Groups)
             {
                 var items = group.Items.Where(i => !string.IsNullOrWhiteSpace(i.Id) && !string.IsNullOrWhiteSpace(i.Name))
                     .Select(i => new RestaurantMenuItem
                     {
-                        Id = "catalog:" + key + ":" + i.Id, Name = i.Name, Description = i.Description,
-                        ImageUrl = i.ImageUrl, Price = i.Price > 0 ? i.Price : null,
-                        Unit = i.Unit, IsIllustrative = menu.IsIllustrative
+                        Id = "catalog:" + key + ":" + i.Id,
+                        Name = i.Name,
+                        Description = i.Description,
+                        ImageUrl = NormalizeImage(i.ImageUrl),
+                        Price = i.Price > 0 ? i.Price : null,
+                        Unit = i.Unit,
+                        IsIllustrative = menu.IsIllustrative
                     }).ToList();
                 if (items.Count > 0) result.Groups.Add(new RestaurantMenuGroup { Name = group.Name, Items = items });
             }
