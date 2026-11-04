@@ -55,6 +55,7 @@ namespace TourisManager.Services
                 .AsNoTracking()
                 .Select(l => l.Address)
                 .ToListAsync();
+
             return locations
                 .GroupBy(address =>
                 {
@@ -66,9 +67,20 @@ namespace TourisManager.Services
                         StringSplitOptions.TrimEntries |
                         StringSplitOptions.RemoveEmptyEntries);
 
-                    return parts.Length > 0
-                        ? parts[^1]
+                    var area = parts.Length > 0
+                        ? parts[^1].Trim()
                         : "Chưa xác định";
+
+                    // Xử lý Việt Nam trước khi chuẩn hóa tỉnh/thành phố
+                    if (area.Equals("Việt Nam", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (parts.Length >= 2)
+                            area = parts[^2].Trim();
+                        else
+                            return "Chưa xác định";
+                    }
+
+                    return area;
                 })
                 .OrderByDescending(group => group.Count())
                 .ToDictionary(

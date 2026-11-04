@@ -38,4 +38,5 @@
 .location-ellipsis {
     border: none;
     background: transparent;
+    cursor: pointer;
 }
