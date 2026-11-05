@@ -23,9 +23,9 @@
     var embedUrl = "https://maps.google.com/maps?q=" + System.Uri.EscapeDataString(destination) + "&z=15&output=embed";
     var loginUrl = Url.Action("Login", "Account", new { returnUrl = Url.Action("Details", "Location", new { id = Model.Id }) });
 }
-@section Styles {
-    <link rel="stylesheet" href="~/css/location-details.css" asp-append-version="true" />
-}
+<link rel="stylesheet"
+      href="~/css/location-details.css"
+      asp-append-version="true" />
 <div class="ld-page" data-image-fallback="@Url.Content("~/Image/menu/image-unavailable.svg")" data-location-id="@Model.Id" data-checkout-url="@Url.Action("PrepareCheckout", "Location")" data-checkout-draft-url="@Url.Action("CheckoutDraft", "Location")">
     <div class="ld-container">
         <nav class="ld-breadcrumb" aria-label="Đường dẫn">

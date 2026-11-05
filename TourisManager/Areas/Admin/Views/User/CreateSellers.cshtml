@@ -1,0 +1,55 @@
+﻿
+@{
+    Layout = "SidebarAdmin";
+    ViewData["Title"] = "Tạo Seller hàng loạt";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card shadow">
+        <div class="card-header">
+            <h4 class="mb-0">Tạo 269 tài khoản Seller</h4>
+        </div>
+
+        <div class="card-body">
+            <p>
+                Hệ thống sẽ tạo thêm 269 tài khoản Seller,
+                giữ nguyên 2 tài khoản Seller hiện tại.
+            </p>
+
+            <ul>
+                <li>Tổng số Seller sau khi tạo: 271</li>
+                <li>Tổng số Location: 271</li>
+                <li>Mỗi Seller quản lý đúng 1 Location</li>
+                <li>Mật khẩu chung: Seller@123</li>
+                <li>Mật khẩu được mã hóa BCrypt</li>
+            </ul>
+
+            <div class="alert alert-warning">
+                Thao tác này sẽ phân công lại 8 Location
+                hiện đang liên kết với tài khoản Admin.
+                Hãy kiểm tra kỹ trước khi xác nhận.
+            </div>
+
+            <form asp-area="Admin"
+                  asp-controller="User"
+                  asp-action="CreateSellersConfirmed"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="btn btn-success"
+                        onclick="return confirm('Bạn chắc chắn muốn tạo 269 Seller và phân công 271 Location?');">
+                    Xác nhận tạo Seller
+                </button>
+
+                <a asp-area="Admin"
+                   asp-controller="User"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+                    Quay lại
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

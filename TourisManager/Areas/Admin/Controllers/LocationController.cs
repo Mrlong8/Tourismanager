@@ -63,7 +63,23 @@ namespace TourisManager.Areas.Admin.Controllers
             if (location == null)
                 return NotFound();
 
-            return View(location);
+            var model = new TourisManager.Models.LocationDetailViewModel
+            {
+                Id = location.LocationId,
+                Name = location.Name,
+                Address = location.Address ?? "",
+                Latitude = (double)location.Latitude,
+                Longitude = (double)location.Longitude,
+                ImageUrl = location.ImageUrl,
+
+                Extra = new TourisManager.Models.LocationExtra
+                {
+                    Description = location.Description
+                        ?? "Thông tin đang được cập nhật."
+                }
+            };
+
+            return View(model);
         }
 
         // GET: Tạo địa điểm
