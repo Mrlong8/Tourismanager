@@ -71,7 +71,6 @@ namespace TourisManager.Services
             }
 
             return room;
-
         }
 
         public async Task<RoomChat> GetOrCreateRoomAsync(

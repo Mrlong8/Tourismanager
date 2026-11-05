@@ -21,9 +21,7 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // Danh sách tài khoản, tìm kiếm và phân trang
-        public async Task<IActionResult> Index(
-    string? searchString,
-    int? pageIndex)
+        public async Task<IActionResult> Index( string? searchString, int? pageIndex)
         {
             ViewBag.CurrentSearch = searchString;
 
@@ -112,15 +110,11 @@ namespace TourisManager.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
-
             var user = await _userService.GetByIdAsync(id);
-
             if (user == null)
                 return NotFound();
-
             return View(user);
         }
-
         // POST: Xóa tài khoản
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -128,23 +122,17 @@ namespace TourisManager.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
-
-            try
-            {
+            try{
                 var deleted = await _userService.DeleteAsync(id);
-
-                if (!deleted)
+                 if (!deleted)
                     return NotFound();
-
                 TempData["Success"] = "Xóa tài khoản thành công!";
             }
-            catch (DbUpdateException)
-            {
+            catch (DbUpdateException){
                 TempData["Error"] =
                     "Không thể xóa tài khoản vì dữ liệu đang được sử dụng "
                     + "hoặc có ràng buộc liên quan.";
             }
-
             return RedirectToAction(nameof(Index));
         }
     }
