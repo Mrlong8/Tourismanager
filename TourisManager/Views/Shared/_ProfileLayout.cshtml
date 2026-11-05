@@ -42,13 +42,13 @@
 
             <div class="sidebar-group-label mt-3">Du lịch cá nhân</div>
             <nav class="sidebar-menu-nav">
-                <a asp-controller="Profile" asp-action="MyTrips" class="sidebar-link-item" data-title="Lịch trình của tôi">
+                <a asp-controller="Profile" asp-action="MyOrder" class="sidebar-link-item" data-title="Đơn Hàng của tôi">
                     <i class="bi bi-journal-bookmark"></i>
-                    <span class="sidebar-item-text">Lịch trình của tôi</span>
+                    <span class="sidebar-item-text">Đơn hàng của tôi</span>
                 </a>
-                <a asp-controller="Profile" asp-action="Favorites" class="sidebar-link-item" data-title="Địa điểm đã lưu">
+                <a asp-controller="Profile" asp-action="Favorites" class="sidebar-link-item" data-title="Món ăn đã lưu">
                     <i class="bi bi-heart"></i>
-                    <span class="sidebar-item-text">Địa điểm đã lưu</span>
+                    <span class="sidebar-item-text">Món ăn đã lưu</span>
                 </a>
             </nav>
         </div>
@@ -65,7 +65,7 @@
     </aside>
 
     <!-- CỘT PHẢI: NỘI DUNG CHÍNH -->
-    <main class="profile-main-content">
+    <section class="profile-main-content">
         <!-- HEADER CỘT PHẢI -->
         <div class="profile-sub-header">
             <div class="d-flex align-items-center gap-3">
@@ -91,7 +91,7 @@
                 @RenderBody()
             </div>
         </div>
-    </main>
+    </section>
 </div>
 
 @section Styles {

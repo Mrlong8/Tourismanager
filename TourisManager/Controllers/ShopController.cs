@@ -32,7 +32,7 @@ namespace TourisManager.Controllers
             //    return RedirectToAction("Login", "Account");
             //}
 
-            var invoidList = await _shopService.GetAllInvoiceBySellerAsync(accountId);
+            var invoidList = await _shopService.GetAllInvoiceByIDAsync(accountId);
             return View(invoidList);
         }
     }

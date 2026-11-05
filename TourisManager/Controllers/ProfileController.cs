@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TourisManager.Core.Entities;
+using TourisManager.Core.Services;
 using TourisManager.Models.ViewModels;
 using TourisManager.Services;
 
@@ -11,11 +12,13 @@ namespace TourisManager.Controllers
     public class ProfileController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly IInvoiceService _invoiceService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProfileController(IAccountService accountService, IWebHostEnvironment webHostEnvironment)
+        public ProfileController(IAccountService accountService, IInvoiceService invoiceService, IWebHostEnvironment webHostEnvironment)
         {
             _accountService = accountService;
+            _invoiceService = invoiceService;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -186,5 +189,51 @@ namespace TourisManager.Controllers
             TempData["Msg"] = message;
             return RedirectToAction("ChangePassword");
         }
+
+
+        [HttpGet]
+        public async  Task<IActionResult> MyOrder()
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string Role = User.FindFirstValue(ClaimTypes.Role);
+
+
+            if (string.IsNullOrWhiteSpace(accountId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            //if (Role != "Seller")
+            //{
+            //    return RedirectToAction("Login", "Account");
+            //}
+
+            var invoidList = await _invoiceService.GetActiveOrdersByCustomerAsync(accountId);
+            return View(invoidList);
+        }
+        public string GetStatusDisplayName(TourisManager.Core.Entities.OrderStatus status)
+        {
+            return status switch
+            {
+                TourisManager.Core.Entities.OrderStatus.Pending => "Pending",
+                TourisManager.Core.Entities.OrderStatus.Shipping => "Đang giao",
+                TourisManager.Core.Entities.OrderStatus.Completed => "Hoàn thành",
+                TourisManager.Core.Entities.OrderStatus.Cancelled => "Đã hủy",
+                _ => status.ToString()
+            };
+        }
+
+        public string GetStatusBadgeClass(TourisManager.Core.Entities.OrderStatus status)
+        {
+            return status switch
+            {
+                TourisManager.Core.Entities.OrderStatus.Pending => "bg-success text-white",
+                TourisManager.Core.Entities.OrderStatus.Shipping => "bg-info text-dark",
+                TourisManager.Core.Entities.OrderStatus.Completed => "bg-primary text-white",
+                TourisManager.Core.Entities.OrderStatus.Cancelled => "bg-danger text-white",
+                _ => "bg-secondary text-white"
+            };
+        }
+
     }
 }

@@ -10,6 +10,7 @@ namespace TourisManager.Core.Interfaces
     {
         Task<List<Food>> GetListFoodAsync();
         Task<IEnumerable<Food>> FilterFoodsAsync(string typeID);
+        Task<IEnumerable<Food>> FilterFoodsByMultiTypeAsync(List<string> typeIds);
         Task<Food?> GetFoodByIdAsync(string id);
          Task<bool> InsertInvoidAsync( string accountId,CheckoutReques reques);
     }
