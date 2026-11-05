@@ -1,92 +1,66 @@
-﻿@model TourisManager.Core.Entities.Location
+@model TourisManager.Core.Entities.Location
 
 @{
     ViewData["Title"] = "Quản lý gian hàng";
     Layout = "~/Views/Shared/MyLayout.cshtml";
+    int foodCount = ViewBag.FoodCount ?? 0;
+    int orderCount = ViewBag.OrderCount ?? 0;
+    int pendingOrderCount = ViewBag.PendingOrderCount ?? 0;
+    decimal revenue = ViewBag.Revenue ?? 0m;
 }
-
-<style>
-    /* CSS cho Sidebar phong cách nền trắng, gạch chân */
-    .seller-sidebar { 
-        background-color: #ffffff; 
-        border-right: 1px solid #e0e0e0;
-        min-height: 80vh; 
-    }
-    .seller-sidebar .nav-link { 
-        color: #495057; 
-        padding: 12px 15px; 
-        font-weight: 500; 
-        transition: 0.2s;
-        border-bottom: 2px solid transparent; /* Chuẩn bị sẵn viền dưới trong suốt */
-        border-radius: 0; 
-        margin-bottom: 5px;
-    }
-    .seller-sidebar .nav-link:hover { 
-        color: #00a65a; /* Đổi màu chữ xanh khi di chuột */
-    }
-    .seller-sidebar .nav-link.active { 
-        color: #00a65a; 
-        border-bottom: 2px solid #00a65a; /* Hiệu ứng gạch chân màu xanh khi active */
-        font-weight: bold;
-    }
-    .seller-sidebar .nav-link i { margin-right: 10px; width: 20px; text-align: center; }
-</style>
 
 <div class="container-fluid mt-4 mb-5">
     <div class="row">
         
-        <!-- CỘT TRÁI: Sidebar Điều hướng -->
+        <!-- CỘT TRÁI: Sidebar Điều hướng chung -->
         <div class="col-lg-3 col-md-4 mb-4">
-            <div class="seller-sidebar p-3 d-flex flex-column">
-                <!-- Đã bỏ icon quán ăn và đổi màu chữ thành xanh lá -->
-                <h4 class="text-success text-center fw-bold mb-4 mt-2">
-                    Kênh Người Bán
-                </h4>
-                <ul class="nav flex-column mb-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Tổng quan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-egg-fried"></i> Quản lý món ăn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-receipt"></i> Đơn đặt hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-star"></i> Đánh giá khách hàng</a>
-                    </li>
-                </ul>
-                <hr class="text-secondary opacity-25">
-                <div class="text-center mt-2">
-                    <a href="/" class="btn btn-outline-success w-100"><i class="bi bi-box-arrow-left me-2"></i> Trở về Trang chủ</a>
-                </div>
-            </div>
+            <partial name="_SellerSidebar" />
         </div>
 
         <!-- CỘT PHẢI: Nội dung chính (Main Content) -->
         <div class="col-lg-9 col-md-8 px-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-dark mb-0">Tổng quan thông tin</h2>
-                <div class="badge bg-success p-2 fs-6 rounded-pill">Đang hoạt động</div>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">Tổng quan thông tin</h2>
+                    <p class="text-muted small mb-0 mt-1">Quản lý toàn bộ thông tin nhà hàng, món ăn và đơn hàng của quán</p>
+                </div>
+                <div class="badge bg-success p-2 fs-6 rounded-pill px-3 shadow-sm">
+                    <i class="bi bi-circle-fill small me-1"></i> Đang hoạt động
+                </div>
             </div>
 
             <div class="row">
                 <!-- Thẻ hiển thị thông tin chi tiết nhà hàng -->
-                <div class="col-xl-8 mb-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="col-xl-7 col-lg-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
                         <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                            <h5 class="fw-bold"><i class="bi bi-info-circle text-success me-2"></i>Hồ sơ Quán ăn</h5>
+                            <h5 class="fw-bold text-dark"><i class="bi bi-info-circle text-success me-2"></i>Hồ sơ Quán ăn</h5>
                         </div>
                         <div class="card-body p-4">
                             <table class="table table-borderless mb-0">
                                 <tbody>
                                     <tr>
-                                        <th style="width: 30%;" class="text-muted ps-0">Tên nhà hàng:</th>
+                                        <th style="width: 35%;" class="text-muted ps-0">Tên nhà hàng:</th>
                                         <td class="fw-bold fs-5 text-dark">@Model.Name</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted ps-0">Địa chỉ chi tiết:</th>
-                                        <td>@Model.Address</td>
+                                        <td class="text-secondary">@Model.Address</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted ps-0">Ngày tham gia:</th>
@@ -94,30 +68,171 @@
                                     </tr>
                                     <tr>
                                         <th class="text-muted ps-0">Mô tả:</th>
-                                        <td>@(string.IsNullOrEmpty(Model.Description) ? "Chưa có mô tả..." : Model.Description)</td>
+                                        <td class="text-secondary">@(string.IsNullOrEmpty(Model.Description) ? "Chưa có mô tả..." : Model.Description)</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="mt-4 pt-3 border-top">
-                                <button class="btn btn-success px-4 rounded-pill"><i class="bi bi-pencil-square me-2"></i>Chỉnh sửa hồ sơ</button>
+                                <button type="button" class="btn btn-success px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                    <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa hồ sơ
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Thẻ thống kê nhanh -->
-                <div class="col-xl-4 mb-4">
-                    <div class="card border-0 shadow-sm rounded-4 text-center h-100 bg-success text-white">
-                        <div class="card-body d-flex flex-column justify-content-center p-4">
-                            <i class="bi bi-cup-hot display-4 mb-3 text-white-50"></i>
-                            <h5 class="fw-bold mb-1">Món ăn trên thực đơn</h5>
-                            <h1 class="display-3 fw-bold mb-0">0</h1>
-                            <p class="mt-2 text-white-50 mb-0">Sẵn sàng phục vụ thực khách</p>
+                <!-- Thống kê nhanh bên phải -->
+                <div class="col-xl-5 col-lg-6 mb-4">
+                    <div class="row g-3 h-100">
+                        <!-- Thẻ Món ăn trên thực đơn -->
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm rounded-4 text-center p-3 text-white" style="background: linear-gradient(135deg, #107c41, #198754);">
+                                <div class="card-body d-flex flex-column justify-content-center p-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-white-50 fw-semibold text-uppercase small">Thực đơn của quán</span>
+                                        <i class="bi bi-egg-fried fs-3 text-white-50"></i>
+                                    </div>
+                                    <h1 class="display-4 fw-bold mb-0">@foodCount</h1>
+                                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-white border-opacity-25">
+                                        <small class="text-white-50">Món ăn sẵn sàng phục vụ</small>
+                                        <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="btn btn-sm btn-light text-success fw-bold rounded-pill px-3 shadow-sm">
+                                            Quản lý món <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Thẻ Đơn hàng & Doanh thu nhỏ -->
+                        <div class="col-sm-6">
+                            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                                <div class="card-body p-2 d-flex flex-column justify-content-between">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-semibold">Đơn đặt hàng</span>
+                                        <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-3">
+                                            <i class="bi bi-receipt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <h3 class="fw-bold mb-0 text-dark">@orderCount</h3>
+                                        <small class="text-warning fw-semibold">@pendingOrderCount đơn chờ duyệt</small>
+                                    </div>
+                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small text-primary fw-semibold">
+                                        Xem đơn hàng <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                                <div class="card-body p-2 d-flex flex-column justify-content-between">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="text-muted small fw-semibold">Doanh thu quán</span>
+                                        <div class="p-2 bg-success bg-opacity-10 text-success rounded-3">
+                                            <i class="bi bi-cash-stack"></i>
+                                        </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <h3 class="fw-bold mb-0 text-success">@revenue.ToString("N0") <span class="fs-6">đ</span></h3>
+                                        <small class="text-muted">Đơn đã hoàn thành</small>
+                                    </div>
+                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small text-success fw-semibold">
+                                        Chi tiết <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+
+            <!-- Khối gợi ý hành động nhanh cho người bán -->
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mt-2">
+                <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Thao tác nhanh cho Người bán</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                                    <i class="bi bi-plus-circle-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Thêm món ăn mới</div>
+                                    <small class="text-muted">Cập nhật thực đơn quán ăn</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
+                                    <i class="bi bi-clock-history fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Xử lý đơn đặt hàng</div>
+                                    <small class="text-muted">Xác nhận và giao món</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editProfileModal" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle">
+                                    <i class="bi bi-gear-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Cập nhật thông tin</div>
+                                    <small class="text-muted">Tên quán, địa chỉ, mô tả</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
         
+    </div>
+</div>
+
+<!-- Modal Chỉnh sửa hồ sơ quán ăn -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <form asp-action="UpdateProfile" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="LocationId" value="@Model.LocationId" />
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="editProfileModalLabel">
+                        <i class="bi bi-pencil-square text-success me-2"></i>Chỉnh sửa hồ sơ Quán ăn
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Tên nhà hàng / Quán ăn <span class="text-danger">*</span></label>
+                        <input type="text" name="Name" class="form-control" value="@Model.Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                        <input type="text" name="Address" class="form-control" value="@Model.Address" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Mô tả giới thiệu quán</label>
+                        <textarea name="Description" class="form-control" rows="3" placeholder="Giới thiệu đôi nét về quán ăn...">@Model.Description</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-save me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

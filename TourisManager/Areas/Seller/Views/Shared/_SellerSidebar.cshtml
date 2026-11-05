@@ -1,0 +1,79 @@
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
+<style>
+    /* CSS cho Sidebar phong cách nền trắng, gạch chân xanh thương hiệu */
+    .seller-sidebar { 
+        background-color: #ffffff; 
+        border-right: 1px solid #e0e0e0;
+        min-height: 80vh; 
+    }
+    .seller-sidebar .nav-link { 
+        color: #495057; 
+        padding: 12px 15px; 
+        font-weight: 500; 
+        transition: 0.2s all ease;
+        border-bottom: 2px solid transparent; /* Chuẩn bị sẵn viền dưới trong suốt */
+        border-radius: 0; 
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+    }
+    .seller-sidebar .nav-link:hover { 
+        color: #00a65a; /* Đổi màu chữ xanh khi di chuột */
+        background-color: #f8fbf9;
+    }
+    .seller-sidebar .nav-link.active { 
+        color: #00a65a; 
+        border-bottom: 2px solid #00a65a; /* Hiệu ứng gạch chân màu xanh khi active */
+        font-weight: bold;
+        background-color: #f4faf6;
+    }
+    .seller-sidebar .nav-link i { 
+        margin-right: 10px; 
+        width: 20px; 
+        text-align: center; 
+        font-size: 1.15rem;
+    }
+</style>
+
+<div class="seller-sidebar p-3 d-flex flex-column">
+    <h4 class="text-success text-center fw-bold mb-4 mt-2">
+        Kênh Người Bán
+    </h4>
+    <ul class="nav flex-column mb-auto">
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Dashboard" ? "active" : "")" 
+               asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i> Tổng quan
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Food" ? "active" : "")" 
+               asp-area="Seller" asp-controller="Food" asp-action="Index">
+                <i class="bi bi-egg-fried"></i> Quản lý món ăn
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Order" ? "active" : "")" 
+               asp-area="Seller" asp-controller="Order" asp-action="Index">
+                <i class="bi bi-receipt"></i> Đơn đặt hàng
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentController == "Review" ? "active" : "")" 
+               href="javascript:void(0);" title="Tính năng đánh giá của khách hàng">
+                <i class="bi bi-star"></i> Đánh giá của khách hàng
+            </a>
+        </li>
+    </ul>
+    <hr class="text-secondary opacity-25">
+    <div class="text-center mt-2">
+        <a href="/" class="btn btn-outline-success w-100">
+            <i class="bi bi-box-arrow-left me-2"></i> Trở về Trang chủ
+        </a>
+    </div>
+</div>
+
