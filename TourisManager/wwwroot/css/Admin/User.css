@@ -1,11 +1,16 @@
-﻿.user-pagination {
+﻿
+/* ================================
+   PHÂN TRANG USER
+================================ */
+
+.user-pagination {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 15px;
-    padding: 20px 24px;
     width: 100%;
+    padding: 20px 24px;
 }
 
     .user-pagination .pagination-info {
@@ -14,12 +19,11 @@
         font-size: 16px;
     }
 
-/* Cụm nút phân trang căn phải */
 .user-pagination-nav {
     display: flex;
     justify-content: flex-end;
-    margin-left: auto;
     max-width: 100%;
+    margin-left: auto;
 }
 
     .user-pagination-nav .pagination {
@@ -30,19 +34,18 @@
         gap: 5px;
     }
 
-    /* Kích thước nút */
     .user-pagination-nav .user-page-link {
-        min-width: 44px;
-        height: 46px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 17px;
+        min-width: 44px;
+        height: 46px;
         padding: 0 14px;
+        font-size: 17px;
         white-space: nowrap;
     }
 
-        /* Nút số trang hình tròn */
+        /* Nút số trang */
         .user-pagination-nav .user-page-link.rounded-circle {
             width: 46px;
             height: 46px;
@@ -60,7 +63,7 @@
     .user-pagination-nav .page-item.active .user-page-link {
         background-color: #0d6efd;
         border-color: #0d6efd;
-        color: white;
+        color: #fff;
     }
 
     /* Trang bị vô hiệu hóa */
@@ -69,14 +72,63 @@
         opacity: 0.5;
     }
 
-    /* Dấu ... */
+    /* Dấu ba chấm */
     .user-pagination-nav .page-item.disabled span {
         background: transparent;
         color: #666;
         font-size: 18px;
     }
 
-/* Responsive */
+/* ================================
+   BẢNG QUẢN LÝ USER
+================================ */
+
+.user-table {
+    width: 100%;
+    table-layout: auto;
+}
+
+    /* Thu gọn chiều cao từng dòng */
+    .user-table tbody tr {
+        height: 48px;
+    }
+
+    .user-table tbody td {
+        height: 48px;
+        padding: 5px 12px !important;
+        vertical-align: middle !important;
+        line-height: 1.3;
+    }
+
+    /* Mở rộng cột Họ tên */
+    .user-table th:nth-child(3),
+    .user-table td:nth-child(3) {
+        min-width: 150px;
+    }
+
+    /* Mở rộng cột Email */
+    .user-table th:nth-child(4),
+    .user-table td:nth-child(4) {
+        min-width: 260px;
+    }
+
+    /* Email và Họ tên hiển thị gọn trên một dòng */
+    .user-table tbody td:nth-child(3),
+    .user-table tbody td:nth-child(4) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Thu nhỏ nút thao tác */
+    .user-table tbody td .btn {
+        padding: 4px 8px;
+    }
+
+/* ================================
+   RESPONSIVE
+================================ */
+
 @media (max-width: 768px) {
     .user-pagination {
         flex-direction: column;
@@ -84,7 +136,11 @@
     }
 
     .user-pagination-nav {
-        margin-left: 0;
         width: 100%;
+        margin-left: 0;
+    }
+
+    .user-table {
+        min-width: 900px;
     }
 }

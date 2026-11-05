@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +25,7 @@ namespace TourisManager.Areas.Admin.Controllers
         {
             ViewBag.CurrentSearch = searchString;
 
-            const int pageSize = 3;
+            const int pageSize = 8;
             int pageNumber = Math.Max(pageIndex ?? 1, 1);
 
             var result = await _userService.GetUsersAsync(
@@ -41,6 +41,38 @@ namespace TourisManager.Areas.Admin.Controllers
 
             return View(pagedData);
         }
+
+        // GET: Hiển thị trang xác nhận tạo Seller hàng loạt
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult CreateSellers()
+        {
+            return View();
+        }
+
+        // POST: Tạo Seller hàng loạt và phân công Location
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSellersConfirmed()
+        {
+            const string defaultPassword = "Seller@123";
+
+            var result = await _userService.CreateSellersAndAssignLocationsAsync(
+                defaultPassword);
+
+            if (result.Success)
+            {
+                TempData["Success"] = result.Message;
+            }
+            else
+            {
+                TempData["Error"] = result.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Tạo tài khoản
         [HttpGet]

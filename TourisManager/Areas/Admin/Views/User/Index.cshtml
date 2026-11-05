@@ -36,13 +36,22 @@
         <a asp-area="Admin" asp-controller="User" asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-person-plus-fill me-1"></i> Thêm User
         </a>
+        
+        @* <a asp-area="Admin"
+           asp-controller="User"
+           asp-action="CreateSellers"
+           class="btn btn-success">
+            <i class="fas fa-users"></i>
+            Tạo Seller hàng loạt
+        </a> *@
+
     </div>
 
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0 user-table">
                     <thead class="bg-light text-secondary border-bottom">
                         <tr class="text-nowrap">
                             <th class="ps-4 py-3">Account ID</th>
