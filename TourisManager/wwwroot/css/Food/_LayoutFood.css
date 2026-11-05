@@ -1,86 +1,217 @@
-﻿/* =========================================================
-   ĐỒNG BỘ MÀU CAM TOÀN BỘ GIAO DIỆN MÓN ĂN (FOOD PAGE)
+/* =========================================================
+   GIAO DIỆN MÓN ĂN (FOOD PAGE) - BO TRÒN DẠNG THẺ & CỐ ĐỊNH LAYOUT
    ========================================================= */
 
-/* Khai báo biến màu sắc cục bộ cho trang món ăn */
 :root {
     --tm-primary: #f97316;
     --tm-primary-hover: #ea580c;
     --tm-primary-subtle: #fff7ed;
     --tm-border-color: #e2e8f0;
     --tm-text-main: #0f172a;
+    --tm-food-sidebar-width: 280px;
+    --tm-top-nav-height: 56px;
 }
 
-/* 1. KHUNG CUỘN RIÊNG CHO PHẦN MÓN ĂN */
-.food-scroll-container {
-    max-height: calc(100vh - 170px);
+/* Tự động tắt thanh cuộn kép của body khi vào trang Food */
+body:has(.food-page-wrapper) {
+    overflow: hidden !important;
+    margin-bottom: 0 !important;
+}
+
+body:has(.food-page-wrapper) footer {
+    display: none !important;
+}
+
+/* 1. KHUNG CHỨA TOÀN TRANG FOOD: Vừa vặn 100% màn hình trừ TopNav */
+.food-page-wrapper {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - var(--tm-top-nav-height));
+    max-height: calc(100vh - var(--tm-top-nav-height));
+    background-color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    padding: 1rem 1.25rem;
+    gap: 1.25rem;
+}
+
+/* 2. CỘT TRÁI: SIDEBAR BỘ LỌC CỐ ĐỊNH */
+.food-sidebar-filter {
+    flex: 0 0 var(--tm-food-sidebar-width);
+    width: var(--tm-food-sidebar-width);
+    max-width: var(--tm-food-sidebar-width);
+    height: 100%;
+    background-color: #ffffff;
+    border: 1px solid var(--tm-border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    overflow: hidden;
+}
+
+.food-filter-header {
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--tm-border-color);
+    margin-bottom: 0.85rem;
+}
+
+/* Danh sách thẻ loại món xếp dọc, cuộn mượt không giới hạn chiều dài */
+.food-filter-body {
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: 6px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    padding-right: 4px;
 }
 
-    .food-scroll-container::-webkit-scrollbar {
-        display: none;
-        width: 0;
-        height: 0;
-    }
-
-/* 2. KHUNG SIDEBAR VÀ TOOLBAR CỐ ĐỊNH (STICKY) */
-.food-sidebar-sticky {
-    position: sticky;
-    top: 15px;
-    max-height: calc(100vh - 30px);
-    overflow-y: auto;
+.food-filter-body::-webkit-scrollbar {
+    width: 4px;
+}
+.food-filter-body::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
 }
 
-.food-toolbar-sticky {
-    position: sticky;
-    top: 15px;
-    z-index: 1020;
+.food-categories-scroll-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-/* 3. TIỆN ÍCH BO TRÒN GÓC & HIỂN THỊ HÌNH ẢNH */
-.tm-rounded {
-    border-radius: 12px !important;
+/* THIẾT KẾ CÁC THẺ (PILL CHIPS) NHƯ TRONG HÌNH MINH HỌA */
+.btn-food-filter-chip {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 0.95rem;
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50rem; /* Bo tròn cong pill hình viên thuốc */
+    color: #475569;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
 }
 
-.object-fit-cover {
-    object-fit: cover;
+.btn-food-filter-chip i {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
 }
 
-/* 4. HIỆU ỨNG RÊ CHUỘT VÀO CARD SẢN PHẨM & NỀN */
-.card-hover {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 12px;
+/* Hover thẻ */
+.btn-food-filter-chip:hover {
+    background-color: var(--tm-primary-subtle);
+    border-color: #fdba74;
+    color: var(--tm-primary);
 }
 
-    .card-hover:hover {
-        border-color: var(--tm-primary) !important;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important;
-    }
-
-.bg-light-hover:hover {
-    background-color: var(--tm-primary-subtle) !important;
+.btn-food-filter-chip:hover i {
+    color: var(--tm-primary);
 }
 
-.fs-7 {
-    font-size: 0.85rem;
-}
-
-/* 5. GHI ĐÈ VÀ ĐỊNH NGHĨA RIÊNG CHO SIDEBAR & NÚT BẤM (ACTIVE / ĐẶT HÀNG) */
-.sidebar .active,
-.list-group-item.active,
-.tm-btn-primary {
+/* Thẻ được chọn (ACTIVE) -> Hiện màu cam nổi bật */
+.btn-food-filter-chip.active {
     background-color: var(--tm-primary) !important;
     border-color: var(--tm-primary) !important;
     color: #ffffff !important;
-    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
 }
 
-    .tm-btn-primary:hover {
-        background-color: var(--tm-primary-hover) !important;
-        border-color: var(--tm-primary-hover) !important;
-        color: #ffffff !important;
+.btn-food-filter-chip.active i {
+    color: #ffffff !important;
+}
+
+/* 3. CỘT PHẢI: KHU VỰC THỰC ĐƠN CHÍNH */
+.food-main-area {
+    flex: 1 1 auto;
+    width: calc(100% - var(--tm-food-sidebar-width));
+    height: 100%;
+    background-color: #ffffff;
+    border: 1px solid var(--tm-border-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* THANH CÔNG CỤ TRÊN CÙNG: CỐ ĐỊNH HOÀN TOÀN */
+.food-top-toolbar {
+    height: 60px;
+    min-height: 60px;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--tm-border-color);
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    z-index: 10;
+}
+
+/* Ô TÌM KIẾM MÓN ĂN BO TRÒN HIỆN ĐẠI */
+.food-search-box {
+    display: flex;
+    align-items: center;
+    background-color: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50rem;
+    padding: 0.25rem 0.85rem;
+    width: 320px;
+    max-width: 100%;
+    transition: all 0.2s ease;
+}
+
+.food-search-box:focus-within {
+    background-color: #ffffff;
+    border-color: var(--tm-primary);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+/* 4. VÙNG CUỘN DUY NHẤT CHO DANH SÁCH MÓN ĂN */
+.food-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.25rem;
+}
+
+.food-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+.food-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.food-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.text-orange {
+    color: var(--tm-primary) !important;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 991.98px) {
+    .food-page-wrapper {
+        flex-direction: column;
+        height: auto;
+        max-height: none;
+        overflow: visible;
     }
+    .food-sidebar-filter {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+    .food-main-area {
+        width: 100%;
+        height: auto;
+    }
+}
