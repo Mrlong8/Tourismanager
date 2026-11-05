@@ -40,7 +40,7 @@ namespace TourisManager.Services
             return invoiceList;
         }
 
-        public async Task<IEnumerable<Order>> GetAllInvoiceBySellerAsync(string accoundId)
+        public async Task<IEnumerable<Order>> GetAllInvoiceByIDAsync(string accoundId)
         {
             var invoiceList = await _db.Orders
 
@@ -62,7 +62,31 @@ namespace TourisManager.Services
             return invoiceList;
         }
 
-      
+        // Tải danh sách đơn hàng đang mua của Người dùng
+        public async Task<IEnumerable<Order>> GetActiveOrdersByCustomerAsync(string accountId)
+        {
+            var activeStatuses = new[] { "Pending", "Processing", "Confirmed", "Shipping" };
+
+            var activeOrders = await _db.Orders
+                .Where(o => o.AccountId == accountId )
+
+                .Include(o => o.Location)
+
+                .Include(o => o.PaymentMethod)
+
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Food)
+                        .ThenInclude(f => f.TypeFood)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Food)
+                        .ThenInclude(f => f.FoodSizes)
+                            .ThenInclude(fs => fs.Size)
+                .OrderByDescending(o => o.CreateAt)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return activeOrders;
+        }
 
     }
 }

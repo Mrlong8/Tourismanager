@@ -4,51 +4,68 @@
 }
 
 <link rel="stylesheet" href="~/css/Food/_FoodGirdPartial.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Food/_LayoutFood.css" asp-append-version="true" />
 
-<div class="container-fluid py-3 px-4 bg-light">
-    <div class="row g-3">
-      
-        <div class="col-lg-3 col-md-4">
-            <!-- Frame Loại đồ ăn -->
-            <div class="bg-white border p-3 mb-3 rounded-0 shadow-sm">
-                <div class="mb-3">
-                    <h6 class="fw-bold mb-0 text-uppercase fs-7">Phân loại món</h6>
-                </div>
+<div class="food-page-wrapper">
+    <!-- CỘT TRÁI: KHUNG LỌC LOẠI MÓN ĂN (CỐ ĐỊNH, CUỘN DỌC TỰ NHIÊN) -->
+    <aside class="food-sidebar-filter">
+        <!-- Header bộ lọc -->
+        <div class="food-filter-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-funnel-fill text-orange"></i>
+                <span class="fw-bold text-uppercase fs-7 text-dark">Phân loại món</span>
+            </div>
+            <!-- Nút xóa nhanh tất cả bộ lọc -->
+            <button type="button" class="btn btn-sm btn-link text-decoration-none text-danger p-0" id="btnClearFilter" style="display: none; font-size: 0.8rem;">
+                <i class="bi bi-x-circle me-1"></i>Xóa lọc
+            </button>
+        </div>
 
-                <div class="d-flex flex-column gap-2">
-                    @await Component.InvokeAsync("TypeOfFood")
-                </div>
+        <!-- Danh sách thẻ loại món ăn (Xếp dọc, cuộn vô hạn mượt mà) -->
+        <div class="food-filter-body">
+            @await Component.InvokeAsync("TypeOfFood")
+        </div>
+
+        <!-- Frame Sắp xếp phía dưới -->
+        <div class="food-filter-sort pt-3 border-top mt-auto">
+            <label class="fw-bold text-uppercase fs-8 text-muted mb-2 d-block" style="font-size: 0.75rem;">Sắp xếp theo</label>
+            <select class="form-select form-select-sm rounded-pill border" id="sortSelect">
+                <option value="default">Mặc định</option>
+                <option value="price_asc">Giá: Thấp đến Cao</option>
+                <option value="price_desc">Giá: Cao đến Thấp</option>
+                <option value="name_asc">Tên: A - Z</option>
+            </select>
+        </div>
+    </aside>
+
+    <!-- CỘT PHẢI: NỘI DUNG CHÍNH (TIÊU ĐỀ + TÌM KIẾM CỐ ĐỊNH, MÓN ĂN CUỘN) -->
+    <main class="food-main-area">
+        <!-- THANH CÔNG CỤ TRÊN CÙNG: TIÊU ĐỀ + Ô TÌM KIẾM + CHẾ ĐỘ XEM (CỐ ĐỊNH) -->
+        <div class="food-top-toolbar">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="fw-bold text-dark mb-0">Thực đơn món ăn</h5>
             </div>
 
-            <div class="bg-white border p-3 rounded-0 shadow-sm">
-                <h6 class="fw-bold mb-3 text-uppercase fs-7">Sắp xếp</h6>
-                <select class="form-select rounded-0 border" id="sortSelect">
-                    <option value="default">Mặc định</option>
-                    <option value="price_asc">Giá: Thấp đến Cao</option>
-                    <option value="price_desc">Giá: Cao đến Thấp</option>
-                    <option value="name_asc">Tên: A - Z</option>
-                </select>
+            <!-- Ô tìm kiếm món ăn (Giao diện chuẩn bị sẵn cho bạn) -->
+            <div class="food-search-box">
+                <i class="bi bi-search text-muted"></i>
+                <input type="text"
+                       id="foodSearchInput"
+                       class="form-control form-control-sm border-0 shadow-none bg-transparent"
+                       placeholder="Tìm kiếm tên món ăn..." />
+            </div>
+
+            <div class="btn-group rounded-pill overflow-hidden border" role="group">
+                <button type="button" class="btn btn-light btn-sm py-1 px-3 border-0"><i class="bi bi-list-ul"></i></button>
+                <button type="button" class="btn btn-sm text-white py-1 px-3 border-0 active" style="background-color: #f97316;"><i class="bi bi-grid-3x3-gap-fill"></i></button>
             </div>
         </div>
 
-        <div class="col-lg-9 col-md-8">
-            <div class="food-toolbar-fixed bg-white border p-3 mb-3 rounded-0 shadow-sm d-flex justify-content-between align-items-center">
-                <div class="fw-bold text-dark">
-                    <span>Thực đơn món ăn</span>
-                </div>
-                <div class="btn-group rounded-0" role="group">
-                    <button type="button" class="btn btn-outline-secondary rounded-0 py-1 px-2"><i class="bi bi-list-ul"></i></button>
-                    <button type="button" class="btn text-white rounded-0 py-1 px-2 active" style="background-color: #f97316; border-color: #f97316;"><i class="bi bi-grid-3x3-gap-fill"></i></button>
-                </div>
-            </div>
-
-            <!-- Vùng Render danh sách món ăn từ Index.cshtml -->
-            <div class="food-scroll-container">
-                @RenderBody()
-            </div>
-           
+        <!-- VÙNG RENDER BODY: DUY NHẤT VÙNG NÀY ĐƯỢC CUỘN LÊN XUỐNG -->
+        <div class="food-scroll-container">
+            @RenderBody()
         </div>
-    </div>
+    </main>
 </div>
 
 @section Scripts {

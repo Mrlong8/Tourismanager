@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -14,7 +14,7 @@ namespace TourisManager.Controllers
     public class FoodController : Controller
     {
         private IFoodService _foodService;
-        private int pageSize = 8;
+        private int pageSize = 12;
         public FoodController(IFoodService service)
         {
             _foodService = service;
@@ -36,15 +36,29 @@ namespace TourisManager.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FilterFoodsByType(string typeId, int? pageIndex)
+        public async Task<IActionResult> FilterFoodsByType(string? typeId, List<string>? typeIds, int? pageIndex)
         {
-            var allFood = await _foodService.FilterFoodsAsync(typeId);
+            List<string> selectedTypes = new List<string>();
+            if (typeIds != null && typeIds.Any())
+            {
+                selectedTypes.AddRange(typeIds.Where(t => !string.IsNullOrWhiteSpace(t)));
+            }
+            else if (!string.IsNullOrWhiteSpace(typeId))
+            {
+                selectedTypes.Add(typeId);
+            }
+
+            var allFood = selectedTypes.Any()
+                ? await _foodService.FilterFoodsByMultiTypeAsync(selectedTypes)
+                : await _foodService.GetListFoodAsync();
+
             int page = (pageIndex == null || pageIndex <= 0) ? 1 : pageIndex.Value;
             int pageNum = (int)Math.Ceiling(allFood.Count() / (float)pageSize);
 
             ViewBag.pageNum = pageNum;
             ViewBag.pageIndex = page;
-            ViewBag.typeId = typeId;
+            ViewBag.typeId = selectedTypes.Count == 1 ? selectedTypes.First() : null;
+            ViewBag.typeIds = selectedTypes;
             var result = allFood.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
             return PartialView("_FoodGridPartial", result);
         }
@@ -85,7 +99,7 @@ namespace TourisManager.Controllers
             if (isSuccess)
             {
                 return Json(new { success = true, message = "Đặt hàng thành công!" ,
-                                  redirectUrl = Url.Action("Invoice","Shop") });
+                                  redirectUrl = Url.Action("MyOrder","Profile") });
             }
 
             return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình đặt hàng." });

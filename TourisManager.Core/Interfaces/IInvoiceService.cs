@@ -8,7 +8,9 @@ namespace TourisManager.Core.Services
     public interface IInvoiceService
     {
         Task<IEnumerable<Order>> GetAllInvoiceAsync();
-        Task<IEnumerable<Order>> GetAllInvoiceBySellerAsync(string accountId);
-       
+        Task<IEnumerable<Order>> GetAllInvoiceByIDAsync(string accountId);
+        Task<IEnumerable<Order>> GetActiveOrdersByCustomerAsync(string accountId);
+
+
     }
 }

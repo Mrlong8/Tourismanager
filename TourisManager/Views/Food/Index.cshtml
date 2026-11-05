@@ -21,63 +21,107 @@
 
 @section Scripts {
     <script>
-        var currentTypeId = "";
+        // Mảng lưu danh sách các loại món được chọn (hỗ trợ lọc nhiều)
+        var selectedTypeIds = [];
+        var currentPage = 1;
 
-        $(document).on('click', '.btn-category-filter', function (e) {
+        // 1. Click vào từng thẻ lọc loại món
+        $(document).on('click', '.btn-food-filter-chip', function (e) {
             e.preventDefault();
-            var $btn = $(this);
-            currentTypeId = $btn.data('id') || "";
+            var $chip = $(this);
+            var typeId = $chip.attr('data-id') ? String($chip.attr('data-id')).trim() : "";
 
-            // Xóa class active ở tất cả các nút danh mục và gán active cho nút vừa click
-            $('.btn-category-filter').removeClass('active');
-            $btn.addClass('active');
+            // Nút "Tất cả"
+            if (!typeId) {
+                selectedTypeIds = [];
+                $('.btn-food-filter-chip').removeClass('active');
+                $chip.addClass('active');
+                $('#btnClearFilter').hide();
+            } else {
+                // Bỏ chọn nút "Tất cả"
+                $('.btn-food-filter-chip[data-id=""]').removeClass('active');
 
-            loadFoods(currentTypeId, 1);
+                var index = selectedTypeIds.indexOf(typeId);
+                if (index > -1) {
+                    // Nếu đã chọn thì bỏ chọn
+                    selectedTypeIds.splice(index, 1);
+                    $chip.removeClass('active');
+                } else {
+                    // Thêm vào danh sách chọn
+                    selectedTypeIds.push(typeId);
+                    $chip.addClass('active');
+                }
+
+                // Nếu không còn loại nào chọn thì kích hoạt lại "Tất cả"
+                if (selectedTypeIds.length === 0) {
+                    $('.btn-food-filter-chip[data-id=""]').addClass('active');
+                    $('#btnClearFilter').hide();
+                } else {
+                    $('#btnClearFilter').show();
+                }
+            }
+
+            currentPage = 1;
+            loadFoods(1);
         });
 
-        $('body').on('click', '.page-item', function (e) {
+        // 2. Nút Xóa bộ lọc
+        $(document).on('click', '#btnClearFilter', function (e) {
+            e.preventDefault();
+            selectedTypeIds = [];
+            $('.btn-food-filter-chip').removeClass('active');
+            $('.btn-food-filter-chip[data-id=""]').addClass('active');
+            $(this).hide();
+            currentPage = 1;
+            loadFoods(1);
+        });
+
+        // 3. Click phân trang (bỏ qua nút disabled)
+        $('body').on('click', '.page-item:not(.disabled)', function (e) {
             e.preventDefault();
             var page = $(this).attr("page");
-            var typeId = $(this).attr("typeId") || currentTypeId;
-
             if (page) {
-                loadFoods(typeId, page);
+                currentPage = parseInt(page);
+                loadFoods(currentPage);
             }
         });
 
-        function loadFoods(typeId, pageIndex) {
+        // Hàm gọi AJAX tải dữ liệu
+        function loadFoods(pageIndex) {
+            // Chuẩn bị dữ liệu gửi đi
+            var requestData = {
+                pageIndex: pageIndex
+            };
+
+            if (selectedTypeIds.length > 0) {
+                requestData.typeIds = selectedTypeIds;
+            }
+
             $.ajax({
                 url: '@Url.Action("FilterFoodsByType", "Food")',
                 type: 'GET',
-                data: {
-                    typeId: typeId,
-                    pageIndex: pageIndex
-                },
+                traditional: true, // Cho phép truyền mảng typeIds lên action của ASP.NET Core MVC
+                data: requestData,
                 success: function (html) {
                     $('#food-container').html(html);
+                    // Cuộn danh sách lên đầu
                     $('.food-scroll-container').scrollTop(0);
                 },
                 error: function () {
-                    alert('Có lỗi xảy ra khi tải dữ liệu.');
+                    alert('Có lỗi xảy ra khi tải dữ liệu thực đơn.');
                 }
             });
         }
 
-
-        // Hàm mở Modal qua AJAX
+        // ==================== XỬ LÝ QUICK ORDER MODAL ====================
         function openModal(foodId) {
             $.ajax({
                 url: '@Url.Action("LoadQuickOrderModal", "Food")',
                 type: 'GET',
                 data: { id: foodId },
                 success: function (html) {
-                    // 1. Nhét PartialView vừa nhận được vào khung Modal trống
                     $('#quickOrderModalContent').html(html);
-
-                    // 2. Tính lại giá ban đầu tương ứng theo size đang được chọn mặc định
                     updateModalPrice();
-
-                    // 3. Hiển thị Modal lên màn hình
                     var modalEl = document.getElementById('quickOrderModal');
                     var myModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
                     myModal.show();
@@ -88,7 +132,6 @@
             });
         }
 
-        // Cập nhật số lượng
         function updateQty(change) {
             let currentQty = parseInt($('#inputQty').val()) || 1;
             let newQty = currentQty + change;
@@ -98,7 +141,6 @@
             }
         }
 
-        // Cập nhật đơn giá và tổng tiền theo Size và Số lượng
         function updateModalPrice() {
             let price = parseFloat($('input[name="foodSize"]:checked').val()) || 0;
             let qty = parseInt($('#inputQty').val()) || 1;
@@ -107,7 +149,5 @@
             $('#modalDisplayPrice').text(price.toLocaleString('vi-VN') + ' đ');
             $('#modalTotalPrice').text(total.toLocaleString('vi-VN') + ' đ');
         }
-
-      
     </script>
 }
