@@ -11,6 +11,7 @@ namespace TourisManager.Core.Services
         Task<IEnumerable<Order>> GetAllInvoiceByIDAsync(string accountId);
         Task<IEnumerable<Order>> GetActiveOrdersByCustomerAsync(string accountId);
 
+        Task<bool> CancelOrderAsync(string orderId, string accountId);
 
     }
 }

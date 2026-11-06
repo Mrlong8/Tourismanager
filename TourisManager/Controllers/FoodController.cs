@@ -105,5 +105,7 @@ namespace TourisManager.Controllers
             return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình đặt hàng." });
 
         }
+
+
     }
 }
