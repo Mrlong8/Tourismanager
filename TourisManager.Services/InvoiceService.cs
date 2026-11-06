@@ -65,15 +65,12 @@ namespace TourisManager.Services
         // Tải danh sách đơn hàng đang mua của Người dùng
         public async Task<IEnumerable<Order>> GetActiveOrdersByCustomerAsync(string accountId)
         {
-            var activeStatuses = new[] { "Pending", "Processing", "Confirmed", "Shipping" };
-
             var activeOrders = await _db.Orders
-                .Where(o => o.AccountId == accountId )
-
+                .Where(o => o.AccountId == accountId)
+                .Include(o => o.Account)
+                    .ThenInclude(a => a.DetailAccount)
                 .Include(o => o.Location)
-
                 .Include(o => o.PaymentMethod)
-
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Food)
                         .ThenInclude(f => f.TypeFood)
@@ -87,6 +84,20 @@ namespace TourisManager.Services
 
             return activeOrders;
         }
+
+        public async Task<bool> CancelOrderAsync(string orderId, string accountId)
+        {
+            var orrder = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.AccountId == accountId);
+            if (orrder == null || orrder.OrderStatus == OrderStatus.Pending )
+            {
+                return false;
+            }
+
+            orrder.OrderStatus = OrderStatus.Cancelled;
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
 
     }
 }

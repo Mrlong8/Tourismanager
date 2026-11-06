@@ -7,7 +7,6 @@
     Layout = "~/Views/Shared/_ProfileLayout.cshtml";
 }
 
-<!-- Style tùy chỉnh màu sắc chuẩn tông màu cam -->
 <style>
     .text-orange {
         color: #f97316 !important;
@@ -37,7 +36,6 @@
         border-top-right-radius: 11px !important;
     }
 
-    /* Style cho filter tab */
     .filter-tab {
         text-decoration: none;
         padding: 8px 16px;
@@ -46,29 +44,32 @@
         color: #495057;
         font-weight: 500;
         transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        background: transparent;
     }
 
-    .filter-tab.active, .filter-tab:hover {
-        background-color: #f97316;
-        color: white;
-        border-color: #f97316;
-    }
+        .filter-tab.active, .filter-tab:hover {
+            background-color: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
 
-    .filter-tab.active .badge {
-        background-color: white !important;
-        color: #f97316 !important;
-    }
-    
-    /* Style cho danh sách món ăn */
+            .filter-tab.active .badge {
+                background-color: white !important;
+                color: #f97316 !important;
+            }
+
     .food-item-row {
         display: flex;
         align-items: center;
         padding: 1rem 0;
         border-bottom: 1px solid #e9ecef;
     }
-    .food-item-row:last-child {
-        border-bottom: none;
-    }
+
+        .food-item-row:last-child {
+            border-bottom: none;
+        }
+
     .food-image {
         width: 65px;
         height: 65px;
@@ -80,164 +81,111 @@
         flex-shrink: 0;
     }
 
-    /* CSS ĐẢM BẢO CUỘN ĐƯỢC TRÊN MOBILE */
     .order-scroll-container {
-        /* Đảm bảo chiếm đủ không gian nhưng không bị tràn khỏi màn hình mà không có thanh cuộn */
-        max-height: calc(100vh - 80px); /* Trừ đi chiều cao của header/navbar nếu có */
-        overflow-y: auto;               /* Kích hoạt thanh cuộn dọc */
-        overflow-x: hidden;             /* Ẩn thanh cuộn ngang không cần thiết */
-        padding-bottom: 100px;          /* Thêm khoảng không dưới cùng để tránh bị khuất ở mobile */
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: 100px;
+    }
+
+    #loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 2rem;
     }
 </style>
 
-<!-- Thêm class order-scroll-container vào div bao ngoài -->
 <div class="container-fluid py-2 order-scroll-container">
-    <!-- Tiêu đề màu cam chính -->
     <h2 class="fw-bold mb-4 text-orange" style="font-size: 1.75rem;">Đơn Hàng của bạn</h2>
 
-    <!-- Thanh điều hướng Tab lọc trạng thái đơn -->
     <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
-        <a asp-action="Index" class="filter-tab active">
+        <button class="filter-tab active" data-status="">
             Tất cả <span class="badge bg-secondary bg-opacity-25 text-dark">All</span>
-        </a>
-        <a asp-action="Index" asp-route-status="@OrderStatus.Pending" class="filter-tab">
-            <i class="bi bi-hourglass-split"></i> Chờ xác nhận <span class="badge bg-secondary bg-opacity-25 text-dark">Đang xử lý</span>
-        </a>
-        <a asp-action="Index" asp-route-status="@OrderStatus.Shipping" class="filter-tab">
-            <i class="bi bi-truck"></i> Đang giao <span class="badge bg-primary bg-opacity-25 text-primary">0</span>
-        </a>
-        <a asp-action="Index" asp-route-status="@OrderStatus.Completed" class="filter-tab">
-            <i class="bi bi-check-circle"></i> Đã hoàn thành <span class="badge bg-success bg-opacity-25 text-success">0</span>
-        </a>
-        <a asp-action="Index" asp-route-status="@OrderStatus.Cancelled" class="filter-tab">
-            <i class="bi bi-x-circle"></i> Đã hủy <span class="badge bg-secondary bg-opacity-25 text-dark">0</span>
-        </a>
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Pending)">
+            <i class="bi bi-hourglass-split"></i> Chờ xác nhận
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Shipping)">
+            <i class="bi bi-truck"></i> Đang giao
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Completed)">
+            <i class="bi bi-check-circle"></i> Đã hoàn thành
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Cancelled)">
+            <i class="bi bi-x-circle"></i> Đã hủy
+        </button>
     </div>
 
-    @if (Model != null && Model.Any())
-    {
-        foreach (var order in Model)
-        {
-            var accountDetail = order.Account?.DetailAccount;
-
-            <div class="card mb-4 border-0 card-order overflow-hidden">
-                <!-- Header hóa đơn đổi sang màu cam -->
-                <div class="card-header card-order-header p-3 border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold fs-5">Mã Hóa Đơn: #@order.OrderId</h5>
-                        <small class="text-white opacity-90">Ngày tạo: @(order.CreateAt.ToString("dd/MM/yyyy HH:mm"))</small>
-                    </div>
-                </div>
-
-                <div class="card-body p-4">
-                    <!-- Thông tin người đặt và trạng thái -->
-                    <div class="row mb-3 gy-2 border-bottom pb-3">
-                        <div class="col-md-6">
-                            <p class="mb-2"><strong>Khách hàng:</strong> @(order.Account?.Name ?? "Khách vãng lai")</p>
-                            <p class="mb-0">
-                                <strong>Trạng thái:</strong>
-                                <span class="badge rounded-pill px-3 py-2 fs-6 @order.OrderStatus.ToBadgeClass()">
-                                    @order.OrderStatus.ToDisplayName()
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-2"><strong>Số điện thoại:</strong> @(accountDetail?.SDT ?? "Chưa cập nhật")</p>
-                            <p class="mb-0"><strong>Địa chỉ:</strong> @(accountDetail?.Address ?? "Chưa cập nhật")</p>
-                        </div>
-                    </div>
-
-                    <!-- Danh sách món ăn -->
-                    <div class="mt-3">
-                        <div class="row fw-bold text-muted text-uppercase" style="font-size: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e9ecef;">
-                            <div class="col-5">Món Ăn</div>
-                            <div class="col-3">Phân Loại / Size</div>
-                            <div class="col-2 text-center">Đơn Giá & Số Lượng</div>
-                            <div class="col-2 text-end">Thành Tiền</div>
-                        </div>
-
-                        @if (order.OrderDetails != null && order.OrderDetails.Any())
-                        {
-                            foreach (var detail in order.OrderDetails)
-                            {
-                                var availableSize = detail.Food?.FoodSizes?.FirstOrDefault()?.Size?.Name ?? "Nhỏ (S)";
-                                var donGia = detail.Quantity > 0 ? (detail.TotalPrice / detail.Quantity) : 0;
-                                
-                                var rawImg = detail.Food?.ImageUrl;
-                                string imageUrl = "/Image/Food/default_food.jpg";
-                                if (!string.IsNullOrWhiteSpace(rawImg))
-                                {
-                                    imageUrl = rawImg.StartsWith("http") || rawImg.StartsWith("/") 
-                                        ? rawImg 
-                                        : "/" + rawImg;
-                                }
-
-                                <div class="row food-item-row align-items-center">
-                                    <div class="col-5 d-flex align-items-center">
-                                        <img src="@imageUrl" 
-                                             alt="@detail.Food?.Name" 
-                                             class="food-image shadow-sm"
-                                             onerror="this.onerror=null; this.src='/Image/Food/default_food.jpg';" />
-                                        <div>
-                                            <h6 class="mb-1 fw-bold text-dark">@(detail.Food?.Name ?? "Không rõ")</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="text-muted small mb-1">@(detail.Food?.TypeFood?.Name ?? "Không có loại")</div>
-                                        <span class="badge bg-light text-dark border">@availableSize</span>
-                                    </div>
-                                    <div class="col-2 text-center">
-                                        <div class="text-secondary mb-1">@String.Format("{0:N0} đ", donGia)</div>
-                                        <div class="fw-bold fs-6">x @detail.Quantity</div>
-                                    </div>
-                                    <div class="col-2 text-end text-orange fw-bold fs-5">
-                                        @String.Format("{0:N0} đ", detail.TotalPrice)
-                                    </div>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="text-center text-muted py-3">Không có chi tiết món ăn</div>
-                        }
-                    </div>
-
-                    <!-- Tổng tiền & Các nút thao tác -->
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-end align-items-md-center pt-3 mt-2 border-top gap-3">
-                        
-                        <!-- Hiển thị nút Hủy đơn nếu đơn hàng đang ở trạng thái Chờ xác nhận -->
-                        @if (order.OrderStatus == OrderStatus.Pending)
-                        {
-                            <form asp-action="CancelOrder" asp-controller="Order" method="post" class="w-100 w-md-auto m-0" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="orderId" value="@order.OrderId" />
-                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2 w-100 w-md-auto fw-bold shadow-sm">
-                                    <i class="bi bi-x-circle me-2"></i> Hủy đơn hàng
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <!-- Giữ layout cân bằng khi không có nút Hủy -->
-                            <div></div>
-                        }
-
-                        <div class="text-end">
-                            <span class="fw-bold fs-5 me-2 text-secondary">Tổng Tiền:</span>
-                            <span class="text-orange fw-bold fs-3">@String.Format("{0:N0} đ", order.TotalAmount)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="alert alert-warning text-center rounded-3 py-4">
-            Hiện tại bạn chưa có hóa đơn đặt hàng nào trong hệ thống!
+    <div id="loading-spinner">
+        <div class="spinner-border text-orange" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-    }
+    </div>
+
+    <div id="order-list-container">
+        <partial name="_OrderListPartial" model="Model" />
+    </div>
 </div>
 
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.filter-tab').on('click', function () {
+                $('.filter-tab').removeClass('active');
+                $(this).addClass('active');
+
+                var statusVal = $(this).data('status');
+                var requestData = {};
+
+                if (statusVal !== "" && statusVal !== undefined) {
+                    requestData.status = statusVal;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("MyOrder", "Profile")',
+                    type: 'GET',
+                    data: requestData,
+                    beforeSend: function () {
+                        $('#order-list-container').hide();
+                        $('#loading-spinner').show();
+                    },
+                    success: function (result) {
+                        $('#loading-spinner').hide();
+                        $('#order-list-container').html(result).fadeIn();
+                    },
+                    error: function (xhr) {
+                        $('#loading-spinner').hide();
+                        $('#order-list-container').show();
+                        alert('Đã xảy ra lỗi khi tải dữ liệu. Mã lỗi: ' + xhr.status);
+                    }
+                });
+            });
+
+            $(document).off('click', '.btn-cancel-order').on('click', '.btn-cancel-order', function () {
+                var orderId = $(this).data('order-id');
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                if (confirm('Bạn chắc chắn muốn hủy đơn hàng này?')) {
+                    $.ajax({
+                        url: '/cancel-order',
+                        type: 'POST',
+                        data: {
+                            orderId: orderId,
+                            __RequestVerificationToken: token
+                        },
+                        success: function (res) {
+                            if (res.success) {
+                                $('.filter-tab.active').trigger('click');
+                            } else {
+                                alert('Không thể hủy đơn hàng!');
+                            }
+                        },
+                        error: function (xhr) {
+                            alert('Có lỗi xảy ra trong quá trình hủy đơn. Mã lỗi: ' + xhr.status);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

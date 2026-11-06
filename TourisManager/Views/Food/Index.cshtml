@@ -31,28 +31,23 @@
             var $chip = $(this);
             var typeId = $chip.attr('data-id') ? String($chip.attr('data-id')).trim() : "";
 
-            // Nút "Tất cả"
             if (!typeId) {
                 selectedTypeIds = [];
                 $('.btn-food-filter-chip').removeClass('active');
                 $chip.addClass('active');
                 $('#btnClearFilter').hide();
             } else {
-                // Bỏ chọn nút "Tất cả"
                 $('.btn-food-filter-chip[data-id=""]').removeClass('active');
 
                 var index = selectedTypeIds.indexOf(typeId);
                 if (index > -1) {
-                    // Nếu đã chọn thì bỏ chọn
                     selectedTypeIds.splice(index, 1);
                     $chip.removeClass('active');
                 } else {
-                    // Thêm vào danh sách chọn
                     selectedTypeIds.push(typeId);
                     $chip.addClass('active');
                 }
 
-                // Nếu không còn loại nào chọn thì kích hoạt lại "Tất cả"
                 if (selectedTypeIds.length === 0) {
                     $('.btn-food-filter-chip[data-id=""]').addClass('active');
                     $('#btnClearFilter').hide();
