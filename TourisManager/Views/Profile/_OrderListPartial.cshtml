@@ -1,0 +1,120 @@
+﻿@model IEnumerable<TourisManager.Core.Entities.Order>
+@using TourisManager.Core.Extensions
+@using TourisManager.Core.Entities
+
+@Html.AntiForgeryToken()
+
+@if (Model != null && Model.Any())
+{
+    foreach (var order in Model)
+    {
+        var accountDetail = order.Account?.DetailAccount;
+
+        <div class="card mb-4 border-0 card-order overflow-hidden">
+            <div class="card-header card-order-header p-3 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold fs-5">Mã Hóa Đơn: #@order.OrderId</h5>
+                    <small class="text-white opacity-90">Ngày tạo: @(order.CreateAt.ToString("dd/MM/yyyy HH:mm"))</small>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row mb-3 gy-2 border-bottom pb-3">
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Khách hàng:</strong> @(order.Account?.Name ?? "Khách vãng lai")</p>
+                        <p class="mb-0">
+                            <strong>Trạng thái:</strong>
+                            <span class="badge rounded-pill px-3 py-2 fs-6 @order.OrderStatus.ToBadgeClass()">
+                                @order.OrderStatus.ToDisplayName()
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Số điện thoại:</strong> @(accountDetail?.SDT ?? "Chưa cập nhật")</p>
+                        <p class="mb-0"><strong>Địa chỉ:</strong> @(accountDetail?.Address ?? "Chưa cập nhật")</p>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="row fw-bold text-muted text-uppercase" style="font-size: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e9ecef;">
+                        <div class="col-5">Món Ăn</div>
+                        <div class="col-3">Phân Loại / Size</div>
+                        <div class="col-2 text-center">Đơn Giá & Số Lượng</div>
+                        <div class="col-2 text-end">Thành Tiền</div>
+                    </div>
+
+                    @if (order.OrderDetails != null && order.OrderDetails.Any())
+                    {
+                        foreach (var detail in order.OrderDetails)
+                        {
+                            var availableSize = detail.Food?.FoodSizes?.FirstOrDefault()?.Size?.Name ?? "Nhỏ (S)";
+                            var donGia = detail.Quantity > 0 ? (detail.TotalPrice / detail.Quantity) : 0;
+                            
+                            var rawImg = detail.Food?.ImageUrl;
+                            string imageUrl = "/Image/Food/default_food.jpg";
+                            if (!string.IsNullOrWhiteSpace(rawImg))
+                            {
+                                imageUrl = rawImg.StartsWith("http") || rawImg.StartsWith("/") 
+                                    ? rawImg 
+                                    : "/" + rawImg;
+                            }
+
+                            <div class="row food-item-row align-items-center">
+                                <div class="col-5 d-flex align-items-center">
+                                    <img src="@imageUrl" 
+                                         alt="@detail.Food?.Name" 
+                                         class="food-image shadow-sm"
+                                         onerror="this.onerror=null; this.src='/Image/Food/default_food.jpg';" />
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-dark">@(detail.Food?.Name ?? "Không rõ")</h6>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-muted small mb-1">@(detail.Food?.TypeFood?.Name ?? "Không có loại")</div>
+                                    <span class="badge bg-light text-dark border">@availableSize</span>
+                                </div>
+                                <div class="col-2 text-center">
+                                    <div class="text-secondary mb-1">@String.Format("{0:N0} đ", donGia)</div>
+                                    <div class="fw-bold fs-6">x @detail.Quantity</div>
+                                </div>
+                                <div class="col-2 text-end text-orange fw-bold fs-5">
+                                    @String.Format("{0:N0} đ", detail.TotalPrice)
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-3">Không có chi tiết món ăn</div>
+                    }
+                </div>
+
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-end align-items-md-center pt-3 mt-2 border-top gap-3">
+                    @if (order.OrderStatus == OrderStatus.Pending)
+                    {
+                        <button type="button" 
+                                class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2 w-100 w-md-auto fw-bold shadow-sm btn-cancel-order" 
+                                data-order-id="@order.OrderId">
+                            <i class="bi bi-x-circle me-2"></i> Hủy đơn hàng
+                        </button>
+                    }
+                    else
+                    {
+                        <div></div>
+                    }
+
+                    <div class="text-end">
+                        <span class="fw-bold fs-5 me-2 text-secondary">Tổng Tiền:</span>
+                        <span class="text-orange fw-bold fs-3">@String.Format("{0:N0} đ", order.TotalAmount)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning text-center rounded-3 py-4">
+        Hiện tại bạn chưa có hóa đơn đặt hàng nào trong hệ thống!
+    </div>
+}

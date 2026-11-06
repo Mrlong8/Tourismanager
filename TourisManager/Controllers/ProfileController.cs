@@ -5,6 +5,7 @@ using TourisManager.Core.Entities;
 using TourisManager.Core.Services;
 using TourisManager.Models.ViewModels;
 using TourisManager.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TourisManager.Controllers
 {
@@ -192,47 +193,31 @@ namespace TourisManager.Controllers
 
 
         [HttpGet]
-        public async  Task<IActionResult> MyOrder()
+        [Route("my-order")]
+        public async Task<IActionResult> MyOrder(OrderStatus? status)
         {
             string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string Role = User.FindFirstValue(ClaimTypes.Role);
-
 
             if (string.IsNullOrWhiteSpace(accountId))
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            //if (Role != "Seller")
-            //{
-            //    return RedirectToAction("Login", "Account");
-            //}
-
             var invoidList = await _invoiceService.GetActiveOrdersByCustomerAsync(accountId);
-            return View(invoidList);
-        }
-        public string GetStatusDisplayName(TourisManager.Core.Entities.OrderStatus status)
-        {
-            return status switch
-            {
-                TourisManager.Core.Entities.OrderStatus.Pending => "Pending",
-                TourisManager.Core.Entities.OrderStatus.Shipping => "Đang giao",
-                TourisManager.Core.Entities.OrderStatus.Completed => "Hoàn thành",
-                TourisManager.Core.Entities.OrderStatus.Cancelled => "Đã hủy",
-                _ => status.ToString()
-            };
-        }
 
-        public string GetStatusBadgeClass(TourisManager.Core.Entities.OrderStatus status)
-        {
-            return status switch
+            if (status.HasValue)
             {
-                TourisManager.Core.Entities.OrderStatus.Pending => "bg-success text-white",
-                TourisManager.Core.Entities.OrderStatus.Shipping => "bg-info text-dark",
-                TourisManager.Core.Entities.OrderStatus.Completed => "bg-primary text-white",
-                TourisManager.Core.Entities.OrderStatus.Cancelled => "bg-danger text-white",
-                _ => "bg-secondary text-white"
-            };
+                invoidList = invoidList.Where(o => o.OrderStatus == status.Value).ToList();
+            }
+
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            if (isAjax)
+            {
+                return PartialView("_OrderListPartial", invoidList);
+            }
+
+            return View(invoidList);
         }
 
     }
