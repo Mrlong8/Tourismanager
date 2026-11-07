@@ -5,9 +5,8 @@
     var currentRole = string.IsNullOrEmpty(Model?.Role) ? "User" : Model.Role;
     var isSeller = currentRole.Equals("Seller", StringComparison.OrdinalIgnoreCase);
 }
- 
+
 <link rel="stylesheet" href="~/css/Account/signup.css" asp-append-version="true" />
- 
 <div class="signup-container">
     
     <div class="signup-brand-section">
@@ -35,10 +34,10 @@
         <!-- Tiêu đề lớn & đoạn giới thiệu -->
         <h1 class="brand-title-large">
             Đăng ký miễn phí<br />
-            <span class="text-gradient">khám phá du lịch ngay hôm nay</span>
+            <span class="text-gradient">khám phá ẩm thực ngay hôm nay</span>
         </h1>
         <p class="brand-desc-text">
-            Chỉ cần 30 giây để tạo tài khoản người dùng. Tìm kiếm địa điểm, lưu trữ hành trình và chia sẻ đánh giá yêu thích của bạn.
+            Chỉ cần 30 giây để tạo tài khoản người dùng. Tìm kiếm địa điểm, đặt món và chia sẻ đánh giá yêu thích của bạn.
         </p>
  
         <!-- 4 Hộp tính năng mờ kính (Glassmorphism) -->
@@ -53,7 +52,7 @@
             </div>
             <div class="brand-feature-card">
                 <i class="bi bi-cloud-check"></i>
-                <span>Lưu trữ hành trình an toàn</span>
+                <span>Đặt món tiện lợi</span>
             </div>
             <div class="brand-feature-card">
                 <i class="bi bi-map"></i>
@@ -66,7 +65,7 @@
         <div class="signup-box">
 
             <h2 class="signup-heading-title">Bắt đầu hành trình của bạn</h2>
-            <p class="signup-heading-desc">Tạo tài khoản để bắt đầu lưu trữ và khám phá địa điểm du lịch</p>
+            <p class="signup-heading-desc">Tạo tài khoản để bắt đầu lưu trữ và khám phá địa điểm</p>
 
             <!-- Hiển thị thông báo TempData["Msg"] nếu có -->
             @if (TempData["Msg"] != null)
@@ -167,7 +166,7 @@
  
                 <!-- Chú thích điều khoản -->
                 <p class="terms-agreement-note">
-                    Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> và <a href="#">Chính sách bảo mật</a> của FoodieMap.
+                    Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> và <a href="#">Chính sách bảo mật</a> của nền tảng.
                 </p>
  
                 <!-- Khung chuyển sang Đăng nhập -->
@@ -186,6 +185,5 @@
 </div>
  
 @section Scripts {
-    <!-- File JavaScript riêng biệt cho trang Đăng ký (mắt xem mật khẩu, độ mạnh, kiểm tra trùng khớp) -->
     <script src="~/js/Accounts/Signup.js" asp-append-version="true"></script>
 }

@@ -14,16 +14,37 @@ namespace TourisManager.Controllers
     public class FoodController : Controller
     {
         private IFoodService _foodService;
+        private IAccountService _accountService;
         private int pageSize = 12;
-        public FoodController(IFoodService service)
+        public FoodController(IFoodService service, IAccountService accountService)
         {
             _foodService = service;
+            _accountService = accountService;
+        }
+
+        private async Task SetUserLocationToViewBag()
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrWhiteSpace(accountId))
+            {
+                var account = await _accountService.DetailAccount(accountId);
+
+                if (account != null && account.DetailAccount != null)
+                {
+                    if (account.DetailAccount.Latitude != null && account.DetailAccount.Longitude != null)
+                    {
+                        ViewBag.UserLat = account.DetailAccount.Latitude;
+                        ViewBag.UserLng = account.DetailAccount.Longitude;
+                    }
+                }
+            }
         }
 
         // GET: /Food
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+             await SetUserLocationToViewBag();
             var allFood = await _foodService.GetListFoodAsync();
             int pageNum = (int)Math.Ceiling(allFood.Count / (float)pageSize);
 
@@ -35,9 +56,13 @@ namespace TourisManager.Controllers
             return View(result);
         }
 
+
+
         [HttpGet]
         public async Task<IActionResult> FilterFoodsByType(string? typeId, List<string>? typeIds, int? pageIndex)
         {
+            await SetUserLocationToViewBag();
+
             List<string> selectedTypes = new List<string>();
             if (typeIds != null && typeIds.Any())
             {
@@ -62,6 +87,7 @@ namespace TourisManager.Controllers
             var result = allFood.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
             return PartialView("_FoodGridPartial", result);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> LoadQuickOrderModal(string id)
@@ -105,6 +131,8 @@ namespace TourisManager.Controllers
             return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình đặt hàng." });
 
         }
+
+
 
 
     }

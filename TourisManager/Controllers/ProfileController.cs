@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using System.Net.NetworkInformation;
 using System.Security.Claims;
 using TourisManager.Core.Entities;
 using TourisManager.Core.Services;
@@ -218,6 +220,70 @@ namespace TourisManager.Controllers
             }
 
             return View(invoidList);
+        }
+
+        [HttpGet]
+        [Route("my-cart")]
+        public async  Task<IActionResult> MyCart()
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var myCart = await _invoiceService.RenderMyCartById(accountId);
+            return View(myCart);
+        }
+
+        [HttpPost("add-to-cart")] // Đường dẫn: /profile/add-to-cart
+        public async Task<IActionResult> AddFoodToMyCart(string foodId)
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(accountId))
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập lại!" });
+            }
+
+            if (string.IsNullOrWhiteSpace(foodId))
+            {
+                return Json(new { success = false, message = "Mã món ăn không hợp lệ!" });
+            }
+
+            bool result = await _invoiceService.AddFoodToMyCart(accountId, foodId);
+
+            if (result)
+            {
+                return Json(new { success = true, message = "Thêm món ăn vào giỏ hàng thành công!" });
+            }
+
+            return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại, có thể món ăn này đã có trong giỏ rồi!" });
+        }
+
+        [HttpPost("remove-from-cart")] // Đường dẫn: /profile/remove-from-cart
+        public async Task<IActionResult> RemoveFromCart(string foodId)
+        {
+            string accountId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(accountId))
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập lại!" });
+            }
+
+            if (string.IsNullOrWhiteSpace(foodId))
+            {
+                return Json(new { success = false, message = "Mã món ăn không hợp lệ!" });
+            }
+
+            bool result = await _invoiceService.RemoveFromCartAsync(accountId, foodId);
+
+            if (result)
+            {
+                return Json(new { success = true, message = "Món ăn đã được xóa khỏi giỏ!" });
+            }
+
+            return Json(new { success = false, message = "Món ăn không tồn tại trong giỏ!" });
         }
 
     }
