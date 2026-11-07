@@ -14,19 +14,20 @@
     --tm-header-height: 56px;
 }
 
-/* 1. KHUNG CHỨA TOÀN BỘ BỐ CỤC: Giới hạn vừa trọn màn hình bên dưới TopNav */
+/* 1. KHUNG CHỨA TOÀN BỘ BỐ CỤC (DESKTOP) */
+/* Khóa cuộn tổng của trình duyệt trên Desktop để cố định Navbar và Sidebar */
 body:has(.profile-layout-wrapper) {
     margin-bottom: 0 !important;
     overflow: hidden !important;
 }
 
-body:has(.profile-layout-wrapper) footer {
-    display: none !important;
-}
+    body:has(.profile-layout-wrapper) footer {
+        display: none !important;
+    }
 
-body:has(.profile-layout-wrapper) main[role="main"] {
-    padding-bottom: 0 !important;
-}
+    body:has(.profile-layout-wrapper) main[role="main"] {
+        padding-bottom: 0 !important;
+    }
 
 .profile-layout-wrapper {
     display: flex;
@@ -35,10 +36,10 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     max-height: calc(100vh - var(--tm-header-height));
     background-color: #f8fafc;
     position: relative;
-    overflow: hidden; /* Không cuộn cả trang */
+    overflow: hidden; /* Khóa không cho layout tổng tràn ra ngoài */
 }
 
-/* 2. CỘT TRÁI: SIDEBAR CỐ ĐỊNH, CUỘN ĐỘC LẬP NẾU QUÁ DÀI */
+/* 2. CỘT TRÁI: SIDEBAR CỐ ĐỊNH, CUỘN ĐỘC LẬP NẾU MENU QUÁ DÀI */
 .profile-sidebar {
     flex: 0 0 var(--tm-sidebar-width);
     width: var(--tm-sidebar-width);
@@ -52,20 +53,21 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     justify-content: space-between;
     padding: 1.5rem 1rem;
     z-index: 1020;
-    overflow-y: auto; /* Nếu menu quá dài thì cuộn nội bộ */
+    overflow-y: auto;
     overflow-x: hidden;
     transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: flex, width;
     transform: translateZ(0);
 }
 
-.profile-sidebar::-webkit-scrollbar {
-    width: 4px;
-}
-.profile-sidebar::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 4px;
-}
+    .profile-sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .profile-sidebar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 4px;
+    }
 
 .sidebar-user-header {
     display: flex;
@@ -186,7 +188,7 @@ body:has(.profile-layout-wrapper) main[role="main"] {
         background-color: #fef2f2;
     }
 
-/* 3. TRẠNG THÁI THỤT VÀO DESKTOP */
+/* 3. TRẠNG THÁI THỤT VÀO (COLLAPSED) TRÊN DESKTOP */
 .profile-layout-wrapper.is-collapsed .profile-sidebar {
     flex: 0 0 var(--tm-sidebar-collapsed-width);
     width: var(--tm-sidebar-collapsed-width);
@@ -214,7 +216,7 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     padding: 0.7rem 0;
 }
 
-/* 4. CỘT PHẢI: NỘI DUNG CHÍNH (Chiếm trọn phần còn lại) */
+/* 4. CỘT PHẢI: NỘI DUNG CHÍNH */
 .profile-main-content {
     flex: 1 1 auto;
     width: calc(100% - var(--tm-sidebar-width));
@@ -222,7 +224,7 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     background-color: #f8fafc;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Cố định thanh tiêu đề, chỉ cuộn ở body */
+    overflow: hidden;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: width;
     transform: translateZ(0);
@@ -232,10 +234,10 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     width: calc(100% - var(--tm-sidebar-collapsed-width));
 }
 
-/* THANH TIÊU ĐỀ TRÊN CÙNG CỦA CỘT PHẢI (LUÔN CỐ ĐỊNH) */
+/* THANH TIÊU ĐỀ PHỤ CỐ ĐỊNH Ở ĐỈNH CỘT PHẢI */
 .profile-sub-header {
+    flex: 0 0 60px;
     height: 60px;
-    min-height: 60px;
     background-color: #ffffff;
     border-bottom: 1px solid var(--tm-border-light);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
@@ -276,25 +278,27 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     border-radius: 8px;
 }
 
-/* 5. VÙNG CUỘN DUY NHẤT CHO NỘI DUNG (HÓA ĐƠN / PROFILE) */
+/* 5. VÙNG NỘI DUNG CHÍNH (RENDER BODY) - ĐÂY LÀ KHU VỰC DUY NHẤT ĐƯỢC CUỘN */
 .profile-content-body {
     padding: 1.75rem 2rem;
-    flex: 1;
-    overflow-y: auto; /* Chỉ cho phép cuộn bên trong vùng này */
+    flex: 1 1 auto;
+    overflow-y: auto !important; /* Chỉ cuộn nội dung ở đây, không gây tràn trang tổng */
     overflow-x: hidden;
 }
 
-/* Tùy chỉnh thanh cuộn cho thanh lịch */
-.profile-content-body::-webkit-scrollbar {
-    width: 6px;
-}
-.profile-content-body::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-.profile-content-body::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
+    /* Tùy chỉnh thanh cuộn thanh lịch */
+    .profile-content-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .profile-content-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+        .profile-content-body::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
 
 .profile-card-container {
     background-color: #ffffff;
@@ -304,7 +308,6 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     padding: 2.25rem 2.5rem;
     width: 100%;
     max-width: 100%;
-    min-height: 100%;
 }
 
 .profile-content-body .row > .col-lg-9,
@@ -361,7 +364,7 @@ body:has(.profile-layout-wrapper) main[role="main"] {
 }
 
 /* ==========================================================
-   7. CHẾ ĐỘ MOBILE: TRƯỢT TỪ TRÁI SANG
+   7. CHẾ ĐỘ MOBILE: TRƯỢT TỪ TRÁI SANG & CUỘN TỰ NHIÊN
    ========================================================== */
 .profile-mobile-overlay {
     position: fixed;
@@ -382,6 +385,11 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     }
 
 @media (max-width: 767.98px) {
+    /* Cho phép body cuộn trang tự nhiên trên màn hình nhỏ */
+    body:has(.profile-layout-wrapper) {
+        overflow-y: auto !important;
+    }
+
     .profile-layout-wrapper {
         height: auto;
         min-height: calc(100vh - var(--tm-header-height));
@@ -412,14 +420,14 @@ body:has(.profile-layout-wrapper) main[role="main"] {
     }
 
     .profile-sub-header {
-        position: sticky;
-        top: var(--tm-header-height);
+        position: relative;
+        top: 0;
         z-index: 1030;
     }
 
     .profile-content-body {
         padding: 1.25rem 1rem;
-        overflow: visible;
+        overflow: visible; /* Cuộn theo luồng tự nhiên của trang trên mobile */
     }
 
     .profile-card-container {

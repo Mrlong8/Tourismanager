@@ -12,6 +12,9 @@ namespace TourisManager.Core.Services
         Task<IEnumerable<Order>> GetActiveOrdersByCustomerAsync(string accountId);
 
         Task<bool> CancelOrderAsync(string orderId, string accountId);
+        Task<IEnumerable<SavedFood>> RenderMyCartById(string accountId);
+        Task<bool> RemoveFromCartAsync(string accountId, string foodId);
+        Task<bool> AddFoodToMyCart(string accountId, string foodId);
 
     }
 }

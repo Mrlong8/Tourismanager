@@ -68,6 +68,12 @@
                 <i class="bi bi-star"></i> Đánh giá của khách hàng
             </a>
         </li>
+        <li class="nav-item">
+             <a class="nav-link fw-medium @(currentController == "Chat" ? "active" : "")"
+                           asp-area="" asp-controller="Chat" asp-action="Index">
+                <i class="bi bi-chat-dots"></i> Chat với khách hàng
+            </a>
+        </li>
     </ul>
     <hr class="text-secondary opacity-25">
     <div class="text-center mt-2">

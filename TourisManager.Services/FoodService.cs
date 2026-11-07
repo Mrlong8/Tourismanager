@@ -22,6 +22,7 @@ namespace TourisManager.Services
             return await _db.Foods
                 .Include(f => f.TypeFood)
                 .Include(f => f.FoodSizes)
+                .Include(f => f.Location)
                 .AsNoTracking()
                 .ToListAsync();
         }

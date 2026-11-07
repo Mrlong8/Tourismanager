@@ -20,22 +20,6 @@ window.switchRole = function (role) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
- 
-    const btnUser = document.getElementById('btnUser');
-    const btnSeller = document.getElementById('btnSeller');
-
-    if (btnUser) {
-        btnUser.addEventListener('click', function () {
-            window.switchRole('User');
-        });
-    }
-
-    if (btnSeller) {
-        btnSeller.addEventListener('click', function () {
-            window.switchRole('Seller');
-        });
-    }
-
     // =========================================================================
     // 1. TÍNH NĂNG MẮT XEM MẬT KHẨU (PASSWORD & CONFIRM PASSWORD)
     // =========================================================================
@@ -145,6 +129,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-   
-}
 });
