@@ -8,6 +8,7 @@ namespace TourisManager.Services
        public string SizeId { get; set; } = string.Empty;
        public int Quantity { get; set; }
        public decimal TotalPrice { get; set; }
-       public int PaymentMethodID { get; set; }
+        public decimal? DeliveryFee { get; set; }
+        public int PaymentMethodID { get; set; }
     }
 }
