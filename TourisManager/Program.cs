@@ -37,6 +37,7 @@ namespace TourisManager
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ChatAutoReplyService>();
+            builder.Services.AddScoped<IWalletService, WalletService>();
 
             builder.Services
                  .AddAuthentication(options =>
@@ -58,6 +59,14 @@ namespace TourisManager
                      options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
                      options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
+
+            builder.Services.AddHttpClient("VietQRClient", (serviceProvider, client) =>
+            {
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
+
+                client.DefaultRequestHeaders.Add("x-client-id", config["VietQR:ClientId"]);
+                client.DefaultRequestHeaders.Add("x-api-key", config["VietQR:ApiKey"]);
+            });
 
             var app = builder.Build();
 

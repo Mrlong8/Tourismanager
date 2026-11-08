@@ -32,5 +32,7 @@ namespace TourisManager.Core.Entities
 
         // 1 - N
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+        // 1 - N với WalletTransaction
+        public virtual ICollection<WalletTransaction> WalletTransactions { get; set; } = new List<WalletTransaction>();
     }
 }
