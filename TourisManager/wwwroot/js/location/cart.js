@@ -45,7 +45,6 @@
         return button;
     }
     function render() {
-        // Preserve keyboard focus when rebuilding cart rows after a quantity change.
         const active = document.activeElement;
         const focused = elements.items.contains(active) ? { id: active.dataset.itemId, step: active.dataset.quantityStep } : null;
         const fragment = document.createDocumentFragment(); let total = 0, count = 0;
@@ -92,29 +91,62 @@
         if (busy) return; quantities.clear(); save(); render(); message.textContent = '';
         elements.status.textContent = 'Đã xóa các món trong giỏ.';
     });
+
+    // BẮT ĐẦU ĐOẠN ĐƯỢC CHUYỂN VÀO TRONG
     elements.submit.addEventListener('click', async () => {
         if (busy || quantities.size === 0) return;
         busy = true; render(); message.textContent = '';
-        const original = elements.submit.innerHTML; elements.submit.textContent = 'Đang chuẩn bị hóa đơn…';
+        const original = elements.submit.innerHTML; elements.submit.textContent = 'Đang xử lý đơn hàng…';
         const abort = new AbortController(); const timeout = setTimeout(() => abort.abort(), 20000);
         try {
             const token = document.querySelector('#checkout-token input[name="__RequestVerificationToken"]')?.value;
-            const response = await fetch(root.dataset.checkoutUrl, {
+
+            // Tạo danh sách món ăn từ giỏ hàng hiện tại
+            const orderItems = [...quantities].map(([menuItemId, quantity]) => {
+                const item = menu.get(menuItemId);
+                return {
+                    foodId: item.foodId,
+                    quantity: quantity,
+                    unitPrice: item.price
+                };
+            });
+
+            // Tính tổng tiền
+            const totalAmount = orderItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+            const requestData = {
+                locationId: root.dataset.locationId,
+                paymentMethodID: 1,
+                deliveryFee: 15000,
+                totalAmount: totalAmount,
+                items: orderItems
+            };
+
+            const response = await fetch('/Food/SubmitCartOrder', {
                 method: 'POST', signal: abort.signal,
                 headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token || '', 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify({ locationId: root.dataset.locationId, items: [...quantities].map(([menuItemId, quantity]) => ({ menuItemId, quantity })) })
+                body: JSON.stringify(requestData)
             });
-            let data = {}; try { data = await response.json(); } catch (_) { /* A server error can return HTML. */ }
-            if (!response.ok || !data.success || !data.redirectUrl) throw new Error(data.message || 'Chưa chuẩn bị được hóa đơn. Hãy tải lại trang và thử lại.');
-            const destination = new URL(data.redirectUrl, window.location.origin);
-            if (destination.origin !== window.location.origin) throw new Error('Đường dẫn hóa đơn không hợp lệ.');
-            try { sessionStorage.setItem('foodiemap.checkout.v1', JSON.stringify(data.draft)); } catch (_) { /* Server session already holds the validated draft. */ }
-            window.location.assign(destination.href);
+
+            let data = {}; try { data = await response.json(); } catch (_) { }
+
+            if (!response.ok || !data.success) throw new Error(data.message || 'Lỗi đặt hàng. Hãy thử lại.');
+
+            if (data.isQR) {
+                alert(data.message);
+            } else {
+                quantities.clear();
+                save();
+                window.location.assign(data.redirectUrl);
+            }
+
         } catch (error) {
-            message.textContent = error.name === 'AbortError' ? 'Kết nối mất nhiều thời gian. Giỏ món vẫn được giữ; bạn có thể thử lại.' : (error.message || 'Không kết nối được. Giỏ món vẫn được giữ.');
+            message.textContent = error.name === 'AbortError' ? 'Kết nối chậm. Hãy thử lại.' : error.message;
             busy = false; elements.submit.innerHTML = original; render();
         } finally { clearTimeout(timeout); }
     });
+    // KẾT THÚC ĐOẠN ĐƯỢC CHUYỂN VÀO TRONG
+
     const search = document.getElementById('menu-search');
     const clear = document.getElementById('menu-search-clear');
     const groups = [...root.querySelectorAll('.ld-menu-group')];

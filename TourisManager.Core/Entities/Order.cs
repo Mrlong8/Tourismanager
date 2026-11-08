@@ -21,7 +21,9 @@ namespace TourisManager.Core.Entities
         public string PaymentMethodId { get; set; } = string.Empty;
         public bool PaymentStatus { get; set; } 
         public DateTime CreateAt { get; set; } = DateTime.Now;
-        public OrderStatus OrderStatus { get; set; } 
+        public OrderStatus OrderStatus { get; set; }
+
+        public decimal? DeliveryFee { get; set; }
 
 
         // Navigation

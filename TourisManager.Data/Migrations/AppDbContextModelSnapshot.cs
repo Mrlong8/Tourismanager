@@ -383,6 +383,9 @@ namespace TourisManager.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("DeliveryFee")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("LocationId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
