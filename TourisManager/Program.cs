@@ -21,7 +21,7 @@ namespace TourisManager
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("TourisManagerDb")));
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // FIX 1: Cấu hình Data Protection để lưu Key mã hóa Cookie cố định
             builder.Services.AddDataProtection()

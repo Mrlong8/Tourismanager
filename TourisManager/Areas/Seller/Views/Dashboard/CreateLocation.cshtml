@@ -23,7 +23,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-9 col-md-10">
                 <div class="card shadow border-0 rounded-4 overflow-hidden">
-                    <div class="card-header bg-success text-white text-center py-4">
+                    <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #ea580c, #f97316);">
                         <h4 class="mb-1 fw-bold"><i class="bi bi-shop me-2"></i>Thông tin gian hàng của bạn</h4>
                         <small class="text-white-50">Cung cấp tên quán, địa chỉ và ghim vị trí để thực khách dễ dàng tìm thấy bạn</small>
                     </div>
@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="flex-grow-1 w-100">
                                             <label class="form-label fw-semibold small text-muted mb-1">
-                                                <i class="bi bi-cloud-arrow-up text-success me-1"></i>Tải ảnh quán từ thiết bị
+                                                <i class="bi bi-cloud-arrow-up me-1" style="color: #ea580c;"></i>Tải ảnh quán từ thiết bị
                                             </label>
                                             <input type="file" name="imageFile" id="createStoreImgInput" class="form-control rounded-3 mb-2" accept="image/*" />
                                             <input asp-for="ImageUrl" id="createStoreImageUrl" class="form-control rounded-3 form-control-sm" placeholder="Hoặc dán URL hình ảnh quán ăn..." />
@@ -78,7 +78,7 @@
                                 <label asp-for="Address" class="form-label fw-bold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <input asp-for="Address" id="createStoreAddress" class="form-control form-control-lg rounded-start-3" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." required />
-                                    <button type="button" class="btn btn-outline-success px-3" id="btnSearchCreateAddress" title="Tìm và nhảy đến vị trí trên bản đồ">
+                                    <button type="button" class="btn px-3 fw-semibold" style="border: 1px solid #ea580c; color: #ea580c;" id="btnSearchCreateAddress" title="Tìm và nhảy đến vị trí trên bản đồ">
                                         <i class="bi bi-search me-1"></i> Tìm vị trí
                                     </button>
                                     <button type="button" class="btn btn-outline-primary px-3" id="btnGetCreateLocation" title="Lấy tọa độ vị trí hiện tại của thiết bị">
@@ -87,7 +87,7 @@
                                 </div>
                                 <span asp-validation-for="Address" class="text-danger small"></span>
                                 <div id="createSearchStatus" class="small text-muted mt-1 d-none">
-                                    <span class="spinner-border spinner-border-sm text-success me-1"></span>
+                                    <span class="spinner-border spinner-border-sm me-1" style="color: #ea580c;"></span>
                                     <span id="createSearchText">Đang tìm vị trí trên bản đồ...</span>
                                 </div>
                             </div>
@@ -95,16 +95,16 @@
                             <!-- KHUNG BẢN ĐỒ GHIM VỊ TRÍ -->
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label fw-bold mb-0 text-success">
+                                    <label class="form-label fw-bold mb-0" style="color: #ea580c;">
                                         <i class="bi bi-geo-alt-fill text-danger me-1"></i> Ghim vị trí quán trên bản đồ
                                     </label>
-                                    <span class="badge bg-light text-success border border-success border-opacity-25 rounded-pill px-3 py-1 fw-semibold small" id="createCoordsDisplay">
+                                    <span class="badge rounded-pill px-3 py-1 fw-semibold small" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;" id="createCoordsDisplay">
                                         Tọa độ: 21.028511, 105.854167
                                     </span>
                                 </div>
                                 <small class="text-muted d-block mb-2">
                                     <i class="bi bi-hand-index-thumb text-primary me-1"></i> 
-                                    Nhấp trực tiếp lên bản đồ hoặc kéo ghim màu xanh <i class="bi bi-geo-alt-fill text-primary"></i> để ghim chính xác vị trí quán.
+                                    Nhấp trực tiếp lên bản đồ hoặc kéo ghim màu <i class="bi bi-geo-alt-fill text-primary"></i> để ghim chính xác vị trí quán.
                                 </small>
                                 <div id="createStoreMap" style="height: 320px; width: 100%; border-radius: 12px; z-index: 1;" class="border shadow-sm"></div>
                             </div>
@@ -118,7 +118,7 @@
 
                             <!-- Nút Submit -->
                             <div class="d-grid pt-2">
-                                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 rounded-pill shadow-sm">
+                                <button type="submit" class="btn btn-lg fw-bold py-3 rounded-pill shadow-sm text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                                     <i class="bi bi-check-circle-fill me-2"></i> Hoàn tất & Vào trang quản lý
                                 </button>
                             </div>
@@ -199,7 +199,7 @@
         function updateCreateCoords(lat, lng, fetchAddress) {
             $('#createStoreLat').val(lat.toFixed(6));
             $('#createStoreLng').val(lng.toFixed(6));
-            $('#createCoordsDisplay').html('<i class="bi bi-check-circle-fill text-success me-1"></i>Tọa độ: ' + lat.toFixed(6) + ', ' + lng.toFixed(6));
+            $('#createCoordsDisplay').html('<i class="bi bi-check-circle-fill me-1" style="color: #ea580c;"></i>Tọa độ: ' + lat.toFixed(6) + ', ' + lng.toFixed(6));
 
             if (fetchAddress) {
                 clearTimeout(reverseTimeout);

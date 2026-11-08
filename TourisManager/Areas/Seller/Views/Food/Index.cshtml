@@ -36,11 +36,11 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
                     <h2 class="fw-bold text-dark mb-1">
-                        <i class="bi bi-egg-fried text-success me-2"></i>Quản lý món ăn
+                        <i class="bi bi-egg-fried me-2" style="color: #ea580c;"></i>Quản lý món ăn
                     </h2>
                     <p class="text-muted small mb-0">Thêm mới, điều chỉnh giá và cập nhật thực đơn cho quán: <strong>@(location?.Name ?? "Quán ăn của bạn")</strong></p>
                 </div>
-                <button type="button" class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#createFoodModal">
+                <button type="button" class="btn rounded-pill px-4 py-2 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;" data-bs-toggle="modal" data-bs-target="#createFoodModal">
                     <i class="bi bi-plus-lg me-1"></i> Thêm món ăn mới
                 </button>
             </div>
@@ -50,7 +50,7 @@
                 <div class="col-md-4">
                     <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="bg-success bg-opacity-10 text-success p-3 rounded-4">
+                            <div class="p-3 rounded-4" style="background-color: #fff7ed; color: #ea580c;">
                                 <i class="bi bi-cup-hot-fill fs-3"></i>
                             </div>
                             <div>
@@ -83,7 +83,7 @@
                             </div>
                             <div>
                                 <div class="text-muted small fw-semibold">Giá trung bình</div>
-                                <h3 class="fw-bold mb-0 text-success">@Model.AvgPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></h3>
+                                <h3 class="fw-bold mb-0" style="color: #ea580c;">@Model.AvgPrice.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></h3>
                             </div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 col-lg-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-success rounded-pill px-3 flex-grow-1 shadow-sm">
+                        <button type="submit" class="btn rounded-pill px-3 flex-grow-1 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                             <i class="bi bi-funnel me-1"></i> Lọc
                         </button>
                         @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.SelectedTypeId))
@@ -167,12 +167,12 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-medium">
+                                                <span class="badge px-3 py-2 rounded-pill fw-medium" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;">
                                                     @(food.TypeFood?.Name ?? "Chưa phân loại")
                                                 </span>
                                             </td>
                                             <td>
-                                                <div class="fw-bold text-danger fs-6">@price.ToString("N0") đ</div>
+                                                <div class="fw-bold fs-6" style="color: #ea580c;">@price.ToString("N0") đ</div>
                                                 <span class="badge bg-light text-secondary border rounded-pill small">@sizeName</span>
                                             </td>
                                             <td class="text-muted small">
@@ -181,7 +181,8 @@
                                             <td class="text-end pe-4">
                                                 <div class="btn-group">
                                                     <button type="button" 
-                                                            class="btn btn-outline-success btn-sm rounded-pill me-1 btn-edit-food" 
+                                                            class="btn btn-sm rounded-pill me-1 btn-edit-food" 
+                                                            style="border: 1px solid #ea580c; color: #ea580c;"
                                                             data-id="@food.FoodId"
                                                             title="Chỉnh sửa món ăn">
                                                         <i class="bi bi-pencil-square"></i> Sửa
@@ -211,7 +212,7 @@
                         </div>
                         <h5 class="fw-bold text-dark">Chưa có món ăn nào trong thực đơn</h5>
                         <p class="text-muted small mb-4">Hãy thêm các món ăn hấp dẫn để thu hút thực khách đặt món từ quán của bạn!</p>
-                        <button type="button" class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#createFoodModal">
+                        <button type="button" class="btn rounded-pill px-4 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;" data-bs-toggle="modal" data-bs-target="#createFoodModal">
                             <i class="bi bi-plus-lg me-1"></i> Thêm món ăn ngay
                         </button>
                     </div>
@@ -232,7 +233,7 @@
                 @Html.AntiForgeryToken()
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold text-dark" id="createFoodModalLabel">
-                        <i class="bi bi-plus-circle-fill text-success me-2"></i>Thêm món ăn mới vào thực đơn
+                        <i class="bi bi-plus-circle-fill me-2" style="color: #ea580c;"></i>Thêm món ăn mới vào thực đơn
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -259,7 +260,7 @@
                         <!-- Input tạo danh mục mới (ẩn mặc định) -->
                         <div class="col-12 d-none" id="createCustomTypeDiv">
                             <div class="p-3 bg-light rounded-3 border">
-                                <label class="form-label fw-bold text-success small mb-1">
+                                <label class="form-label fw-bold small mb-1" style="color: #ea580c;">
                                     <i class="bi bi-tag me-1"></i>Nhập tên danh mục mới của quán:
                                 </label>
                                 <input type="text" name="NewTypeName" id="createCustomTypeInput" class="form-control rounded-3" placeholder="Ví dụ: Món nướng đặc sản, Trà sữa Đài Loan..." />
@@ -306,7 +307,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                    <button type="submit" class="btn rounded-pill px-4 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                         <i class="bi bi-check-lg me-1"></i> Lưu món ăn
                     </button>
                 </div>
@@ -326,7 +327,7 @@
                 <input type="hidden" name="FoodId" id="editFoodId" />
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold text-dark" id="editFoodModalLabel">
-                        <i class="bi bi-pencil-square text-success me-2"></i>Chỉnh sửa món ăn
+                        <i class="bi bi-pencil-square me-2" style="color: #ea580c;"></i>Chỉnh sửa món ăn
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -350,7 +351,7 @@
 
                         <div class="col-12 d-none" id="editCustomTypeDiv">
                             <div class="p-3 bg-light rounded-3 border">
-                                <label class="form-label fw-bold text-success small mb-1">
+                                <label class="form-label fw-bold small mb-1" style="color: #ea580c;">
                                     <i class="bi bi-tag me-1"></i>Nhập tên danh mục mới của quán:
                                 </label>
                                 <input type="text" name="NewTypeName" id="editCustomTypeInput" class="form-control rounded-3" placeholder="Tên danh mục..." />
@@ -393,7 +394,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                    <button type="submit" class="btn rounded-pill px-4 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                         <i class="bi bi-save me-1"></i> Lưu thay đổi
                     </button>
                 </div>
