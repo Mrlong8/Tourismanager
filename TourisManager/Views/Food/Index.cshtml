@@ -19,6 +19,7 @@
     </div>
 </div>
 
+
 @section Scripts {
     <script>
         // Mảng lưu danh sách các loại món được chọn (hỗ trợ lọc nhiều)
@@ -106,43 +107,38 @@
                     alert('Có lỗi xảy ra khi tải dữ liệu thực đơn.');
                 }
             });
-        }
+        }   
+        // hàm thêm giỏ hàng
+           function addToCart(foodId) {
+            if (!foodId) {
+                alert('Mã món ăn không hợp lệ!');
+                return;
+            }
 
-        // ==================== XỬ LÝ QUICK ORDER MODAL ====================
-        function openModal(foodId) {
+            // Lấy CSRF token từ form (nếu trong trang có @Html.AntiForgeryToken() hoặc form ASP.NET Core)
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             $.ajax({
-                url: '@Url.Action("LoadQuickOrderModal", "Food")',
-                type: 'GET',
-                data: { id: foodId },
-                success: function (html) {
-                    $('#quickOrderModalContent').html(html);
-                    updateModalPrice();
-                    var modalEl = document.getElementById('quickOrderModal');
-                    var myModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-                    myModal.show();
+                url: '@Url.Action("AddFoodToMyCart", "Profile")',
+                type: 'POST',
+                data: { 
+                    foodId: foodId,
+                    __RequestVerificationToken: token 
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message || 'Thêm vào giỏ hàng thành công!');
+                    } else {
+                        alert(response.message || 'Thêm vào giỏ hàng thất bại!');
+                    }
                 },
                 error: function (xhr) {
-                    alert('Lỗi tải dữ liệu món ăn: ' + (xhr.responseText || 'Không tìm thấy thông tin món ăn!'));
+                    console.log(xhr.responseText);
+                    alert('Lỗi ' + xhr.status + ': Không thể thêm vào giỏ hàng.');
                 }
             });
         }
-
-        function updateQty(change) {
-            let currentQty = parseInt($('#inputQty').val()) || 1;
-            let newQty = currentQty + change;
-            if (newQty >= 1) {
-                $('#inputQty').val(newQty);
-                updateModalPrice();
-            }
-        }
-
-        function updateModalPrice() {
-            let price = parseFloat($('input[name="foodSize"]:checked').val()) || 0;
-            let qty = parseInt($('#inputQty').val()) || 1;
-            let total = price * qty;
-
-            $('#modalDisplayPrice').text(price.toLocaleString('vi-VN') + ' đ');
-            $('#modalTotalPrice').text(total.toLocaleString('vi-VN') + ' đ');
-        }
     </script>
+        <script src="~/js/FoodOrder/QuickOrder.js"></script>
+
 }

@@ -88,7 +88,7 @@ namespace TourisManager.Services
         public async Task<bool> CancelOrderAsync(string orderId, string accountId)
         {
             var orrder = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.AccountId == accountId);
-            if (orrder == null || orrder.OrderStatus == OrderStatus.Pending )
+            if (orrder == null || orrder.OrderStatus != OrderStatus.Pending )
             {
                 return false;
             }
@@ -98,6 +98,49 @@ namespace TourisManager.Services
             return true;
         }
 
+        public async Task<IEnumerable<SavedFood>> RenderMyCartById(string accountId)
+        {
+            return await _db.SavedFoods
+                .Where(sf => sf.AccountId == accountId)
+                .Include(sf => sf.Food)
+                    .ThenInclude(f => f.FoodSizes)
+                .Include(sf => sf.Food)
+                    .ThenInclude(f => f.TypeFood)
+                .ToListAsync();
+        }
 
+        public async Task<bool> AddFoodToMyCart(string accountId, string foodId)
+        {
+            var item = await _db.SavedFoods
+                .FirstOrDefaultAsync(sf => sf.AccountId == accountId && sf.FoodId == foodId);
+
+            if (item != null)
+            {
+                return true;
+            }
+
+            var newItem = new SavedFood
+            {
+                AccountId = accountId,
+                FoodId = foodId
+            };
+            _db.SavedFoods.AddAsync(newItem);
+            return await _db.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RemoveFromCartAsync(string accountId, string foodId)
+        {
+            var item = await _db.SavedFoods
+                .FirstOrDefaultAsync(sf => sf.AccountId == accountId && sf.FoodId == foodId);
+
+            if (item == null)
+            {
+                return false;
+            }
+            _db.SavedFoods.Remove(item);
+            return await _db.SaveChangesAsync() > 0;
+        }
     }
-}
+
+ }
+

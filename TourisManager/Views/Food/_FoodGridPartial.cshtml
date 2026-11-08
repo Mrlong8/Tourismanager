@@ -1,4 +1,6 @@
 @model IEnumerable<TourisManager.Core.Entities.Food>
+@using TourisManager.Core.Extensions
+
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     @if (Model != null && Model.Any())
@@ -9,7 +11,7 @@
                 ? item.FoodSizes.Min(fs => fs.Price) : (decimal?)null;
 
             <div class="col">
-                <a href="@Url.Action("Detail", "Food", new { id = item.FoodId })" class="card-food-link">
+                <a href="@Url.Action("Details", "Location", new { id = item?.LocationId })" class="card-food-link">
                     <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden position-relative card-food-item bg-white">
                         <div class="position-absolute top-0 start-0 m-2 z-1">
                             <span class="badge bg-danger text-white fw-normal px-2 py-1 shadow-sm">
@@ -48,13 +50,32 @@
                                             onclick="event.stopPropagation(); event.preventDefault(); openModal('@item.FoodId');">
                                         <span>Đặt hàng ngay</span>
                                     </button>
-                                    <button type="button"
-                                            class="btn p-0 border-0 bg-transparent text-orange"
-                                            title="Lưu món ăn"
-                                            onclick="event.stopPropagation(); event.preventDefault(); toggleSaveFood('@item.FoodId', this);">
-                                        <i class="bi bi-star fs-4" style="color: #f97316;"></i>
-                                    </button>
                                 </div>
+
+
+
+                             <span class="text-muted small fw-medium">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                Cách bạn: 
+                              @{
+                                if (ViewBag.UserLat != null && ViewBag.UserLng != null && 
+                                    item.Location?.Latitude != null && item.Location?.Longitude != null &&
+                                    item.Location.Latitude != 0 && item.Location.Longitude != 0) 
+                                {
+                                    double dist = TinhKhoangCachExtension.CalculateDistance(
+                                        (double)ViewBag.UserLat, 
+                                        (double)ViewBag.UserLng, 
+                                        (double)item.Location.Latitude, 
+                                        (double)item.Location.Longitude
+                                    );
+                                    <text>@dist.ToString("0.1") km</text>
+                                }
+                                else
+                                {
+                                    <text>Không xác định</text>
+                                }
+                            }
+                            </span>
                             </div>
                         </div>
                     </div>
@@ -69,6 +90,7 @@
         </div>
     }
 </div>
+
 
 <!-- ================= PHÂN TRANG THU GỌN VỚI DẤU "..." VÀ MŨI TÊN ================= -->
 @{
@@ -137,4 +159,9 @@
             </li>
         </ul>
     </div>
+}
+
+@section Scripts{
+   
+
 }

@@ -16,6 +16,16 @@ namespace TourisManager.Services
             db = _db;
         }
 
+        public async Task<Account> DetailAccount(string accountId)
+        {
+            return await db.Accounts
+                .Include(a => a.DetailAccount)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.AccountId == accountId);
+        }
+
+
+
         public async Task<bool> CreateAsync(Account account)
         {
             try

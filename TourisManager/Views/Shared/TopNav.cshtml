@@ -56,13 +56,6 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link fw-medium @(currentController == "Shop" ? "active" : "")"
-                           asp-area="" asp-controller="Shop" asp-action="Invoice">
-                            Hóa Đơn
-                        </a>
-                    </li>
-
                     <li class="nav-item mx-2">
                         <a class="nav-link fw-bold shopee-text @(ViewContext.RouteData.Values["area"]?.ToString() == "Seller" || currentController == "Dashboard" ? "active" : "")"
                            asp-area="Seller" asp-controller="Dashboard" asp-action="Index">

@@ -1,18 +1,17 @@
-
 :root {
-    /* Bảng màu xanh lá chủ đạo hiện đại */
-    --tm-primary: #059669; /* Emerald-600 */
-    --tm-primary-hover: #047857; /* Emerald-700 */
-    --tm-primary-dark: #064e3b; /* Emerald-900 */
-    --tm-primary-light: #10b981; /* Emerald-500 */
-    --tm-primary-subtle: #d1fae5; /* Emerald-100 */
-    --tm-primary-bg: #ecfdf5; /* Emerald-50 */
-    --tm-accent: #34d399; /* Mint accent */
+    /* Bảng màu Cam chủ đạo hiện đại (Đồng bộ với Layout tổng) */
+    --tm-primary: #ff6b00; /* Orange 500 */
+    --tm-primary-hover: #e66000; /* Orange 600 */
+    --tm-primary-dark: #cc5500; /* Orange 700 */
+    --tm-primary-light: #ff8533; /* Orange 400 */
+    --tm-primary-subtle: #ffe8d9; /* Orange 100 */
+    --tm-primary-bg: #fff5eb; /* Orange 50 */
+    --tm-accent: #ff9955; /* Orange accent */
     /* Dải màu chuyển tiếp (Gradients) */
-    --tm-gradient-brand: linear-gradient(135deg, #022c22 0%, #064e3b 35%, #059669 75%, #10b981 100%);
-    --tm-gradient-btn: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    --tm-gradient-btn-hover: linear-gradient(135deg, #047857 0%, #059669 100%);
-    --tm-gradient-text: linear-gradient(120deg, #ffffff 30%, #a7f3d0 100%);
+    --tm-gradient-brand: linear-gradient(135deg, #cc5500 0%, #e66000 35%, #ff6b00 75%, #ff8533 100%);
+    --tm-gradient-btn: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+    --tm-gradient-btn-hover: linear-gradient(135deg, #e66000 0%, #ff6b00 100%);
+    --tm-gradient-text: linear-gradient(120deg, #ffffff 30%, #ffe8d9 100%);
     /* Typography & Layout */
     --tm-text-main: #0f172a;
     --tm-text-muted: #64748b;
@@ -59,8 +58,6 @@ body.tm-auth-body {
 
 /* ==========================================================================
    NỬA BÊN TRÁI: BRAND SECTION
-   - Đã bỏ phần thống kê 500+ / 20K+ / 99.9% bên dưới theo yêu cầu
-   - ẨN HOÀN TOÀN TRÊN THIẾT BỊ DI ĐỘNG (Mobile)
    ========================================================================== */
 .signup-brand-section {
     flex: 1 1 48%;
@@ -75,7 +72,6 @@ body.tm-auth-body {
     z-index: 1;
 }
 
-/* YÊU CẦU: Chia màn hình cho thiết bị di động thì chỉ hiện form thôi, ẩn brand */
 @media (max-width: 991.98px) {
     .signup-brand-section {
         display: none !important;
@@ -99,7 +95,7 @@ body.tm-auth-body {
     width: 480px;
     height: 480px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(52, 211, 153, 0.22) 0%, rgba(5, 150, 105, 0) 70%);
+    background: radial-gradient(circle, rgba(255, 133, 51, 0.22) 0%, rgba(255, 107, 0, 0) 70%);
     pointer-events: none;
     z-index: -1;
     filter: blur(40px);
@@ -113,7 +109,7 @@ body.tm-auth-body {
     width: 420px;
     height: 420px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0) 70%);
+    background: radial-gradient(circle, rgba(255, 153, 85, 0.18) 0%, rgba(230, 96, 0, 0) 70%);
     pointer-events: none;
     z-index: -1;
     filter: blur(45px);
@@ -136,7 +132,7 @@ body.tm-auth-body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #a7f3d0;
+    color: #ffe8d9;
     box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
 }
 
@@ -149,7 +145,7 @@ body.tm-auth-body {
 }
 
 .brand-header-text p {
-    color: #a7f3d0;
+    color: #ffe8d9;
     font-size: 0.85rem;
     margin: 0;
 }
@@ -161,7 +157,7 @@ body.tm-auth-body {
     background-color: rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.24);
-    color: #ecfdf5;
+    color: #fff5eb;
     font-size: 0.825rem;
     font-weight: 600;
     padding: 0.35rem 0.9rem;
@@ -173,8 +169,8 @@ body.tm-auth-body {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: #34d399;
-    box-shadow: 0 0 8px #34d399;
+    background-color: #ff9955;
+    box-shadow: 0 0 8px #ff9955;
 }
 
 .brand-title-large {
@@ -200,7 +196,6 @@ body.tm-auth-body {
     margin-bottom: 2rem;
 }
 
-/* 4 Hộp tính năng mờ kính */
 .brand-feature-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -217,14 +212,14 @@ body.tm-auth-body {
     border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 0.85rem 1rem;
     border-radius: 14px;
-    color: #f0fdf4;
+    color: #fffaf5;
     font-size: 0.885rem;
     font-weight: 600;
     transition: all 0.25s ease;
 }
 
     .brand-feature-card i {
-        color: #6ee7b7;
+        color: #ff9955;
         font-size: 1.15rem;
         flex-shrink: 0;
     }
@@ -270,7 +265,7 @@ body.tm-auth-body {
     gap: 0.4rem;
     color: var(--tm-primary);
     background-color: var(--tm-primary-bg);
-    border: 1px solid #a7f3d0;
+    border: 1px solid #ff9955;
     font-size: 0.775rem;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -340,7 +335,7 @@ body.tm-auth-body {
     .form-control-signup:focus {
         background-color: #ffffff;
         border-color: var(--tm-primary-light);
-        box-shadow: 0 0 0 3.5px rgba(16, 185, 129, 0.15);
+        box-shadow: 0 0 0 3.5px rgba(255, 107, 0, 0.15); /* Màu cam RGB */
         outline: none;
     }
 
@@ -365,7 +360,7 @@ body.tm-auth-body {
 
     .password-eye-toggle:hover {
         color: var(--tm-primary);
-        background-color: rgba(5, 150, 105, 0.08);
+        background-color: rgba(255, 107, 0, 0.08); /* Màu cam RGB */
     }
 
 .password-strength-bar {
@@ -402,7 +397,7 @@ body.tm-auth-body {
     font-weight: 700;
     font-size: 0.95rem;
     letter-spacing: 0.015em;
-    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+    box-shadow: 0 4px 14px rgba(255, 107, 0, 0.25); /* Màu cam RGB */
     transition: all 0.25s ease;
     display: inline-flex;
     align-items: center;
@@ -417,12 +412,12 @@ body.tm-auth-body {
         background: var(--tm-gradient-btn-hover);
         color: #ffffff;
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(5, 150, 105, 0.35);
+        box-shadow: 0 6px 18px rgba(255, 107, 0, 0.35); /* Màu cam RGB */
     }
 
     .btn-signup-submit:active {
         transform: translateY(1px);
-        box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+        box-shadow: 0 2px 6px rgba(255, 107, 0, 0.2); /* Màu cam RGB */
     }
 
 .terms-agreement-note {
@@ -481,7 +476,6 @@ body.tm-auth-body {
     gap: 0.35rem;
 }
 
-
 /* ==========================================================================
    Role Switcher (Người dùng / Người bán)
    ========================================================================== */
@@ -510,13 +504,13 @@ body.tm-auth-body {
     cursor: pointer;
 }
 
-.role-btn:hover {
-    color: var(--tm-primary);
-    background-color: rgba(255, 255, 255, 0.7);
-}
+    .role-btn:hover {
+        color: var(--tm-primary);
+        background-color: rgba(255, 255, 255, 0.7);
+    }
 
-.role-btn.active {
-    color: #ffffff;
-    background: var(--tm-gradient-btn);
-    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
-}
+    .role-btn.active {
+        color: #ffffff;
+        background: var(--tm-gradient-btn);
+        box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); /* Màu cam RGB */
+    }
