@@ -44,7 +44,7 @@
                     <h2 class="fw-bold text-dark mb-0">Tổng quan thông tin</h2>
                     <p class="text-muted small mb-0 mt-1">Quản lý toàn bộ thông tin nhà hàng, món ăn và đơn hàng của quán</p>
                 </div>
-                <div class="badge bg-success p-2 fs-6 rounded-pill px-3 shadow-sm">
+                <div class="badge p-2 fs-6 rounded-pill px-3 shadow-sm text-white" style="background: linear-gradient(135deg, #ea580c, #f97316);">
                     <i class="bi bi-circle-fill small me-1"></i> Đang hoạt động
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="col-xl-7 col-lg-6 mb-4">
                     <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
                         <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-info-circle text-success me-2"></i>Hồ sơ Quán ăn</h5>
+                            <h5 class="fw-bold text-dark"><i class="bi bi-info-circle me-2" style="color: #ea580c;"></i>Hồ sơ Quán ăn</h5>
                         </div>
                         <div class="card-body p-4">
                             <div class="d-flex flex-column flex-sm-row gap-3 align-items-center mb-4 pb-3 border-bottom">
@@ -69,7 +69,7 @@
                                     <div class="text-secondary small mb-2"><i class="bi bi-geo-alt me-1 text-danger"></i>@Model.Address</div>
                                     @if (Model.Latitude != 0 && Model.Longitude != 0)
                                     {
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill fw-medium small">
+                                        <span class="badge px-3 py-1 rounded-pill fw-medium small" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;">
                                             <i class="bi bi-geo-alt-fill text-danger me-1"></i>Đã ghim: @Model.Latitude.ToString("F6"), @Model.Longitude.ToString("F6")
                                         </span>
                                     }
@@ -95,7 +95,7 @@
                                 </tbody>
                             </table>
                             <div class="mt-4 pt-3 border-top">
-                                <button type="button" class="btn btn-success px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                <button type="button" class="btn px-4 rounded-pill shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                                     <i class="bi bi-pencil-square me-2"></i>Chỉnh sửa hồ sơ & Ghim vị trí
                                 </button>
                             </div>
@@ -108,7 +108,7 @@
                     <div class="row g-3 h-100">
                         <!-- Thẻ Món ăn trên thực đơn -->
                         <div class="col-12">
-                            <div class="card border-0 shadow-sm rounded-4 text-center p-3 text-white" style="background: linear-gradient(135deg, #107c41, #198754);">
+                            <div class="card border-0 shadow-sm rounded-4 text-center p-3 text-white" style="background: linear-gradient(135deg, #ea580c, #f97316);">
                                 <div class="card-body d-flex flex-column justify-content-center p-3">
                                     <div class="d-flex align-items-center justify-content-between mb-2">
                                         <span class="text-white-50 fw-semibold text-uppercase small">Thực đơn của quán</span>
@@ -117,7 +117,7 @@
                                     <h1 class="display-4 fw-bold mb-0">@foodCount</h1>
                                     <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-white border-opacity-25">
                                         <small class="text-white-50">Món ăn sẵn sàng phục vụ</small>
-                                        <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="btn btn-sm btn-light text-success fw-bold rounded-pill px-3 shadow-sm">
+                                        <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="btn btn-sm btn-light fw-bold rounded-pill px-3 shadow-sm" style="color: #ea580c;">
                                             Quản lý món <i class="bi bi-arrow-right"></i>
                                         </a>
                                     </div>
@@ -131,7 +131,7 @@
                                 <div class="card-body p-2 d-flex flex-column justify-content-between">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span class="text-muted small fw-semibold">Đơn đặt hàng</span>
-                                        <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-3">
+                                        <div class="p-2 rounded-3" style="background-color: #fff7ed; color: #ea580c;">
                                             <i class="bi bi-receipt"></i>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@
                                         <h3 class="fw-bold mb-0 text-dark">@orderCount</h3>
                                         <small class="text-warning fw-semibold">@pendingOrderCount đơn chờ duyệt</small>
                                     </div>
-                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small text-primary fw-semibold">
+                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small fw-semibold" style="color: #ea580c;">
                                         Xem đơn hàng <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </div>
@@ -151,15 +151,15 @@
                                 <div class="card-body p-2 d-flex flex-column justify-content-between">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span class="text-muted small fw-semibold">Doanh thu quán</span>
-                                        <div class="p-2 bg-success bg-opacity-10 text-success rounded-3">
+                                        <div class="p-2 rounded-3" style="background-color: #fff7ed; color: #ea580c;">
                                             <i class="bi bi-cash-stack"></i>
                                         </div>
                                     </div>
                                     <div class="my-2">
-                                        <h3 class="fw-bold mb-0 text-success">@revenue.ToString("N0") <span class="fs-6">đ</span></h3>
+                                        <h3 class="fw-bold mb-0" style="color: #ea580c;">@revenue.ToString("N0") <span class="fs-6">đ</span></h3>
                                         <small class="text-muted">Đơn đã hoàn thành</small>
                                     </div>
-                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small text-success fw-semibold">
+                                    <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="text-decoration-none small fw-semibold" style="color: #ea580c;">
                                         Chi tiết <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </div>
@@ -177,7 +177,7 @@
                     <div class="col-md-4">
                         <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                                <div class="p-3 rounded-circle" style="background-color: #fff7ed; color: #ea580c;">
                                     <i class="bi bi-plus-circle-fill fs-4"></i>
                                 </div>
                                 <div>
@@ -235,7 +235,7 @@
 
                 <div class="modal-header border-bottom-0 pb-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold text-dark" id="editProfileModalLabel">
-                        <i class="bi bi-pencil-square text-success me-2"></i>Chỉnh sửa hồ sơ & Ghim vị trí Quán ăn
+                        <i class="bi bi-pencil-square me-2" style="color: #ea580c;"></i>Chỉnh sửa hồ sơ & Ghim vị trí Quán ăn
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -261,7 +261,7 @@
                                     </div>
                                     <div class="flex-grow-1 w-100">
                                         <label class="form-label fw-semibold small text-muted mb-1">
-                                            <i class="bi bi-cloud-arrow-up text-success me-1"></i>Tải ảnh mới từ thiết bị
+                                            <i class="bi bi-cloud-arrow-up me-1" style="color: #ea580c;"></i>Tải ảnh mới từ thiết bị
                                         </label>
                                         <input type="file" name="imageFile" id="editStoreImgInput" class="form-control form-control-sm rounded-3 mb-2" accept="image/*" />
                                         <input type="text" name="ImageUrl" id="editStoreImageUrl" class="form-control form-control-sm rounded-3" value="@Model.ImageUrl" placeholder="Hoặc dán URL hình ảnh quán ăn..." />
@@ -278,7 +278,7 @@
                             <label class="form-label fw-bold text-secondary">Địa chỉ chi tiết <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="text" name="Address" id="sellerEditAddress" class="form-control rounded-start-3" value="@Model.Address" placeholder="Nhập số nhà, tên đường, quận/huyện..." required />
-                                <button type="button" class="btn btn-outline-success" id="btnSearchAddress" title="Tìm và nhảy đến vị trí trên bản đồ">
+                                <button type="button" class="btn fw-semibold" style="border: 1px solid #ea580c; color: #ea580c;" id="btnSearchAddress" title="Tìm và nhảy đến vị trí trên bản đồ">
                                     <i class="bi bi-search me-1"></i> Tìm vị trí
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" id="btnGetLocation" title="Lấy tọa độ vị trí hiện tại của thiết bị">
@@ -286,7 +286,7 @@
                                 </button>
                             </div>
                             <div id="addressSearchStatus" class="small text-muted mt-1 d-none">
-                                <span class="spinner-border spinner-border-sm text-success me-1"></span>
+                                <span class="spinner-border spinner-border-sm me-1" style="color: #ea580c;"></span>
                                 <span id="addressSearchText">Đang tìm vị trí trên bản đồ...</span>
                             </div>
                         </div>
@@ -297,13 +297,13 @@
                                 <label class="form-label fw-bold text-secondary mb-0">
                                     <i class="bi bi-geo-alt-fill text-danger me-1"></i> Ghim vị trí quán trên bản đồ
                                 </label>
-                                <span class="badge bg-light text-success border border-success border-opacity-25 rounded-pill px-3 py-1 fw-semibold small" id="sellerEditCoordsText">
+                                <span class="badge rounded-pill px-3 py-1 fw-semibold small" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;" id="sellerEditCoordsText">
                                     @(Model.Latitude != 0 ? $"Tọa độ: {Model.Latitude:F6}, {Model.Longitude:F6}" : "Chưa chọn tọa độ")
                                 </span>
                             </div>
                             <small class="text-muted d-block mb-2" style="font-size: 0.83rem;">
                                 <i class="bi bi-hand-index-thumb text-primary me-1"></i> 
-                                Bạn có thể <strong>nhấp trực tiếp</strong> lên bản đồ hoặc <strong>kéo rê ghim màu xanh</strong> để xác định chính xác vị trí quán của mình.
+                                Bạn có thể <strong>nhấp trực tiếp</strong> lên bản đồ hoặc <strong>kéo rê ghim</strong> để xác định chính xác vị trí quán của mình.
                             </small>
                             <div id="sellerEditMap" style="height: 280px; width: 100%; border-radius: 12px; z-index: 1;" class="border shadow-sm"></div>
                         </div>
@@ -317,7 +317,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0 px-4 pb-4">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                    <button type="submit" class="btn rounded-pill px-4 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                         <i class="bi bi-save me-1"></i> Lưu thay đổi
                     </button>
                 </div>
@@ -414,7 +414,7 @@
         function updateSellerCoords(lat, lng, fetchAddress) {
             $('#sellerEditLat').val(lat.toFixed(6));
             $('#sellerEditLng').val(lng.toFixed(6));
-            $('#sellerEditCoordsText').html('<i class="bi bi-check-circle-fill text-success me-1"></i>Tọa độ: ' + lat.toFixed(6) + ', ' + lng.toFixed(6));
+            $('#sellerEditCoordsText').html('<i class="bi bi-check-circle-fill me-1" style="color: #ea580c;"></i>Tọa độ: ' + lat.toFixed(6) + ', ' + lng.toFixed(6));
 
             if (fetchAddress) {
                 clearTimeout(reverseTimeout);

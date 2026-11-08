@@ -1,5 +1,144 @@
-﻿<footer class="border-top text-muted py-3 bg-white mt-auto">
-    <div class="container">
-        &copy; 2026 - TourisManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+<link rel="stylesheet" href="~/css/Shared/Footer.css" asp-append-version="true" />
+
+<footer class="tm-superfood-footer mt-auto">
+    <!-- KHUNG NỘI DUNG CHÍNH (TOP FOOTER) -->
+    <div class="tm-footer-top">
+        <div class="container">
+            <div class="row g-4 justify-content-between">
+                
+                <!-- CỘT 1: THÔNG TIN CÔNG TY & ĐƠN VỊ VẬN HÀNH -->
+                <div class="col-lg-5 col-md-12 tm-footer-col">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="tm-footer-brand-wrap">
+                        <div class="tm-footer-logo-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <div>
+                            <h2 class="tm-footer-brand-title">SuperFood</h2>
+                            <span class="tm-footer-brand-slogan">Nền tảng khám phá ẩm thực &amp; du lịch trực tuyến</span>
+                        </div>
+                    </a>
+
+                    <div class="tm-footer-company-name">
+                        CÔNG TY CỔ PHẦN CÔNG NGHỆ &amp; DU LỊCH ẨM THỰC SUPERFOOD VIỆT NAM
+                    </div>
+
+                    <ul class="tm-footer-info-list">
+                        <li>
+                            <strong>Địa chỉ:</strong> Tầng 8, Tòa nhà CII Tower, số 152 Điện Biên Phủ, Phường Thạnh Mỹ Tây, Quận Bình Thạnh, Thành phố Hồ Chí Minh, Việt Nam
+                        </li>
+                        <li>
+                            <strong>Điện thoại:</strong> (028) 3930 9168
+                        </li>
+                        <li>
+                            <strong>Tổng đài hỗ trợ:</strong> 1900 - 1067
+                        </li>
+                        <li>
+                            <strong>Email CSKH:</strong> hotro@superfood.vn / contact@tourismanager.com
+                        </li>
+                        <li>
+                            <strong>Mã số thuế:</strong> 0303883266
+                        </li>
+                        <li>
+                            <strong>Ngày cấp:</strong> 15/07/2020 &ndash; <strong>Nơi cấp:</strong> Cục Thuế Thành phố Hồ Chí Minh
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CỘT 2: TỔNG ĐÀI GIAO HÀNG & CHÍNH SÁCH / ĐIỀU KHOẢN -->
+                <div class="col-lg-4 col-md-6 tm-footer-col">
+                    <!-- Khung Hotline nổi bật -->
+                    <div class="tm-hotline-container">
+                        <a href="tel:19001067" class="tm-hotline-number">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span>1900 - 1067</span>
+                        </a>
+                        <div>
+                            <span class="tm-hotline-badge">
+                                <i class="bi bi-lightning-charge-fill me-1"></i>GIAO HÀNG TẬN NƠI
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Danh mục liên kết chính sách -->
+                    <ul class="tm-footer-links-list">
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Index">Liên hệ hỗ trợ khách hàng</a>
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách và quy định chung</a>
+                        </li>
+                        <li>
+                            <a href="#!">Chính sách thanh toán khi đặt hàng</a>
+                        </li>
+                        <li>
+                            <a href="#!">Chính sách hoạt động sàn thương mại điện tử</a>
+                        </li>
+                        <li>
+                            <a href="#!">Chính sách bảo mật thông tin</a>
+                        </li>
+                        <li>
+                            <a href="#!">Chính sách cookie</a>
+                        </li>
+                        <li>
+                            <a href="#!">Thông tin vận chuyển và giao nhận</a>
+                        </li>
+                        <li>
+                            <a href="#!">Thông tin đăng ký giao dịch chung</a>
+                        </li>
+                        <li>
+                            <a href="#!">Hướng dẫn đặt phần ăn trực tuyến</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CỘT 3: KẾT NỐI & BỘ CÔNG THƯƠNG -->
+                <div class="col-lg-3 col-md-6 tm-footer-col">
+                    <!-- Hãy kết nối với chúng tôi -->
+                    <div class="tm-footer-heading-col3">
+                        HÃY KẾT NỐI VỚI CHÚNG TÔI
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="tm-social-fb-btn mb-0">
+                            <span class="tm-social-fb-icon">
+                                <i class="bi bi-facebook"></i>
+                            </span>
+                            <span>Facebook</span>
+                        </a>
+                    </div>
+
+                    <!-- Huy hiệu Đã thông báo Bộ Công Thương chuẩn mẫu -->
+                    <div class="mb-3">
+                        <a href="http://online.gov.vn" target="_blank" rel="noopener noreferrer" class="tm-bocongthuong-badge mb-0" title="Đã đăng ký thông báo với Bộ Công Thương">
+                            <div class="tm-bct-icon-circle">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <div class="tm-bct-text">
+                                <span class="tm-bct-title">ĐÃ THÔNG BÁO</span>
+                                <span class="tm-bct-sub">BỘ CÔNG THƯƠNG</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Khung giờ phục vụ khách hàng -->
+                    <div class="tm-footer-service-box p-3 rounded-3" style="background-color: rgba(0, 0, 0, 0.12); border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi bi-clock-history fs-5 text-warning"></i>
+                            <span class="fw-bold text-white small text-uppercase">Thời gian giao hàng</span>
+                        </div>
+                        <div class="small" style="color: var(--tm-footer-muted); line-height: 1.5;">
+                            Phục vụ từ <strong>07:00 &ndash; 22:00</strong> tất cả các ngày trong tuần (kể cả Thứ Bảy, Chủ Nhật và ngày Lễ).
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- DẢI BẢN QUYỀN ĐÁY TRANG (BOTTOM COPYRIGHT BAR) -->
+    <div class="tm-footer-bottom">
+        <div class="container text-center">
+            <span>&copy; 2026 SuperFood Việt Nam &ndash; Bản quyền thuộc về Hệ thống TourisManager.</span>
+        </div>
     </div>
 </footer>

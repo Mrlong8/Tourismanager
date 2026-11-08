@@ -1,0 +1,345 @@
+/* =========================================================
+   TOURISMANAGER / SUPERFOOD - FOOTER STYLE (THEO MẪU JOLLIBEE)
+   Đồng bộ màu sắc cam/đỏ thương hiệu ẩm thực SuperFood
+   ========================================================= */
+
+:root {
+    --tm-footer-bg: linear-gradient(135deg, #d84315 0%, #ea580c 45%, #f97316 100%);
+    --tm-footer-bottom-bg: #bf360c;
+    --tm-footer-text: #ffffff;
+    --tm-footer-muted: #ffedd5;
+    --tm-footer-yellow: #ffc72c;
+    --tm-footer-yellow-hover: #f59e0b;
+}
+
+/* Reset margin body để footer sát đáy trang mượt mà */
+body {
+    margin-bottom: 0 !important;
+}
+
+.tm-superfood-footer {
+    background: var(--tm-footer-bg);
+    color: var(--tm-footer-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    position: relative;
+    z-index: 10;
+}
+
+.tm-footer-top {
+    padding: 48px 0 36px 0;
+}
+
+/* 1. CỘT TRÁI: LOGO & THÔNG TIN CÔNG TY */
+.tm-footer-brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.tm-footer-logo-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    color: #ea580c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+
+.tm-footer-brand-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    line-height: 1;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.tm-footer-brand-slogan {
+    font-size: 0.8rem;
+    color: var(--tm-footer-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+.tm-footer-company-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
+    color: #ffffff;
+}
+
+.tm-footer-info-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--tm-footer-muted);
+}
+
+.tm-footer-info-list li {
+    margin-bottom: 6px;
+}
+
+.tm-footer-info-list strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* 2. CỘT GIỮA: HOTLINE VÀ CÁC CHÍNH SÁCH */
+.tm-hotline-container {
+    margin-bottom: 22px;
+}
+
+.tm-hotline-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 2.1rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    transition: transform 0.2s ease;
+}
+
+.tm-hotline-number:hover {
+    transform: scale(1.03);
+    color: #ffffff;
+}
+
+.tm-hotline-number i {
+    font-size: 1.9rem;
+}
+
+.tm-hotline-badge {
+    display: inline-block;
+    background-color: var(--tm-footer-yellow);
+    color: #9a3412;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    padding: 6px 20px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.tm-footer-links-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 0.88rem;
+    line-height: 2.1;
+}
+
+.tm-footer-links-list li a {
+    color: var(--tm-footer-muted);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.tm-footer-links-list li a:hover {
+    color: #ffffff;
+    transform: translateX(4px);
+    text-decoration: underline;
+}
+
+/* 3. CỘT PHẢI: KẾT NỐI, BỘ CÔNG THƯƠNG & TẢI APP */
+.tm-footer-heading-col3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.tm-social-fb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #ffffff;
+    color: #1877f2;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.tm-social-fb-btn:hover {
+    background-color: var(--tm-footer-yellow);
+    color: #0f172a;
+    transform: translateY(-2px);
+}
+
+.tm-social-fb-icon {
+    width: 26px;
+    height: 26px;
+    background-color: #1877f2;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.tm-bocongthuong-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    border: 2px solid #0284c7;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.tm-bct-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #0284c7;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.tm-bct-text {
+    line-height: 1.1;
+}
+
+.tm-bct-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #0284c7;
+    text-transform: uppercase;
+    display: block;
+}
+
+.tm-bct-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #0369a1;
+    display: block;
+}
+
+.tm-app-download-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 210px;
+    margin-bottom: 16px;
+}
+
+.tm-app-badge-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.tm-app-badge-btn:hover {
+    background-color: #1f2937;
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.tm-app-badge-icon {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.tm-app-badge-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.tm-app-badge-sub {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.tm-app-badge-main {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.tm-cookie-link {
+    display: inline-block;
+    color: var(--tm-footer-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.tm-cookie-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* 4. DẢI BẢN QUYỀN ĐÁY TRANG */
+.tm-footer-bottom {
+    background-color: var(--tm-footer-bottom-bg);
+    padding: 16px 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--tm-footer-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tm-footer-bottom a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.tm-footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 991.98px) {
+    .tm-footer-top {
+        padding: 36px 0 24px 0;
+    }
+    .tm-footer-col {
+        margin-bottom: 30px;
+    }
+}
