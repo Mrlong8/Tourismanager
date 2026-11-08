@@ -1,4 +1,4 @@
-﻿<link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Shared/TopNav.css" asp-append-version="true" />
 <header class="sticky-top border-bottom">
     <nav class="navbar navbar-expand-sm navbar-light bg-white py-2">
         <div class="container-fluid">
@@ -69,12 +69,16 @@
                         </a>
                     </li>
 
-                    <li class="nav-item mx-2">
-                        <a class="nav-link fw-bold shopee-text @(ViewContext.RouteData.Values["area"]?.ToString() == "Seller" || currentController == "Dashboard" ? "active" : "")"
-                           asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
-                            Kênh Chủ Quán
-                        </a>
-                    </li>
+                    @* Chỉ hiển thị Kênh Chủ Quán cho tài khoản có vai trò Seller hoặc Admin *@
+                    @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Seller") || User.IsInRole("Admin")))
+                    {
+                        <li class="nav-item mx-2">
+                            <a class="nav-link fw-bold shopee-text @(ViewContext.RouteData.Values["area"]?.ToString() == "Seller" || currentController == "Dashboard" ? "active" : "")"
+                               asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
+                                Kênh Chủ Quán
+                            </a>
+                        </li>
+                    }
                 </ul>
 
                 <ul class="navbar-nav align-items-center gap-2">

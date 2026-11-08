@@ -15,7 +15,7 @@ using TourisManager.Data;
 namespace TourisManager.Areas.Seller.Controllers
 {
     [Area("Seller")]
-    [Authorize]
+    [Authorize(Roles = "Seller,Admin")]
     public class FoodController : Controller
     {
         private readonly AppDbContext _context;

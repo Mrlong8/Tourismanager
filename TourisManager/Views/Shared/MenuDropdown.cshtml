@@ -1,4 +1,4 @@
-﻿<div class="dropdown">
+<div class="dropdown">
     <!-- Nút bấm màu cam Shopee (Góc vuông, không bóng) -->
     <button class="btn btn-account-dropdown dropdown-toggle d-flex align-items-center gap-2 px-3 py-2 fw-semibold"
             type="button"
@@ -23,6 +23,19 @@
                    asp-area="Admin" asp-controller="Admin" asp-action="Index" style="color: var(--shopee-orange);">
                     <i class="bi bi-speedometer2"></i>
                     <span>Trang quản lý</span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider m-0 border-light-subtle"></li>
+        }
+
+        <!-- MỤC DÀNH CHO SELLER -->
+        @if (User.IsInRole("Seller"))
+        {
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 fw-semibold text-success"
+                   asp-area="Seller" asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-shop"></i>
+                    <span>Kênh Chủ Quán</span>
                 </a>
             </li>
             <li><hr class="dropdown-divider m-0 border-light-subtle"></li>

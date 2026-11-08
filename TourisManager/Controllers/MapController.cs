@@ -26,17 +26,49 @@ namespace TourisManager.Controllers
             var categories = await _db.Categories.AsNoTracking().ToDictionaryAsync(c => c.CategoryId, c => c.Name);
             var links = await _db.LocationCategories.AsNoTracking().ToListAsync();
             var foods = await _db.Foods.AsNoTracking().Select(f => new { f.LocationId, f.Name }).ToListAsync();
+            var areas = await _db.Areas.AsNoTracking().ToListAsync();
             var result = new List<MapLocationViewModel>();
             foreach (var location in locations)
             {
                 var names = links.Where(l => l.LocationId == location.LocationId && categories.ContainsKey(l.CategoryId)).Select(l => categories[l.CategoryId]).ToList();
-                if (categories.TryGetValue(location.CategoryId, out var primary)) names.Add(primary);
+                if (!string.IsNullOrEmpty(location.CategoryId) && categories.TryGetValue(location.CategoryId, out var primary))
+                {
+                    names.Add(primary);
+                }
                 names = names.Where(n => RestaurantSeed.CategoryNames.Contains(n, StringComparer.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                if (!names.Contains("Nhà hàng", StringComparer.OrdinalIgnoreCase))
+                {
+                    names.Insert(0, "Nhà hàng");
+                }
+
                 var menu = foods.Where(f => f.LocationId == location.LocationId).Select(f => f.Name).ToList();
-                if (!location.LocationId.StartsWith("fm-") && names.Count == 0 && menu.Count == 0) continue;
-                if (!names.Contains("Nhà hàng", StringComparer.OrdinalIgnoreCase)) names.Insert(0, "Nhà hàng");
                 references.TryGetValue(location.LocationId, out var reference);
-                if (reference != null && catalog.BrandMenus.TryGetValue(reference.Brand, out var groups)) menu.AddRange(groups.SelectMany(g => g.Items));
+                if (reference != null && catalog.BrandMenus.TryGetValue(reference.Brand, out var groups))
+                {
+                    menu.AddRange(groups.SelectMany(g => g.Items));
+                }
+
+                // Tự động nhận diện Tỉnh / Thành phố từ địa chỉ nếu chưa có AreaId
+                string areaName = location.Area?.Name ?? reference?.Province ?? "";
+                string areaId = location.AreaId ?? "";
+                if (string.IsNullOrEmpty(areaName) && !string.IsNullOrEmpty(location.Address))
+                {
+                    var matchedArea = areas.FirstOrDefault(a => location.Address.Contains(a.Name, StringComparison.OrdinalIgnoreCase));
+                    if (matchedArea != null)
+                    {
+                        areaName = matchedArea.Name;
+                        areaId = matchedArea.AreaId;
+                    }
+                    else
+                    {
+                        var addressParts = location.Address.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        if (addressParts.Length > 0)
+                        {
+                            areaName = addressParts[^1];
+                        }
+                    }
+                }
+
                 bool valid = location.Latitude >= 8 && location.Latitude <= 24 && location.Longitude >= 102 && location.Longitude <= 110;
                 result.Add(new MapLocationViewModel
                 {
@@ -44,8 +76,8 @@ namespace TourisManager.Controllers
                     Name = location.Name,
                     Address = location.Address ?? "",
                     ImageUrl = location.ImageUrl ?? "",
-                    AreaId = location.AreaId ?? "",
-                    AreaName = location.Area?.Name ?? reference?.Province ?? "",
+                    AreaId = areaId,
+                    AreaName = areaName,
                     CategoryId = location.CategoryId,
                     Latitude = valid ? location.Latitude : null,
                     Longitude = valid ? location.Longitude : null,

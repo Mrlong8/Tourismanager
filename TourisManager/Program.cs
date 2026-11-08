@@ -34,6 +34,7 @@ namespace TourisManager
             builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ChatAutoReplyService>();
