@@ -1,0 +1,191 @@
+@model IEnumerable<TourisManager.Core.Entities.Order>
+@using TourisManager.Core.Extensions
+@using TourisManager.Core.Entities
+
+@{
+    ViewData["Title"] = "Danh sách Hóa Đơn";
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+}
+
+<style>
+    .text-orange {
+        color: #f97316 !important;
+    }
+
+    .bg-orange {
+        background-color: #f97316 !important;
+    }
+
+    .badge-orange-light {
+        background-color: #fff7ed;
+        color: #ea580c;
+        border: 1px solid #ffedd5;
+        font-weight: 600;
+    }
+
+    .card-order {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #fed7aa;
+    }
+
+    .card-order-header {
+        background-color: #f97316 !important;
+        color: #ffffff;
+        border-top-left-radius: 11px !important;
+        border-top-right-radius: 11px !important;
+    }
+
+    .filter-tab {
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        background: transparent;
+    }
+
+        .filter-tab.active, .filter-tab:hover {
+            background-color: #f97316;
+            color: white;
+            border-color: #f97316;
+        }
+
+            .filter-tab.active .badge {
+                background-color: white !important;
+                color: #f97316 !important;
+            }
+
+    .food-item-row {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .food-item-row:last-child {
+            border-bottom: none;
+        }
+
+    .food-image {
+        width: 65px;
+        height: 65px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 15px;
+        border: 1px solid #dee2e6;
+        background-color: #f8fafc;
+        flex-shrink: 0;
+    }
+
+    .order-scroll-container {
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: 100px;
+    }
+
+    #loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+    }
+</style>
+
+<div class="container-fluid py-2 order-scroll-container">
+    <h2 class="fw-bold mb-4 text-orange" style="font-size: 1.75rem;">Đơn Hàng của bạn</h2>
+
+    <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+        <button class="filter-tab active" data-status="">
+            Tất cả <span class="badge bg-secondary bg-opacity-25 text-dark">All</span>
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Pending)">
+            <i class="bi bi-hourglass-split"></i> Chờ xác nhận
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Shipping)">
+            <i class="bi bi-truck"></i> Đang giao
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Completed)">
+            <i class="bi bi-check-circle"></i> Đã hoàn thành
+        </button>
+        <button class="filter-tab" data-status="@((int)OrderStatus.Cancelled)">
+            <i class="bi bi-x-circle"></i> Đã hủy
+        </button>
+    </div>
+
+    <div id="loading-spinner">
+        <div class="spinner-border text-orange" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div id="order-list-container">
+        <partial name="_OrderListPartial" model="Model" />
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.filter-tab').on('click', function () {
+                $('.filter-tab').removeClass('active');
+                $(this).addClass('active');
+
+                var statusVal = $(this).data('status');
+                var requestData = {};
+
+                if (statusVal !== "" && statusVal !== undefined) {
+                    requestData.status = statusVal;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("MyOrder", "Profile")',
+                    type: 'GET',
+                    data: requestData,
+                    beforeSend: function () {
+                        $('#order-list-container').hide();
+                        $('#loading-spinner').show();
+                    },
+                    success: function (result) {
+                        $('#loading-spinner').hide();
+                        $('#order-list-container').html(result).fadeIn();
+                    },
+                    error: function (xhr) {
+                        $('#loading-spinner').hide();
+                        $('#order-list-container').show();
+                        alert('Đã xảy ra lỗi khi tải dữ liệu. Mã lỗi: ' + xhr.status);
+                    }
+                });
+            });
+
+            $(document).off('click', '.btn-cancel-order').on('click', '.btn-cancel-order', function () {
+                var orderId = $(this).data('order-id');
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                if (confirm('Bạn chắc chắn muốn hủy đơn hàng này?')) {
+                    $.ajax({
+                        url: '/cancel-order',
+                        type: 'POST',
+                        data: {
+                            orderId: orderId,
+                            __RequestVerificationToken: token
+                        },
+                        success: function (res) {
+                            if (res.success) {
+                                $('.filter-tab.active').trigger('click');
+                            } else {
+                                alert('Không thể hủy đơn hàng!');
+                            }
+                        },
+                        error: function (xhr) {
+                            alert('Có lỗi xảy ra trong quá trình hủy đơn. Mã lỗi: ' + xhr.status);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

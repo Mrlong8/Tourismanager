@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourisManager.Core.Entities;
 using TourisManager.Data;
-using TourisManager.Data.Seed;
 using TourisManager.Models;
 using TourisManager.Services;
 
@@ -28,13 +27,12 @@ namespace TourisManager.Controllers
             if (string.IsNullOrWhiteSpace(id)) return NotFound();
             var location = await _db.Locations.AsNoTracking().FirstOrDefaultAsync(l => l.LocationId == id);
             if (location == null) return NotFound();
-            var catalog = RestaurantSeed.Load(RestaurantSeed.FindCatalogPath(_environment.WebRootPath));
-            var reference = catalog.Restaurants.FirstOrDefault(r => r.Id == id);
+            var reference = RestaurantMenuCatalog.FindRestaurant(_environment, location.LocationId);
             var reviews = await _db.Reviews.AsNoTracking().Include(r => r.Account).Where(r => r.LocationId == id).OrderByDescending(r => r.CreateAt).ToListAsync();
             var category = await _db.Categories.AsNoTracking().Where(c => c.CategoryId == location.CategoryId).Select(c => c.Name).FirstOrDefaultAsync();
             var model = new LocationDetailViewModel
             {
-                Id = id,
+                Id = location.LocationId,
                 Name = location.Name,
                 Address = location.Address ?? "Đang cập nhật",
                 CategoryName = category ?? "Nhà hàng",

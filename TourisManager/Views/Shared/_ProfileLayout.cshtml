@@ -40,16 +40,24 @@
                 </a>
             </nav>
 
-            <div class="sidebar-group-label mt-3">Du lịch cá nhân</div>
+            <div class="sidebar-group-label mt-3">Quản lý đơn hàng</div>
             <nav class="sidebar-menu-nav">
-                <a asp-controller="Profile" asp-action="MyTrips" class="sidebar-link-item" data-title="Lịch trình của tôi">
+                <a asp-controller="Profile" asp-action="MyOrder" class="sidebar-link-item" data-title="Đơn Hàng của tôi">
                     <i class="bi bi-journal-bookmark"></i>
-                    <span class="sidebar-item-text">Lịch trình của tôi</span>
+                    <span class="sidebar-item-text">Đơn hàng của tôi</span>
                 </a>
-                <a asp-controller="Profile" asp-action="Favorites" class="sidebar-link-item" data-title="Địa điểm đã lưu">
-                    <i class="bi bi-heart"></i>
-                    <span class="sidebar-item-text">Địa điểm đã lưu</span>
+                <a asp-controller="Profile" asp-action="MyCart" class="sidebar-link-item" data-title="Giỏ Hàng của tôi">
+                    <i class="bi bi-cart"></i>
+                    <span class="sidebar-item-text">Giỏ Hàng của tôi</span>
                 </a>
+            </nav>
+                <div class="sidebar-group-label mt-3">Tài Khoản, thanh toán</div>
+            <nav class="sidebar-menu-nav">
+                <a asp-controller="Wallet" asp-action="Index" class="sidebar-link-item" data-title="Ví của tôi">
+                    <i class="bi bi-wallet2"></i>
+                    <span class="sidebar-item-text">Ví của tôi</span>
+                </a>
+
             </nav>
         </div>
 
@@ -65,7 +73,7 @@
     </aside>
 
     <!-- CỘT PHẢI: NỘI DUNG CHÍNH -->
-    <main class="profile-main-content">
+    <section class="profile-main-content">
         <!-- HEADER CỘT PHẢI -->
         <div class="profile-sub-header">
             <div class="d-flex align-items-center gap-3">
@@ -91,7 +99,7 @@
                 @RenderBody()
             </div>
         </div>
-    </main>
+    </section>
 </div>
 
 @section Styles {

@@ -2,6 +2,7 @@
 
 namespace TourisManager.Areas.Admin.Models
 {
+    // Chứa dũ liệu thống kê
     public class DashboardStatsViewModel
     {
         public int TotalUsers { get; set; }

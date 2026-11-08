@@ -1,0 +1,210 @@
+﻿@model TourisManager.Core.Entities.Wallet
+
+@{
+    ViewData["Title"] = "Quản lý ví & Thanh toán";
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
+    var bankAccount = ViewBag.BankAccount as TourisManager.Core.Entities.BankAccount;
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show"
+         role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        @TempData["SuccessMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        @TempData["ErrorMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="container-fluid py-4">
+    <!-- 1. THÔNG TIN TỔNG QUAN VÍ -->
+    <div class="card shadow-sm border-0 mb-4 rounded-3">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom-0">
+            <h5 class="mb-0 fw-bold" style="color: #ee4d2d;">
+                <i class="fas fa-wallet me-2"></i> Tổng quan Ví
+            </h5>
+            <button type="button" class="btn btn-outline-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#transactionHistoryModal" style="color: #ee4d2d; border-color: #ee4d2d;">
+                <i class="fas fa-history me-1"></i> Lịch sử giao dịch
+            </button>
+        </div>
+        <div class="card-body pt-0">
+            <div class="row text-center">
+                <div class="col-md-6 border-end">
+                    <p class="text-muted mb-1">Số dư khả dụng</p>
+                    <h2 class="text-success fw-bold">@Model.Balance.ToString("N0") @Model.Currency</h2>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-muted mb-1">Số dư đóng băng</p>
+                    <h2 class="text-secondary fw-bold">@Model.FrozenBalance.ToString("N0") @Model.Currency</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FORM CẬP NHẬT THÔNG TIN NGÂN HÀNG -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white py-3 border-bottom-0">
+            <h5 class="mb-0 fw-bold" style="color: #ee4d2d;">
+                <i class="fas fa-university me-2"></i> Thông tin tài khoản ngân hàng
+            </h5>
+            <small class="text-muted">Thông tin này được dùng để rút tiền hoặc đối soát doanh thu.</small>
+        </div>
+        <div class="card-body">
+           <form asp-action="UpdateBankInfo" asp-controller="Wallet" method="post">
+                <input type="hidden" name="BankAccountId" value="@bankAccount?.BankAccountId" />
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold">Ngân hàng <span class="text-danger">*</span></label>
+                        <select id="bankCodeSelect" name="BankCode" class="form-select p-2" required>
+                            @if (!string.IsNullOrEmpty(bankAccount?.BankCode))
+                            {
+                                <option value="@bankAccount.BankCode" selected>@bankAccount.BankCode</option>
+                            }
+                            else
+                            {
+                                <option value="">-- Đang tải danh sách ngân hàng... --</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số tài khoản <span class="text-danger">*</span></label>
+                        <input type="text" name="AccountNumber" value="@bankAccount?.AccountNumber"
+                               class="form-control p-2" placeholder="Nhập số tài khoản"
+                               inputmode="numeric" pattern="\d{6,30}" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tên chủ tài khoản <span class="text-danger">*</span></label>
+                        <input type="text" name="AccountHolderName" value="@bankAccount?.AccountHolderName"
+                               class="form-control p-2" style="text-transform: uppercase;"
+                               placeholder="VIẾT HOA KHÔNG DẤU (VD: NGUYEN VAN A)" required />
+                        <small class="form-text text-muted">Vui lòng tự nhập thủ công chính xác tên in trên thẻ.</small>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn text-white px-4 py-2" style="background-color: #ee4d2d; border-radius: 4px;">
+                        Lưu Thay Đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 3. MODAL LỊCH SỬ GIAO DỊCH -->
+<div class="modal fade" id="transactionHistoryModal" tabindex="-1" aria-labelledby="transactionHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="transactionHistoryModalLabel" style="color: #ee4d2d;">Lịch sử giao dịch ví</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th class="ps-4">Thời gian</th>
+                            <th>Loại</th>
+                            <th class="text-end">Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.WalletTransactions != null && Model.WalletTransactions.Any())
+                        {
+                            foreach (var trans in Model.WalletTransactions.OrderByDescending(x => x.CreatedAt))
+                            {
+                                <tr>
+                                    <td class="ps-4 text-muted">@trans.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if(trans.Type.Contains("Deposit") || trans.Amount > 0)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success">Nạp tiền</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Rút / Trừ tiền</span>
+                                        }
+                                    </td>
+                                    <td class="text-end fw-bold @(trans.Amount > 0 ? "text-success" : "text-danger")">
+                                        @(trans.Amount > 0 ? "+" : "")@trans.Amount.ToString("N0")
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">@trans.Status</span>
+                                    </td>
+                                    <td><small>@trans.Description</small></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-box-open fs-1 mb-3 text-light"></i><br />
+                                    Chưa có giao dịch nào phát sinh.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const bankSelect = document.getElementById('bankCodeSelect');
+    const currentBankCode = '@(bankAccount?.BankCode ?? "")'.trim();
+
+    fetch('https://api.vietqr.io/v2/banks')
+        .then(r => r.json())
+        .then(data => {
+            if (data.code !== '00') return;
+
+            bankSelect.innerHTML = '<option value="">-- Chọn ngân hàng --</option>';
+            let matched = false;
+
+            data.data.forEach(bank => {
+                const opt = document.createElement('option');
+                opt.value = bank.shortName;
+                opt.textContent = `${bank.shortName} - ${bank.name}`;
+                if (currentBankCode &&
+                    bank.shortName.toLowerCase() === currentBankCode.toLowerCase()) {
+                    opt.selected = true;
+                    matched = true;
+                }
+                bankSelect.appendChild(opt);
+            });
+
+            if (currentBankCode && !matched) {
+                const opt = new Option(currentBankCode, currentBankCode, true, true);
+                bankSelect.insertBefore(opt, bankSelect.options[1]);
+            }
+        })
+        .catch(err => console.error('Lỗi tải danh sách ngân hàng:', err));
+});
+</script>
+}

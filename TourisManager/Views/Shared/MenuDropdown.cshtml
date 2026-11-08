@@ -22,7 +22,18 @@
                 <a class="dropdown-item d-flex align-items-center gap-2 fw-semibold"
                    asp-area="Admin" asp-controller="Admin" asp-action="Index" style="color: var(--shopee-orange);">
                     <i class="bi bi-speedometer2"></i>
-                    <span>Trang quản lý</span>
+                    <span>Trang quản lý Admin</span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider m-0 border-light-subtle"></li>
+        }
+         @if (User.IsInRole("Seller"))
+        {
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 fw-semibold"
+                   asp-area="Seller" asp-controller="Dashboard" asp-action="Index" style="color: var(--shopee-orange);">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Quản lý cửa hàng</span>
                 </a>
             </li>
             <li><hr class="dropdown-divider m-0 border-light-subtle"></li>
@@ -49,19 +60,36 @@
             </a>
         </li>
 
-        <!-- Đổi mật khẩu / Cài đặt tài khoản -->
+       
+
+        <!-- đơn hầng -->
+        <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="MyOrder">
+                <i class="bi bi-receipt"></i>
+                <span>Đơn hàng</span>
+            </a>
+        </li>
+         <!-- giỏ hàng -->
+        <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="MyCart">
+               <i class="bi bi-cart-fill"></i>
+                <span>Giỏ Hàng</span>
+            </a>
+        </li>
+         <!-- ví -->
+        
+           <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Wallet" asp-action="Index">
+               <i class="bi bi-wallet2"></i>
+                <span>Ví</span>
+            </a>
+        </li>
+
+         <!-- Đổi mật khẩu / Cài đặt tài khoản -->
         <li>
             <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="ChangePassword">
                 <i class="bi bi-shield-lock"></i>
                 <span>Đổi mật khẩu</span>
-            </a>
-        </li>
-
-        <!-- Địa điểm & chuyến đi đã lưu -->
-        <li>
-            <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Profile" asp-action="Index">
-                <i class="bi bi-heart"></i>
-                <span>Địa điểm đã lưu</span>
             </a>
         </li>
 

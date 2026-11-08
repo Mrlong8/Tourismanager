@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --tm-primary: #f97316;
     --tm-primary-hover: #ea580c;
     --tm-primary-dark: #c2410c;
@@ -9,26 +9,42 @@
     --tm-border-light: #f1f5f9;
     --tm-text-main: #0f172a;
     --tm-text-muted: #64748b;
-    --tm-sidebar-width: 20%;
-    --tm-content-width: 80%;
-    --tm-sidebar-collapsed-width: 70px;
+    --tm-sidebar-width: 260px;
+    --tm-sidebar-collapsed-width: 76px;
+    --tm-header-height: 56px;
 }
 
-/* 1. KHUNG CHỨA TOÀN BỘ BỐ CỤC */
+/* 1. KHUNG CHỨA TOÀN BỘ BỐ CỤC (DESKTOP) */
+/* Khóa cuộn tổng của trình duyệt trên Desktop để cố định Navbar và Sidebar */
+body:has(.profile-layout-wrapper) {
+    margin-bottom: 0 !important;
+    overflow: hidden !important;
+}
+
+    body:has(.profile-layout-wrapper) footer {
+        display: none !important;
+    }
+
+    body:has(.profile-layout-wrapper) main[role="main"] {
+        padding-bottom: 0 !important;
+    }
+
 .profile-layout-wrapper {
     display: flex;
     width: 100%;
-    min-height: calc(100vh - 60px);
+    height: calc(100vh - var(--tm-header-height));
+    max-height: calc(100vh - var(--tm-header-height));
     background-color: #f8fafc;
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden; /* Khóa không cho layout tổng tràn ra ngoài */
 }
 
-/* 2. CỘT TRÁI: SIDEBAR (Tối ưu hóa hiệu ứng chuyển động không bị giật) */
+/* 2. CỘT TRÁI: SIDEBAR CỐ ĐỊNH, CUỘN ĐỘC LẬP NẾU MENU QUÁ DÀI */
 .profile-sidebar {
     flex: 0 0 var(--tm-sidebar-width);
     width: var(--tm-sidebar-width);
     max-width: var(--tm-sidebar-width);
+    height: 100%;
     background-color: #ffffff;
     border-right: 1px solid var(--tm-border-color);
     box-shadow: 4px 0 25px rgba(0, 0, 0, 0.03);
@@ -36,12 +52,22 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 1.5rem 1rem;
-    z-index: 1050;
-    /* CHỈ ANIMATE TRÊN FLEX VÀ WIDTH ĐỂ TRIỆT TIÊU GIẬT LAG */
+    z-index: 1020;
+    overflow-y: auto;
+    overflow-x: hidden;
     transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: flex, width;
-    transform: translateZ(0); /* Kích hoạt tăng tốc phần cứng GPU */
+    transform: translateZ(0);
 }
+
+    .profile-sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .profile-sidebar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 4px;
+    }
 
 .sidebar-user-header {
     display: flex;
@@ -70,7 +96,6 @@
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
 }
 
-    /* Xử lý hiển thị ảnh đại diện, chống vỡ khung */
     .sidebar-avatar img,
     .profile-avatar-frame img {
         width: 100%;
@@ -123,7 +148,6 @@
     font-weight: 600;
     text-decoration: none;
     transition: background-color 0.15s ease, color 0.15s ease;
-    white-space: hidden;
 }
 
 .sidebar-item-text {
@@ -164,10 +188,11 @@
         background-color: #fef2f2;
     }
 
-/* 3. TRẠNG THÁI THỤT VÀO DESKTOP */
+/* 3. TRẠNG THÁI THỤT VÀO (COLLAPSED) TRÊN DESKTOP */
 .profile-layout-wrapper.is-collapsed .profile-sidebar {
     flex: 0 0 var(--tm-sidebar-collapsed-width);
     width: var(--tm-sidebar-collapsed-width);
+    max-width: var(--tm-sidebar-collapsed-width);
     padding: 1.5rem 0.5rem;
 }
 
@@ -191,29 +216,31 @@
     padding: 0.7rem 0;
 }
 
-/* 4. CỘT PHẢI: NỘI DUNG */
+/* 4. CỘT PHẢI: NỘI DUNG CHÍNH */
 .profile-main-content {
-    flex: 0 0 var(--tm-content-width);
-    width: var(--tm-content-width);
+    flex: 1 1 auto;
+    width: calc(100% - var(--tm-sidebar-width));
+    height: 100%;
     background-color: #f8fafc;
     display: flex;
     flex-direction: column;
-    /* Đồng bộ hiệu ứng mượt với Sidebar */
-    transition: flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: flex, width;
+    overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: width;
     transform: translateZ(0);
 }
 
 .profile-layout-wrapper.is-collapsed .profile-main-content {
-    flex: 0 0 calc(100% - var(--tm-sidebar-collapsed-width));
     width: calc(100% - var(--tm-sidebar-collapsed-width));
 }
 
+/* THANH TIÊU ĐỀ PHỤ CỐ ĐỊNH Ở ĐỈNH CỘT PHẢI */
 .profile-sub-header {
+    flex: 0 0 60px;
     height: 60px;
     background-color: #ffffff;
     border-bottom: 1px solid var(--tm-border-light);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
     padding: 0 2rem;
     display: flex;
     align-items: center;
@@ -251,13 +278,27 @@
     border-radius: 8px;
 }
 
-/* 5. KHUNG THẺ CARD RENDER BODY */
+/* 5. VÙNG NỘI DUNG CHÍNH (RENDER BODY) - ĐÂY LÀ KHU VỰC DUY NHẤT ĐƯỢC CUỘN */
 .profile-content-body {
     padding: 1.75rem 2rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto !important; /* Chỉ cuộn nội dung ở đây, không gây tràn trang tổng */
+    overflow-x: hidden;
 }
+
+    /* Tùy chỉnh thanh cuộn thanh lịch */
+    .profile-content-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .profile-content-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+        .profile-content-body::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
 
 .profile-card-container {
     background-color: #ffffff;
@@ -267,7 +308,6 @@
     padding: 2.25rem 2.5rem;
     width: 100%;
     max-width: 100%;
-    flex: 1;
 }
 
 .profile-content-body .row > .col-lg-9,
@@ -324,7 +364,7 @@
 }
 
 /* ==========================================================
-   7. CHẾ ĐỘ MOBILE: TRƯỢT TỪ TRÁI SANG
+   7. CHẾ ĐỘ MOBILE: TRƯỢT TỪ TRÁI SANG & CUỘN TỰ NHIÊN
    ========================================================== */
 .profile-mobile-overlay {
     position: fixed;
@@ -345,6 +385,17 @@
     }
 
 @media (max-width: 767.98px) {
+    /* Cho phép body cuộn trang tự nhiên trên màn hình nhỏ */
+    body:has(.profile-layout-wrapper) {
+        overflow-y: auto !important;
+    }
+
+    .profile-layout-wrapper {
+        height: auto;
+        min-height: calc(100vh - var(--tm-header-height));
+        overflow: visible;
+    }
+
     .profile-sidebar {
         display: flex !important;
         position: fixed !important;
@@ -355,6 +406,7 @@
         height: 100vh !important;
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1050;
     }
 
     .profile-layout-wrapper.mobile-open .profile-sidebar {
@@ -364,17 +416,18 @@
     .profile-main-content {
         width: 100% !important;
         flex: 1 1 100% !important;
+        overflow: visible;
     }
 
     .profile-sub-header {
-        position: sticky;
+        position: relative;
         top: 0;
         z-index: 1030;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
 
     .profile-content-body {
         padding: 1.25rem 1rem;
+        overflow: visible; /* Cuộn theo luồng tự nhiên của trang trên mobile */
     }
 
     .profile-card-container {

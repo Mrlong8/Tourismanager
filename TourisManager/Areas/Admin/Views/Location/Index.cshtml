@@ -151,45 +151,55 @@
             </div>
         </div>
         
-        <!-- Card Footer: Thanh phân trang có thể kéo ngang -->
+        
+           
+              <!-- Phân trang Location -->
         @if (Model != null)
         {
-            <div class="card-footer bg-white border-top py-3 px-4">
+            <div class="location-pagination-footer">
 
-                <div class="location-pagination-info text-muted small mb-2">
+                <!-- Thông tin trang -->
+                <div class="location-pagination-info">
                     Hiển thị trang
-                    <b>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</b> /
-                    <b>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</b>
-                    (Tổng <b>@Model.TotalCount</b> địa điểm)
+                    <strong>@Model.PageIndex</strong> /
+                    <strong>@Model.TotalPages</strong>
+                    (Tổng <strong>@Model.TotalCount</strong> địa điểm)
                 </div>
 
+                <!-- Các nút phân trang -->
                 @if (Model.TotalPages > 1)
                 {
-                    <nav class="location-pagination-scroll"
-                         aria-label="Phân trang địa điểm">
+                    <nav aria-label="Phân trang địa điểm">
+                        <ul class="pagination location-pagination mb-0">
 
-                        <ul class="pagination pagination-sm mb-0">
-
-                            <!-- Trang trước -->
+                            <!-- Trước -->
                             <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                                <a class="page-link rounded-pill px-3 me-1"
+                                <a class="page-link location-prev-next"
                                    asp-area="Admin"
                                    asp-controller="Location"
                                    asp-action="Index"
                                    asp-route-pageIndex="@(Model.PageIndex - 1)"
                                    asp-route-searchString="@ViewBag.CurrentSearch"
                                    asp-route-categoryId="@ViewBag.CurrentCategory">
-
-                                    <i class="bi bi-chevron-left me-1"></i>
-                                    Trước
+                                    <i class="bi bi-chevron-left"></i> Trước
                                 </a>
                             </li>
 
                             <!-- Các số trang -->
-                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            @{
+                                int startPage = Math.Max(1, Model.PageIndex - 1);
+                                int endPage = Math.Min(Model.TotalPages, startPage + 2);
+
+                                if (endPage - startPage < 2)
+                                {
+                                    startPage = Math.Max(1, endPage - 2);
+                                }
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
                             {
                                 <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                                    <a class="page-link rounded-circle mx-1"
+                                    <a class="page-link location-page-number"
                                        asp-area="Admin"
                                        asp-controller="Location"
                                        asp-action="Index"
@@ -201,18 +211,23 @@
                                 </li>
                             }
 
-                            <!-- Trang sau -->
+                            @if (endPage < Model.TotalPages)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="location-ellipsis">...</span>
+                                </li>
+                            }
+
+                            <!-- Sau -->
                             <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                                <a class="page-link rounded-pill px-3 ms-1"
+                                <a class="page-link location-prev-next"
                                    asp-area="Admin"
                                    asp-controller="Location"
                                    asp-action="Index"
                                    asp-route-pageIndex="@(Model.PageIndex + 1)"
                                    asp-route-searchString="@ViewBag.CurrentSearch"
                                    asp-route-categoryId="@ViewBag.CurrentCategory">
-
-                                    Sau
-                                    <i class="bi bi-chevron-right ms-1"></i>
+                                    Sau <i class="bi bi-chevron-right"></i>
                                 </a>
                             </li>
 
@@ -221,6 +236,8 @@
                 }
             </div>
         }
+
+
 
         
     </div>

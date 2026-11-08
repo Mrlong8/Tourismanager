@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,13 +21,11 @@ namespace TourisManager.Areas.Admin.Controllers
         }
 
         // Danh sách tài khoản, tìm kiếm và phân trang
-        public async Task<IActionResult> Index(
-    string? searchString,
-    int? pageIndex)
+        public async Task<IActionResult> Index( string? searchString, int? pageIndex)
         {
             ViewBag.CurrentSearch = searchString;
 
-            const int pageSize = 3;
+            const int pageSize = 8;
             int pageNumber = Math.Max(pageIndex ?? 1, 1);
 
             var result = await _userService.GetUsersAsync(
@@ -43,6 +41,38 @@ namespace TourisManager.Areas.Admin.Controllers
 
             return View(pagedData);
         }
+
+        // GET: Hiển thị trang xác nhận tạo Seller hàng loạt
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult CreateSellers()
+        {
+            return View();
+        }
+
+        // POST: Tạo Seller hàng loạt và phân công Location
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSellersConfirmed()
+        {
+            const string defaultPassword = "Seller@123";
+
+            var result = await _userService.CreateSellersAndAssignLocationsAsync(
+                defaultPassword);
+
+            if (result.Success)
+            {
+                TempData["Success"] = result.Message;
+            }
+            else
+            {
+                TempData["Error"] = result.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Tạo tài khoản
         [HttpGet]
@@ -112,15 +142,11 @@ namespace TourisManager.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
-
             var user = await _userService.GetByIdAsync(id);
-
             if (user == null)
                 return NotFound();
-
             return View(user);
         }
-
         // POST: Xóa tài khoản
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -128,23 +154,17 @@ namespace TourisManager.Areas.Admin.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
                 return NotFound();
-
-            try
-            {
+            try{
                 var deleted = await _userService.DeleteAsync(id);
-
-                if (!deleted)
+                 if (!deleted)
                     return NotFound();
-
                 TempData["Success"] = "Xóa tài khoản thành công!";
             }
-            catch (DbUpdateException)
-            {
+            catch (DbUpdateException){
                 TempData["Error"] =
                     "Không thể xóa tài khoản vì dữ liệu đang được sử dụng "
                     + "hoặc có ràng buộc liên quan.";
             }
-
             return RedirectToAction(nameof(Index));
         }
     }

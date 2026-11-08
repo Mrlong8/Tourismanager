@@ -12,11 +12,11 @@
     }
 
 .tm-map-page {
-    --tm-green: #148958;
-    --tm-green-dark: #106e48;
-    --tm-orange: #e98236;
-    --tm-ink: #1d3028;
-    --tm-muted: #748178;
+    --tm-accent: #c04a08;
+    --tm-accent-dark: #a33b06;
+    --tm-orange: #d45b0e;
+    --tm-ink: #2b221e;
+    --tm-muted: #8a786b;
     --tm-sidebar-width: 340px;
     position: relative;
     isolation: isolate;
@@ -25,7 +25,7 @@
     height: calc(100dvh - 64px);
     min-height: 260px;
     overflow: hidden;
-    background: #e8eee8;
+    background: #f3eeea;
     color: var(--tm-ink);
     font: 14px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -53,7 +53,7 @@
 
         .tm-map-page button:focus-visible, .tm-map-page a:focus-visible,
         .tm-map-page input:focus-visible, .tm-map-page select:focus-visible {
-            outline: 3px solid #93d8b5;
+            outline: 3px solid #ffc18f;
             outline-offset: 3px;
         }
 
@@ -87,7 +87,7 @@
     width: 100%;
     height: 100%;
     font-family: inherit;
-    background: #e8eee8;
+    background: #f3eeea;
 }
 
 .tm-sidebar {
@@ -100,10 +100,10 @@
     flex-direction: column;
     width: var(--tm-sidebar-width);
     overflow: hidden;
-    border: 1px solid rgba(32, 71, 49, .08);
+    border: 1px solid rgba(92, 47, 21, .08);
     border-radius: 18px;
     background: #fff;
-    box-shadow: 0 7px 28px #243b291f;
+    box-shadow: 0 7px 28px #3b2e241f;
 }
 
 .tm-sidebar-heading {
@@ -116,7 +116,7 @@
 
 .tm-eyebrow {
     margin: 0 0 6px;
-    color: #819185;
+    color: #98867a;
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 1.6px;
@@ -139,13 +139,13 @@
     padding: 0;
     border: 0;
     border-radius: 9px;
-    background: #f3f6f3;
-    color: #7c897f;
+    background: #faf8f6;
+    color: #938072;
 }
 
     .tm-icon-button:hover {
-        background: #e8efe9;
-        color: var(--tm-green);
+        background: #f3eeeb;
+        color: var(--tm-accent);
     }
 
 .tm-list-summary {
@@ -155,14 +155,14 @@
     gap: 8px;
     min-height: 39px;
     padding: 7px 17px;
-    border-top: 1px solid #edf1ed;
-    border-bottom: 1px solid #edf1ed;
-    color: #7a877e;
+    border-top: 1px solid #f6f2ef;
+    border-bottom: 1px solid #f6f2ef;
+    color: #917e70;
     font-size: 11px;
 }
 
     .tm-list-summary strong {
-        color: var(--tm-green-dark);
+        color: var(--tm-accent-dark);
         font-weight: 800;
     }
 
@@ -171,7 +171,7 @@
     padding: 3px 0;
     border: 0;
     background: none;
-    color: var(--tm-green);
+    color: var(--tm-accent);
     font-size: 11px !important;
     font-weight: 650 !important;
 }
@@ -188,27 +188,27 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: #d8e4da transparent;
+    scrollbar-color: #eae0da transparent;
 }
 
 .tm-place-card {
     margin: 6px 0;
     padding: 12px 10px 10px;
-    border: 1px solid #e9eeea;
+    border: 1px solid #f3eeeb;
     border-radius: 13px;
     background: #fff;
     transition: background .15s, border-color .15s, box-shadow .15s;
 }
 
     .tm-place-card:hover {
-        border-color: #badcc8;
-        box-shadow: 0 2px 8px #193e2610;
+        border-color: #dcc8ba;
+        box-shadow: 0 2px 8px #3a291d10;
     }
 
     .tm-place-card.is-selected {
-        border-color: #69b78d;
-        background: #f2faf5;
-        box-shadow: 0 0 0 1px #69b78d;
+        border-color: #b78a69;
+        background: #fdf9f6;
+        box-shadow: 0 0 0 1px #b78a69;
     }
 
 .tm-place-main {
@@ -232,8 +232,8 @@
     height: 78px;
     overflow: hidden;
     border-radius: 9px;
-    background: linear-gradient(145deg, #e1efe2, #f1f5eb);
-    color: #8bb69a;
+    background: linear-gradient(145deg, #f4eae3, #f8eee4);
+    color: #b69d8b;
 }
 
     .tm-photo.is-restaurant {
@@ -265,7 +265,7 @@
     align-items: center;
     gap: 4px;
     margin-bottom: 4px;
-    color: var(--tm-green);
+    color: var(--tm-accent);
     font-size: 9px;
     font-weight: 750;
 }
@@ -288,7 +288,7 @@
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    color: #263a2d;
+    color: #3a2e26;
     font-size: 13px;
     font-weight: 750;
     line-height: 1.35;
@@ -300,7 +300,7 @@
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    color: #819086;
+    color: #988679;
     font-size: 10px;
     line-height: 1.5;
 }
@@ -320,7 +320,7 @@
     padding: 4px 9px;
     border: 0;
     border-radius: 6px;
-    background: var(--tm-green);
+    background: var(--tm-accent);
     color: #fff !important;
     font-size: 10px !important;
     font-weight: 650 !important;
@@ -330,16 +330,16 @@
 }
 
     .tm-place-action:hover {
-        background: var(--tm-green-dark);
+        background: var(--tm-accent-dark);
     }
 
     .tm-place-action.is-secondary {
-        background: #f0f3f0;
-        color: #637568 !important;
+        background: #f8f5f2;
+        color: #7a6a5e !important;
     }
 
         .tm-place-action.is-secondary:hover {
-            background: #e5ece6;
+            background: #f1ebe7;
         }
 
 .tm-coordinate-note {
@@ -351,8 +351,8 @@
 
 .tm-sidebar-footnote {
     padding: 10px 15px;
-    border-top: 1px solid #eef2ee;
-    color: #9aa59d;
+    border-top: 1px solid #f7f3f0;
+    color: #ac9d93;
     font-size: 9px;
     text-align: center;
 }
@@ -360,7 +360,7 @@
 .tm-empty {
     padding: 50px 15px;
     text-align: center;
-    color: #89978d;
+    color: #9e8e82;
 }
 
     .tm-empty > svg {
@@ -368,12 +368,12 @@
         height: 36px;
         margin: 0 0 14px;
         stroke-width: 1.3;
-        color: #a3b6a6;
+        color: #b7aba2;
     }
 
     .tm-empty h2 {
         margin: 0 0 9px;
-        color: #445b49;
+        color: #5b4e44;
         font-size: 15px;
         font-weight: 700;
     }
@@ -405,16 +405,16 @@
     min-height: 49px;
     margin: 0;
     padding: 7px 13px 7px 17px;
-    border: 1px solid #e2e9e0;
+    border: 1px solid #eee7e2;
     border-radius: 14px;
     background: #fff;
-    box-shadow: 0 4px 18px #27472c16;
-    color: #a0aaa2;
+    box-shadow: 0 4px 18px #47342716;
+    color: #b1a399;
 }
 
     .tm-search:focus-within {
-        border-color: #7cc49b;
-        box-shadow: 0 0 0 3px #14895817;
+        border-color: #c49a7c;
+        box-shadow: 0 0 0 3px #c04a0817;
     }
 
     .tm-search > svg {
@@ -429,12 +429,12 @@
         border: 0;
         outline: none !important;
         background: transparent;
-        color: #354b3b;
+        color: #4b3e35;
         font-size: 12px;
     }
 
         .tm-search input::placeholder {
-            color: #9aa59d;
+            color: #ac9d93;
             opacity: 1;
         }
 
@@ -463,11 +463,11 @@
     gap: 6px;
     min-height: 33px;
     padding: 6px 11px;
-    border: 1px solid #e0e8df;
+    border: 1px solid #eee6e1;
     border-radius: 22px;
     background: #fff;
-    box-shadow: 0 2px 6px #213e2512;
-    color: #687b6d;
+    box-shadow: 0 2px 6px #3e2d2112;
+    color: #806f63;
     font-size: 11px !important;
     font-weight: 650 !important;
     white-space: nowrap;
@@ -476,7 +476,7 @@
     .tm-filter-chip svg {
         width: 15px;
         height: 15px;
-        color: var(--tm-green);
+        color: var(--tm-accent);
     }
 
 .tm-filter-restaurant svg {
@@ -484,12 +484,12 @@
 }
 
 .tm-filter-chip:hover {
-    border-color: #83ba96;
+    border-color: #ba9a83;
 }
 
 .tm-filter-chip[aria-pressed="true"] {
-    border-color: var(--tm-green);
-    background: var(--tm-green);
+    border-color: var(--tm-accent);
+    background: var(--tm-accent);
     color: #fff;
 }
 
@@ -500,8 +500,8 @@
 .tm-chip-count {
     padding: 1px 5px;
     border-radius: 5px;
-    background: #eaf2eb;
-    color: #649675;
+    background: #f6f1ed;
+    color: #967964;
     font-size: 9px;
 }
 
@@ -518,7 +518,7 @@
     .tm-area-filter svg {
         width: 14px;
         height: 14px;
-        color: #84a28a;
+        color: #a29084;
     }
 
     .tm-area-filter select {
@@ -534,7 +534,7 @@
     }
 
     .tm-area-filter:has(select:focus-visible) {
-        outline: 2px solid #93d8b5;
+        outline: 2px solid #ffc18f;
     }
 
 .tm-open-list {
@@ -547,11 +547,11 @@
     gap: 8px;
     min-height: 43px;
     padding: 10px 13px;
-    border: 1px solid #dde8de;
+    border: 1px solid #ede5df;
     border-radius: 11px;
     background: #fff;
-    box-shadow: 0 3px 15px #24492b1c;
-    color: var(--tm-green-dark);
+    box-shadow: 0 3px 15px #4933241c;
+    color: var(--tm-accent-dark);
     font-size: 12px !important;
     font-weight: 650 !important;
 }
@@ -564,7 +564,7 @@
     .tm-open-list > span:last-child {
         padding: 0 5px;
         border-radius: 5px;
-        background: #eaf4eb;
+        background: #f8f2ed;
         font-size: 10px;
     }
 
@@ -576,10 +576,10 @@
     display: flex;
     overflow: hidden;
     padding: 3px;
-    border: 1px solid #dde6dd;
+    border: 1px solid #ece4de;
     border-radius: 10px;
     background: #fff;
-    box-shadow: 0 3px 14px #294c2b17;
+    box-shadow: 0 3px 14px #4c382917;
 }
 
     .tm-base-layers button {
@@ -588,13 +588,13 @@
         border: 0;
         border-radius: 7px;
         background: none;
-        color: #748078;
+        color: #8a776a;
         font-size: 10px;
         font-weight: 650;
     }
 
         .tm-base-layers button[aria-pressed="true"] {
-            background: var(--tm-green);
+            background: var(--tm-accent);
             color: #fff;
         }
 
@@ -615,16 +615,16 @@
     width: 40px;
     height: 40px;
     padding: 0;
-    border: 1px solid #e1e8df;
+    border: 1px solid #eee6e1;
     border-radius: 11px;
     background: #fff;
-    box-shadow: 0 2px 9px #24452b1c;
-    color: #5b7160;
+    box-shadow: 0 2px 9px #4532241c;
+    color: #736459;
 }
 
     .tm-control-button:hover {
-        background: #eff7f0;
-        color: var(--tm-green);
+        background: #fbf6f2;
+        color: var(--tm-accent);
     }
 
     .tm-control-button.is-loading svg {
@@ -633,10 +633,10 @@
 
 .tm-zoom-buttons {
     overflow: hidden;
-    border: 1px solid #e1e8df;
+    border: 1px solid #eee6e1;
     border-radius: 11px;
     background: #fff;
-    box-shadow: 0 2px 9px #24452b1c;
+    box-shadow: 0 2px 9px #4532241c;
 }
 
     .tm-zoom-buttons .tm-control-button {
@@ -648,7 +648,7 @@
     }
 
         .tm-zoom-buttons .tm-control-button + .tm-control-button {
-            border-top: 1px solid #edf1eb;
+            border-top: 1px solid #f5f1ee;
         }
 
 .tm-map-legend {
@@ -662,9 +662,9 @@
     border: 1px solid #ffffffd9;
     border-radius: 8px;
     background: #ffffffeb;
-    color: #728077;
+    color: #897669;
     font-size: 10px;
-    box-shadow: 0 2px 9px #24452b12;
+    box-shadow: 0 2px 9px #45322412;
 }
 
 .is-sidebar-hidden .tm-map-legend {
@@ -684,7 +684,7 @@
 }
 
 .tm-legend-place {
-    background: var(--tm-green);
+    background: var(--tm-accent);
 }
 
 .tm-legend-restaurant {
@@ -700,11 +700,11 @@
     max-width: min(500px, calc(100% - 32px));
     padding: 12px 18px;
     transform: translateX(-50%);
-    border: 1px solid #dce7dc;
+    border: 1px solid #ece4de;
     border-radius: 12px;
     background: #fff;
-    box-shadow: 0 5px 25px #24452b29;
-    color: #3f5d47;
+    box-shadow: 0 5px 25px #45322429;
+    color: #5d4c3f;
     font-size: 12px;
     text-align: center;
 }
@@ -723,8 +723,8 @@
     transform: rotate(-45deg);
     border: 3px solid #fff;
     border-radius: 50% 50% 50% 7px;
-    background: var(--tm-green);
-    box-shadow: 0 3px 9px #203a2747;
+    background: var(--tm-accent);
+    box-shadow: 0 3px 9px #3a2b2047;
     transition: filter .15s;
 }
 
@@ -742,13 +742,13 @@
 
 .tm-marker:hover .tm-pin, .tm-marker.is-selected .tm-pin {
     filter: brightness(1.08);
-    box-shadow: 0 0 0 5px #ffffff8c, 0 4px 12px #203a2766;
+    box-shadow: 0 0 0 5px #ffffff8c, 0 4px 12px #3a2b2066;
 }
 
 .tm-cluster {
     border: 0;
     border-radius: 50%;
-    background: #14895824;
+    background: #c04a0824;
 }
 
     .tm-cluster span {
@@ -760,8 +760,8 @@
         margin: 5px;
         border: 2px solid #fff;
         border-radius: 50%;
-        background: #1b9b60;
-        box-shadow: 0 2px 5px #1b73452e;
+        background: #c04a08;
+        box-shadow: 0 2px 5px #7d3e112e;
         color: #fff;
         font-size: 12px;
         font-weight: 800;
@@ -771,8 +771,8 @@
     padding: 5px 10px;
     border: 0;
     border-radius: 7px;
-    box-shadow: 0 3px 14px #213b2724;
-    color: #425548;
+    box-shadow: 0 3px 14px #3b2c2124;
+    color: #554a42;
     font-size: 11px;
 }
 
@@ -780,7 +780,7 @@
     overflow: hidden;
     padding: 0;
     border-radius: 15px;
-    box-shadow: 0 7px 30px #223a2733;
+    box-shadow: 0 7px 30px #3a2c2233;
 }
 
 .tm-map-page .leaflet-popup-content {
@@ -798,7 +798,7 @@
     height: 26px;
     border-radius: 50%;
     background: #fffffff0;
-    color: #4d6554;
+    color: #65574d;
 }
 
 .tm-popup-photo {
@@ -822,7 +822,7 @@
 
 .tm-popup-title {
     margin: 3px 0 7px;
-    color: #293e2f;
+    color: #3e3229;
     font-size: 17px;
     line-height: 1.35;
     font-weight: 750;
@@ -830,7 +830,7 @@
 
 .tm-map-page .tm-popup-address {
     margin: 0 0 12px;
-    color: #829087;
+    color: #98867a;
     font-size: 11px;
     line-height: 1.65;
 }
@@ -850,7 +850,7 @@
 .tm-map-page .leaflet-control-attribution {
     padding: 2px 6px;
     background: #ffffffdb;
-    color: #6b7b6d;
+    color: #827164;
     font-size: 9px;
 }
 
@@ -1144,3 +1144,13 @@
         display: none
     }
 }
+
+/* Older Leaflet cluster markup uses these classes. */
+.tm-map-page .marker-cluster {
+    background: #d96b2e40;
+}
+
+    .tm-map-page .marker-cluster div {
+        background: #c04a08;
+        color: #fff;
+    }

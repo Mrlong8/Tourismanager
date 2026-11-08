@@ -8,6 +8,7 @@ using TourisManager.Core.Interfaces;
 
 namespace TourisManager.Services
 {
+    // truy vấn , tính toán số liệu từ database
     public class AdminService : IAdminService
     {
         private readonly AppDbContext _context;
@@ -16,17 +17,6 @@ namespace TourisManager.Services
         {
             _context = context;
         }
-
-        // Lấy số liệu tổng quan cho trang Admin
-        public async Task<(int TotalUsers, int TotalLocations)>
-            GetDashboardStatsAsync()
-        {
-            var totalUsers = await _context.Accounts.CountAsync();
-            var totalLocations = await _context.Locations.CountAsync();
-
-            return (totalUsers, totalLocations);
-        }
-
         // Lấy danh sách tài khoản
         public async Task<List<Account>> GetUsersAsync()
         {
@@ -34,7 +24,16 @@ namespace TourisManager.Services
                 .AsNoTracking()
                 .OrderByDescending(u => u.CreateAt)
                 .ToListAsync();
-        }// Thống kê tài khoản theo vai trò
+        }
+
+        // Lấy số liệu tổng quan cho trang Admin
+        public async Task<(int TotalUsers, int TotalLocations)> GetDashboardStatsAsync()
+        {
+            var totalUsers = await _context.Accounts.CountAsync();
+            var totalLocations = await _context.Locations.CountAsync();
+            return (totalUsers, totalLocations);
+        }
+        // Thống kê tài khoản theo vai trò
         public async Task<Dictionary<string, int>> GetUsersByRoleAsync()
         {
             return await _context.Accounts
@@ -49,8 +48,6 @@ namespace TourisManager.Services
                     x => x.Role,
                     x => x.Total);
         }
-
-        // Thống kê địa điểm theo khu vực
         // Thống kê địa điểm theo tỉnh/thành phố từ địa chỉ
         public async Task<Dictionary<string, int>> GetLocationsByAreaAsync()
         {
@@ -70,9 +67,20 @@ namespace TourisManager.Services
                         StringSplitOptions.TrimEntries |
                         StringSplitOptions.RemoveEmptyEntries);
 
-                    return parts.Length > 0
-                        ? parts[^1]
+                    var area = parts.Length > 0
+                        ? parts[^1].Trim()
                         : "Chưa xác định";
+
+                    // Xử lý Việt Nam trước khi chuẩn hóa tỉnh/thành phố
+                    if (area.Equals("Việt Nam", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (parts.Length >= 2)
+                            area = parts[^2].Trim();
+                        else
+                            return "Chưa xác định";
+                    }
+
+                    return area;
                 })
                 .OrderByDescending(group => group.Count())
                 .ToDictionary(

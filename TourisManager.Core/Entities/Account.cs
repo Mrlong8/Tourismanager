@@ -18,6 +18,8 @@ namespace TourisManager.Core.Entities
         public string? ProviderKey { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
+        public virtual Wallet? Wallet { get; set; }
+
         // Navigation Properties
         public DetailAccount? DetailAccount { get; set; }
         public ICollection<Location> Locations { get; set; } = new List<Location>();
@@ -27,6 +29,7 @@ namespace TourisManager.Core.Entities
         public ICollection<ReservationService> ReservationServices { get; set; } = new List<ReservationService>();
         public ICollection<RoomChat> RoomChats { get; set; } = new List<RoomChat>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<BankAccount> BankAccounts { get; set; }
 
 
 

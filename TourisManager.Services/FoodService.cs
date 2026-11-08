@@ -22,6 +22,7 @@ namespace TourisManager.Services
             return await _db.Foods
                 .Include(f => f.TypeFood)
                 .Include(f => f.FoodSizes)
+                .Include(f => f.Location)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -35,6 +36,19 @@ namespace TourisManager.Services
 
             if (!string.IsNullOrEmpty(typeId))
                 query = query.Where(f => f.TypeFoodId == typeId);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Food>> FilterFoodsByMultiTypeAsync(List<string> typeIds)
+        {
+            var query = _db.Foods
+                .Include(f => f.TypeFood)
+                .Include(f => f.FoodSizes)
+                .AsQueryable();
+
+            if (typeIds != null && typeIds.Any())
+                query = query.Where(f => typeIds.Contains(f.TypeFoodId));
 
             return await query.ToListAsync();
         }

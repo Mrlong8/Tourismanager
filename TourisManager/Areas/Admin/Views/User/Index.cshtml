@@ -36,13 +36,22 @@
         <a asp-area="Admin" asp-controller="User" asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-person-plus-fill me-1"></i> Thêm User
         </a>
+        
+        @* <a asp-area="Admin"
+           asp-controller="User"
+           asp-action="CreateSellers"
+           class="btn btn-success">
+            <i class="fas fa-users"></i>
+            Tạo Seller hàng loạt
+        </a> *@
+
     </div>
 
     <!-- Table Card -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0 user-table">
                     <thead class="bg-light text-secondary border-bottom">
                         <tr class="text-nowrap">
                             <th class="ps-4 py-3">Account ID</th>
@@ -151,49 +160,85 @@
                     </tbody>
                 </table>
                 
+                
                 <!-- Phân trang User -->
-                <div class="user-pagination">
-                    <div class="pagination-info">
-                        Hiển thị trang <strong>@Model.PageIndex</strong> /
-                        @Model.TotalPages (Tổng @Model.TotalCount người dùng)
-                    </div>
+                @if (Model != null)
+                {
+                    <div class="user-pagination">
 
-                    <div class="pagination-scroll">
-                        <div class="pagination-buttons">
-
-                            <a asp-area="Admin"
-                               asp-controller="User"
-                               asp-action="Index"
-                               asp-route-pageIndex="@(Model.PageIndex - 1)"
-                               asp-route-searchString="@ViewBag.CurrentSearch"
-                               class="page-btn @(Model.HasPreviousPage ? "" : "disabled")">
-                                <i class="bi bi-chevron-left"></i> Trước
-                            </a>
-
-                            @for (int i = 1; i <= Model.TotalPages; i++)
-                            {
-                                <a asp-area="Admin"
-                                   asp-controller="User"
-                                   asp-action="Index"
-                                   asp-route-pageIndex="@i"
-                                   asp-route-searchString="@ViewBag.CurrentSearch"
-                                   class="page-btn @(i == Model.PageIndex ? "active" : "")">
-                                    @i
-                                </a>
-                            }
-
-                            <a asp-area="Admin"
-                               asp-controller="User"
-                               asp-action="Index"
-                               asp-route-pageIndex="@(Model.PageIndex + 1)"
-                               asp-route-searchString="@ViewBag.CurrentSearch"
-                               class="page-btn @(Model.HasNextPage ? "" : "disabled")">
-                                Sau <i class="bi bi-chevron-right"></i>
-                            </a>
-
+                        <!-- Thông tin trang -->
+                        <div class="pagination-info">
+                            Hiển thị trang
+                            <strong>@(Model.TotalPages > 0 ? Model.PageIndex : 1)</strong> /
+                            <strong>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</strong>
+                            (Tổng <strong>@Model.TotalCount</strong> người dùng)
                         </div>
+
+                        @if (Model.TotalPages > 1)
+                        {
+                            var startPage = Math.Max(1,
+                                Math.Min(Model.PageIndex, Model.TotalPages - 2));
+
+                            var endPage = Math.Min(startPage + 2, Model.TotalPages);
+
+                            <nav class="user-pagination-nav" aria-label="Phân trang người dùng">
+                                <ul class="pagination pagination-sm mb-0">
+
+                                    <!-- Trang trước -->
+                                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                                        <a class="page-link user-page-link rounded-pill"
+                                           asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="Index"
+                                           asp-route-pageIndex="@(Model.PageIndex - 1)"
+                                           asp-route-searchString="@ViewBag.CurrentSearch">
+                                            <i class="bi bi-chevron-left me-1"></i>
+                                            Trước
+                                        </a>
+                                    </li>
+
+                                    <!-- Tối đa 3 số trang -->
+                                    @for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                            <a class="page-link user-page-link rounded-circle"
+                                               asp-area="Admin"
+                                               asp-controller="User"
+                                               asp-action="Index"
+                                               asp-route-pageIndex="@i"
+                                               asp-route-searchString="@ViewBag.CurrentSearch">
+                                                @i
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <!-- Dấu ... -->
+                                    @if (endPage < Model.TotalPages)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link border-0">...</span>
+                                        </li>
+                                    }
+
+                                    <!-- Trang sau -->
+                                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                                        <a class="page-link user-page-link rounded-pill"
+                                           asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="Index"
+                                           asp-route-pageIndex="@(Model.PageIndex + 1)"
+                                           asp-route-searchString="@ViewBag.CurrentSearch">
+                                            Sau
+                                            <i class="bi bi-chevron-right ms-1"></i>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </nav>
+                        }
                     </div>
-                </div>
+                }
+
             </div>
         </div>
     </div>

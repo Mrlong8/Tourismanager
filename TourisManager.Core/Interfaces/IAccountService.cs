@@ -15,5 +15,8 @@ namespace TourisManager.Services
         Task<bool> IsUserNameExistsAsync(string userName);
         Task<bool> IsUserEmailExistsAsync(string email);
         Task<(bool Success, string Message)> ChangePasswordAsync(string accountID, string newPassword, string CurentPassword);
+
+        Task<Account> DetailAccount(string accountId);
+
     }
 }

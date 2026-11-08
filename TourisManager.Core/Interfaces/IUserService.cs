@@ -1,10 +1,8 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TourisManager.Core.Entities;
 
 namespace TourisManager.Core.Interfaces
-
 {
     public interface IUserService
     {
@@ -16,6 +14,10 @@ namespace TourisManager.Core.Interfaces
         Task<Account?> GetByIdAsync(string id);
 
         Task<bool> CreateAsync(Account user);
+
+        // Tạo Seller hàng loạt và phân công mỗi Seller một Location
+        Task<(bool Success, string Message)> CreateSellersAndAssignLocationsAsync(
+            string defaultPassword);
 
         Task<bool> UpdateAsync(string id, Account user);
 
