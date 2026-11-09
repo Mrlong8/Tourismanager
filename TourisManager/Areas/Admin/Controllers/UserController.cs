@@ -87,15 +87,47 @@ namespace TourisManager.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Account user)
         {
             ModelState.Remove(nameof(Account.AccountId));
+            ModelState.Remove(nameof(Account.BankAccounts));
+
+
 
             if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value != null && x.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value!.Errors.Select(e =>
+                        $"{x.Key}: {e.ErrorMessage}"));
+
+                ViewBag.CreateError = string.Join(" | ", errors);
+
                 return View(user);
+            }
 
-            await _userService.CreateAsync(user);
+            try
+            {
+                bool result = await _userService.CreateAsync(user);
 
-            TempData["Success"] = "Tạo tài khoản thành công!";
+                if (!result)
+                {
+                    ModelState.AddModelError("", "Không thể lưu tài khoản vào cơ sở dữ liệu.");
+                    return View(user);
+                }
 
-            return RedirectToAction(nameof(Index));
+                TempData["Success"] = "Tạo tài khoản thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                string error = ex.InnerException?.Message ?? ex.Message;
+
+                ModelState.AddModelError("", "Lỗi cơ sở dữ liệu: " + error);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Lỗi: " + ex.Message);
+                return View(user);
+            }
         }
 
         // GET: Sửa tài khoản
@@ -121,6 +153,18 @@ namespace TourisManager.Areas.Admin.Controllers
             if (string.IsNullOrWhiteSpace(id) || id != user.AccountId)
                 return NotFound();
 
+            // Bỏ qua các thuộc tính không được nhập từ form
+            ModelState.Remove(nameof(Account.BankAccounts));
+            ModelState.Remove(nameof(Account.Locations));
+            ModelState.Remove(nameof(Account.Reviews));
+            ModelState.Remove(nameof(Account.Favorites));
+            ModelState.Remove(nameof(Account.SavedFoods));
+            ModelState.Remove(nameof(Account.ReservationServices));
+            ModelState.Remove(nameof(Account.RoomChats));
+            ModelState.Remove(nameof(Account.Orders));
+            ModelState.Remove(nameof(Account.Wallet));
+            ModelState.Remove(nameof(Account.DetailAccount));
+
             if (!ModelState.IsValid)
                 return View(user);
 
@@ -129,13 +173,17 @@ namespace TourisManager.Areas.Admin.Controllers
             if (existingUser == null)
                 return NotFound();
 
-            await _userService.UpdateAsync(id, user);
+            bool result = await _userService.UpdateAsync(id, user);
+
+            if (!result)
+            {
+                ModelState.AddModelError("", "Không thể cập nhật tài khoản.");
+                return View(user);
+            }
 
             TempData["Success"] = "Cập nhật tài khoản thành công!";
-
             return RedirectToAction(nameof(Index));
         }
-
         // GET: Xác nhận xóa tài khoản
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
