@@ -186,8 +186,7 @@ namespace TourisManager.Services
 
             return orders != null && orders.PaymentStatus == true;
         }
-        // Tìm kiếm và trả về đơn hàng đầu tiên có mã bắt đầu bằng chuỗi được cung cấp
-        // Tìm kiếm và trả về đơn hàng đầu tiên có mã bắt đầu bằng chuỗi được cung cấp (không phân biệt hoa/thường)
+
         public async Task<Order?> GetOrderStartsWithAsync(string shortOrderId)
         {
             string lowerId = shortOrderId.ToLower();
@@ -200,7 +199,6 @@ namespace TourisManager.Services
         // Thêm vào FoodService.cs
         public async Task<Order?> CreateOrderFromCartAsync(string accountId, CartCheckoutRequest request)
         {
-            // 1. Khởi tạo Đơn hàng chính (Order)
             var newOrder = new Order
             {
                 OrderId = Guid.NewGuid().ToString(),
@@ -215,14 +213,12 @@ namespace TourisManager.Services
                 OrderDetails = new List<OrderDetail>()
             };
 
-            // 2. Thêm từng món ăn vào danh sách Chi tiết đơn hàng (OrderDetail)
             foreach (var item in request.Items)
             {
                 newOrder.OrderDetails.Add(new OrderDetail
                 {
                     FoodId = item.FoodId,
-                    // Sơ đồ ERD không ghi rõ SizeId trong OrderDetail, nhưng nếu bạn có bổ sung thì gán vào đây
-                    // SizeId = item.SizeId, 
+                   
                     Quantity = item.Quantity,
                     TotalPrice = item.UnitPrice * item.Quantity
                 });
@@ -230,17 +226,53 @@ namespace TourisManager.Services
 
             try
             {
-                // Entity Framework Core sẽ tự động insert cả Order và các OrderDetail liên quan
                 await _db.Orders.AddAsync(newOrder);
                 await _db.SaveChangesAsync();
                 return newOrder;
             }
             catch (Exception ex)
             {
-                // Có thể log lỗi ex.Message ở đây
                 return null;
             }
         }
+
+
+        // Truy vấn, lọc danh sách món ăn theo từ khóa, thể loại và thực hiện phân trang trực tiếp trên cơ sở dữ liệu
+        public async Task<(List<Food> Foods, int TotalPages, int CurrentPage)> GetFilteredAndPagedFoodsAsync(int pageIndex, int pageSize, List<string>? typeIds, string keyword)
+        {
+            var query = _db.Foods
+                .Include(f => f.Location)
+                .Include(f => f.FoodSizes)
+                .Include(f => f.TypeFood)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                string searchStr = keyword.Trim().ToLower();
+                query = query.Where(f => f.Name.ToLower().Contains(searchStr)
+                                      || f.Description.ToLower().Contains(searchStr));
+            }
+
+            if (typeIds != null && typeIds.Any())
+            {
+                query = query.Where(f => typeIds.Contains(f.TypeFoodId));
+            }
+
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            if (pageIndex < 1) pageIndex = 1;
+            if (pageIndex > totalPages && totalPages > 0) pageIndex = totalPages;
+
+            var pagedFoods = await query
+                .OrderByDescending(f => f.FoodId)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (pagedFoods, totalPages, pageIndex);
+        }
+
     }
-    
+
 }
