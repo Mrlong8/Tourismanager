@@ -50,6 +50,12 @@ namespace TourisManager.Areas.Seller.Controllers
                 .Where(o => o.LocationId == location.LocationId && o.OrderStatus == OrderStatus.Completed)
                 .SumAsync(o => (decimal?)o.TotalAmount) ?? 0m;
 
+            var reviews = await _context.Reviews
+                .Where(r => r.LocationId == location.LocationId)
+                .ToListAsync();
+            ViewBag.ReviewCount = reviews.Count;
+            ViewBag.AverageRating = reviews.Count > 0 ? Math.Round(reviews.Average(r => (double)r.Rating), 1) : 0;
+
             return View(location);
         }
 

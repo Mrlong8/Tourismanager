@@ -7,6 +7,8 @@
     int orderCount = ViewBag.OrderCount ?? 0;
     int pendingOrderCount = ViewBag.PendingOrderCount ?? 0;
     decimal revenue = ViewBag.Revenue ?? 0m;
+    int reviewCount = ViewBag.ReviewCount ?? 0;
+    double averageRating = ViewBag.AverageRating ?? 0.0;
 }
 
 @section Styles {
@@ -67,18 +69,23 @@
                                 <div class="w-100">
                                     <h4 class="fw-bold text-dark mb-1">@Model.Name</h4>
                                     <div class="text-secondary small mb-2"><i class="bi bi-geo-alt me-1 text-danger"></i>@Model.Address</div>
-                                    @if (Model.Latitude != 0 && Model.Longitude != 0)
-                                    {
-                                        <span class="badge px-3 py-1 rounded-pill fw-medium small" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;">
-                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>Đã ghim: @Model.Latitude.ToString("F6"), @Model.Longitude.ToString("F6")
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill fw-medium small">
-                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>Chưa ghim vị trí quán
-                                        </span>
-                                    }
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <a asp-area="Seller" asp-controller="Review" asp-action="Index" class="badge px-3 py-1 rounded-pill fw-semibold text-decoration-none shadow-sm" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;" title="Xem chi tiết đánh giá khách hàng">
+                                            <i class="bi bi-star-fill text-warning me-1"></i>@(averageRating > 0 ? averageRating.ToString("0.0") : "5.0") / 5.0 (@reviewCount đánh giá)
+                                        </a>
+                                        @if (Model.Latitude != 0 && Model.Longitude != 0)
+                                        {
+                                            <span class="badge px-3 py-1 rounded-pill fw-medium small" style="background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;">
+                                                <i class="bi bi-geo-alt-fill text-success me-1"></i>Đã ghim vị trí quán
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill fw-medium small">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>Chưa ghim vị trí quán
+                                            </span>
+                                        }
+                                    </div>
                                 </div>
                             </div>
 
@@ -166,6 +173,29 @@
                             </div>
                         </div>
 
+                        <!-- Thẻ Đánh giá thực khách -->
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="p-2.5 rounded-3" style="background-color: #fef3c7; color: #d97706;">
+                                            <i class="bi bi-star-fill fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <span class="text-muted small fw-semibold">Đánh giá thực khách</span>
+                                            <div class="d-flex align-items-baseline gap-2">
+                                                <h4 class="fw-bold mb-0 text-dark">@(averageRating > 0 ? averageRating.ToString("0.0") : "5.0") <span class="fs-6 text-warning">★</span></h4>
+                                                <small class="text-muted">(@reviewCount đánh giá)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a asp-area="Seller" asp-controller="Review" asp-action="Index" class="btn btn-sm rounded-pill px-3 fw-semibold text-white shadow-sm" style="background: linear-gradient(135deg, #ea580c, #f97316);">
+                                        Xem đánh giá <i class="bi bi-chevron-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -174,7 +204,7 @@
             <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mt-2">
                 <h6 class="fw-bold text-dark mb-3"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Thao tác nhanh cho Người bán</h6>
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-lg-3 col-md-6">
                         <a asp-area="Seller" asp-controller="Food" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="p-3 rounded-circle" style="background-color: #fff7ed; color: #ea580c;">
@@ -187,20 +217,33 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-lg-3 col-md-6">
                         <a asp-area="Seller" asp-controller="Order" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
                                     <i class="bi bi-clock-history fs-4"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold">Xử lý đơn đặt hàng</div>
+                                    <div class="fw-bold">Xử lý đơn hàng</div>
                                     <small class="text-muted">Xác nhận và giao món</small>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-lg-3 col-md-6">
+                        <a asp-area="Seller" asp-controller="Review" asp-action="Index" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                                    <i class="bi bi-star-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Đánh giá khách</div>
+                                    <small class="text-muted">@reviewCount phản hồi từ thực khách</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editProfileModal" class="card border text-decoration-none rounded-3 p-3 h-100 text-dark hover-shadow transition">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle">

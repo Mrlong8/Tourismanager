@@ -3,7 +3,7 @@
     ViewData["Title"] = "Trang chủ - Khám phá Ẩm thực & Du lịch";
 }
 
-<!-- Thêm CSS riêng cho trang chủ nếu cần (hoặc dùng chung CSS sẵn có) -->
+<!-- Thêm CSS riêng cho trang chủ -->
 @section Styles {
     <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" />
     <link rel="stylesheet" href="~/lib/leaflet.markercluster/MarkerCluster.css" />
@@ -53,17 +53,17 @@
         }
 
         .restaurant-featured-item:hover {
-            background-color: #f6fbf8;
+            background-color: #fff7ed;
             transform: translateX(3px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 3px 10px rgba(234, 88, 12, 0.08);
             color: inherit;
         }
 
         .restaurant-featured-item:hover .featured-item-title {
-            color: #00a65a !important;
+            color: #ea580c !important;
         }
 
-        /* --- STYLING CHO THANH DANH MỤC QUÁN ĂN (GIỐNG TRANG MAP) --- */
+        /* --- STYLING CHO THANH DANH MỤC QUÁN ĂN (GIỐNG TRANG MAP, ĐỒNG BỘ MÀU CAM) --- */
         .tm-home-category-wrapper {
             position: relative;
         }
@@ -75,7 +75,7 @@
             overflow-x: auto;
             padding: 4px 2px 8px 2px;
             scrollbar-width: thin;
-            scrollbar-color: #b7cfc0 #f0f4f1;
+            scrollbar-color: #fed7aa #fff7ed;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -84,17 +84,17 @@
         }
 
         .tm-home-category-bar::-webkit-scrollbar-track {
-            background: #f0f4f1;
+            background: #fff7ed;
             border-radius: 10px;
         }
 
         .tm-home-category-bar::-webkit-scrollbar-thumb {
-            background: #b7cfc0;
+            background: #fed7aa;
             border-radius: 10px;
         }
 
         .tm-home-category-bar::-webkit-scrollbar-thumb:hover {
-            background: #83ba96;
+            background: #f97316;
         }
 
         .tm-filter-chip {
@@ -104,11 +104,11 @@
             gap: 7px;
             min-height: 36px;
             padding: 6px 14px;
-            border: 1px solid #e0e8df;
+            border: 1px solid #fed7aa;
             border-radius: 22px;
             background: #ffffff;
-            box-shadow: 0 2px 6px rgba(33, 62, 37, 0.08);
-            color: #4a5c50;
+            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.06);
+            color: #4a5568;
             font-size: 13px !important;
             font-weight: 650 !important;
             white-space: nowrap;
@@ -120,17 +120,17 @@
         }
 
         .tm-filter-chip:hover {
-            border-color: #83ba96;
-            background: #f8fbf9;
-            color: #007a48;
+            border-color: #f97316;
+            background: #fff7ed;
+            color: #ea580c;
         }
 
         .tm-filter-chip.active,
         .tm-filter-chip[aria-pressed="true"] {
-            border-color: #007a48 !important;
-            background: #007a48 !important;
+            border-color: #ea580c !important;
+            background: #ea580c !important;
             color: #ffffff !important;
-            box-shadow: 0 3px 10px rgba(0, 122, 72, 0.28);
+            box-shadow: 0 3px 10px rgba(234, 88, 12, 0.28);
         }
 
         .tm-chip-count {
@@ -139,8 +139,8 @@
             justify-content: center;
             padding: 2px 7px;
             border-radius: 12px;
-            background: #eaf2eb;
-            color: #2e6943;
+            background: #ffedd5;
+            color: #c2410c;
             font-size: 11px;
             font-weight: 700;
             line-height: 1.2;
@@ -239,13 +239,13 @@
         }
 
         .tm-badge-highlight {
-            background: #ecfdf5;
-            color: #047857;
+            background: #fff7ed;
+            color: #c2410c;
             font-size: 0.75rem;
             font-weight: 600;
             padding: 2px 8px;
             border-radius: 12px;
-            border: 1px solid #a7f3d0;
+            border: 1px solid #fed7aa;
         }
 
         .tm-stars-row {
@@ -322,13 +322,18 @@
         <div class="d-flex justify-content-center gap-3">
             <a href="#map-section" class="btn btn-warning fw-bold px-4 py-2 rounded-pill text-dark">Khám Phá Bản Đồ</a>
             
-            <!-- Chỉ hiển thị nút Quản lý gian hàng nếu đã đăng nhập tài khoản Chủ quán / Admin -->
-            @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Seller") ||
-            User.IsInRole("Admin")))
+            @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Seller") || User.IsInRole("Admin")))
             {
                 <a asp-area="Seller" asp-controller="Dashboard" asp-action="Index"
                    class="btn btn-banner-seller fw-bold px-4 py-2 rounded-pill">
                     <i class="bi bi-shop me-2"></i> Quản lý gian hàng
+                </a>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Account" asp-action="Signup" asp-route-role="Seller"
+                   class="btn btn-banner-seller fw-bold px-4 py-2 rounded-pill text-decoration-none">
+                    <i class="bi bi-shop me-2"></i> Đăng ký gian hàng
                 </a>
             }
         </div>
@@ -353,8 +358,7 @@
                     {
                         foreach (var area in (IEnumerable<TourisManager.Core.Entities.Area>)ViewBag.Areas)
                         {
-                            <!option value="@area.AreaId" @(area.AreaId == ViewBag.SelectedAreaId ? "selected" : "")>@area.Name
-                            </!option>
+                            <!option value="@area.AreaId" @(area.AreaId == ViewBag.SelectedAreaId ? "selected" : "")>@area.Name</!option>
                         }
                     }
                 </select>
@@ -399,7 +403,8 @@
         <!-- Cột trái: Bản đồ Leaflet -->
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 p-3 h-100 rounded-3">
-                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-map text-danger me-2"></i>Bản đồ tương tác quán ăn
+                <h5 class="fw-bold mb-3 text-dark">
+                    <i class="bi bi-map text-danger me-2"></i>Bản đồ tương tác quán ăn
                 </h5>
                 <!-- Thẻ chứa bản đồ Leaflet -->
                 <div id="map" style="width: 100%; height: 500px; min-height: 500px; display: block;"></div>
@@ -415,7 +420,7 @@
                     </h5>
                     @if (ViewBag.IsFiltering == true && (Model?.Any() == true))
                     {
-                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 small">
+                        <span class="badge bg-warning bg-opacity-25 text-warning-emphasis rounded-pill px-2 py-1 small">
                             @(Model?.Count() ?? 0) quán
                         </span>
                     }
@@ -423,13 +428,12 @@
 
                 @if (ViewBag.IsFiltering == true)
                 {
-                    <div
-                        class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom small flex-wrap gap-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom small flex-wrap gap-1">
                         <span class="text-muted d-flex align-items-center flex-wrap gap-1">
                             <span>Đang lọc:</span>
                             @if (!string.IsNullOrEmpty(ViewBag.SelectedCategory as string))
                             {
-                                <span class="badge bg-success">@ViewBag.SelectedCategory</span>
+                                <span class="badge bg-warning text-dark">@ViewBag.SelectedCategory</span>
                             }
                             @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
                             {
@@ -437,8 +441,7 @@
                             }
                             @if (!string.IsNullOrEmpty(ViewBag.SelectedAreaId as string) && ViewBag.Areas != null)
                             {
-                                var selArea = ((IEnumerable<TourisManager.Core.Entities.Area>)ViewBag.Areas).FirstOrDefault(a =>
-                        a.AreaId == (string)ViewBag.SelectedAreaId);
+                                var selArea = ((IEnumerable<TourisManager.Core.Entities.Area>)ViewBag.Areas).FirstOrDefault(a => a.AreaId == (string)ViewBag.SelectedAreaId);
                                 if (selArea != null)
                                 {
                                     <span class="badge bg-info text-dark">@selArea.Name</span>
@@ -452,7 +455,6 @@
                 }
 
                 <div class="overflow-auto pe-1" style="max-height: 440px;">
-
                     @if (Model?.Any() == true)
                     {
                         @foreach (var item in Model)
@@ -467,378 +469,364 @@
                                          style="width: 72px; height: 72px;" alt="@item.Name">
                                     <div class="flex-grow-1 overflow-hidden">
                                         <h6 class="fw-bold mb-1 text-truncate featured-item-title">@item.Name</h6>
-                                        <p class="text-muted small mb-1 text-truncate">📍 @(string.IsNullOrEmpty(item.Address) ?
-                                                                                                                                                                                                                                                                                        "Chưa cập nhật địa chỉ" : item.Address)</p>
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <span class="badge bg-success bg-opacity-10 text-success small py-1 px-2">Đang mở
-                                                    cửa</span>
-                                                    <span class="text-success small fw-semibold me-2">Xem thông tin <i
-                                                        class="bi bi-chevron-right small"></i></span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            @if (item.Latitude >= 8 && item.Latitude <= 24 && item.Longitude >= 102 && item.Longitude <=
-                                    110)
-                                            {
-                                                <button type="button"
-                                                        class="btn btn-sm btn-outline-success rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0 btn-locate-restaurant"
-                                                        style="width: 32px; height: 32px;"
-                                                        data-lat="@item.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)"
-                                                        data-lng="@item.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)"
-                                                        data-name="@item.Name" data-id="@item.LocationId" title="Xem vị trí quán này trên bản đồ">
-                                                    <i class="bi bi-geo-alt-fill"></i>
-                                                </button>
-                                            }
+                                        <p class="text-muted small mb-1 text-truncate">📍 @(string.IsNullOrEmpty(item.Address) ? "Chưa cập nhật địa chỉ" : item.Address)</p>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <span class="badge bg-warning bg-opacity-25 text-warning-emphasis small py-1 px-2">Đang mở cửa</span>
+                                            <span class="text-warning-emphasis small fw-semibold me-2">Xem thông tin <i class="bi bi-chevron-right small"></i></span>
                                         </div>
-                                    }
-                                }
-                    else
-                                {
-                                    <div class="text-center py-5">
-                                        <i class="bi bi-search text-muted opacity-50 display-6 d-block mb-3"></i>
-                                        <h6 class="fw-semibold text-secondary mb-1">Không tìm thấy quán ăn phù hợp</h6>
-                                        <p class="text-muted small mb-3">Hãy thử tìm kiếm với từ khóa khác hoặc chọn khu vực khác.</p>
-                                        <a href="/" class="btn btn-sm btn-outline-success rounded-pill px-3">
-                                            <i class="bi bi-arrow-counterclockwise me-1"></i>Xem tất cả quán
-                                        </a>
                                     </div>
+                                </a>
+                                @if (item.Latitude >= 8 && item.Latitude <= 24 && item.Longitude >= 102 && item.Longitude <= 110)
+                                {
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-warning text-dark rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0 btn-locate-restaurant"
+                                            style="width: 32px; height: 32px;"
+                                            data-lat="@item.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                            data-lng="@item.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                            data-name="@item.Name" data-id="@item.LocationId" title="Xem vị trí quán này trên bản đồ">
+                                        <i class="bi bi-geo-alt-fill text-danger"></i>
+                                    </button>
                                 }
-
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-search text-muted opacity-50 display-6 d-block mb-3"></i>
+                            <h6 class="fw-semibold text-secondary mb-1">Không tìm thấy quán ăn phù hợp</h6>
+                            <p class="text-muted small mb-3">Hãy thử tìm kiếm với từ khóa khác hoặc chọn khu vực khác.</p>
+                            <a href="/" class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3">
+                                <i class="bi bi-arrow-counterclockwise me-1 text-danger"></i>Xem tất cả quán
+                            </a>
                         </div>
-                    </div>
+                    }
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- 4. MỤC QUÁN ĂN ĐƯỢC ĐÁNH GIÁ CAO (TOP-RATED RESTAURANTS) -->
-                @{
-                    var topRatedList = ViewBag.TopRatedRestaurants as List<TourisManager.Models.ViewModels.TopRatedRestaurantViewModel>
-                                       ?? new List<TourisManager.Models.ViewModels.TopRatedRestaurantViewModel>();
-                }
-                @if (topRatedList.Any())
+    <!-- 4. MỤC QUÁN ĂN ĐƯỢC ĐÁNH GIÁ CAO (TOP-RATED RESTAURANTS) -->
+    @{
+        var topRatedList = ViewBag.TopRatedRestaurants as List<TourisManager.Models.ViewModels.TopRatedRestaurantViewModel>
+                           ?? new List<TourisManager.Models.ViewModels.TopRatedRestaurantViewModel>();
+    }
+    @if (topRatedList.Any())
+    {
+        <div class="tm-top-rated-section mb-5">
+            <!-- Tiêu đề mục -->
+            <div class="d-flex flex-wrap align-items-end justify-content-between mb-4 pb-2 border-bottom">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill small fw-bold text-uppercase tm-section-badge mb-2">
+                        <i class="bi bi-fire text-danger"></i> Đề xuất nổi bật
+                    </div>
+                    <h3 class="fw-bold mb-1 tm-section-title">
+                        <i class="bi bi-star-fill text-warning me-2"></i>Quán Ăn Được Đánh Giá Cao
+                    </h3>
+                    <p class="text-muted mb-0 small">Những điểm đến ẩm thực chất lượng, được đông đảo thực khách và cộng đồng du lịch bình chọn cao nhất</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="#map-section"
+                       class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 py-2 fw-semibold shadow-sm tm-btn-map-shortcut">
+                        <i class="bi bi-map me-1 text-danger"></i>Xem vị trí trên bản đồ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Danh sách dạng lưới 8 quán ăn (Responsive Grid) -->
+            <div class="row g-4">
+                @foreach (var res in topRatedList)
                 {
-                    <div class="tm-top-rated-section mb-5">
-                        <!-- Tiêu đề mục -->
-                        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4 pb-2 border-bottom">
-                            <div>
-                                <div
-                                    class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill small fw-bold text-uppercase tm-section-badge mb-2">
-                                    <i class="bi bi-fire text-danger"></i> Đề xuất nổi bật
+                    <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 tm-top-card position-relative overflow-hidden">
+                            <!-- Khung ảnh quán -->
+                            <div class="tm-top-card-img-wrap position-relative">
+                                <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
+                                   class="d-block overflow-hidden" title="Xem quán @res.Name">
+                                    <img src="@res.ImageUrl" alt="@res.Name" class="w-100 tm-top-card-img"
+                                         onerror="this.onerror=null; this.src='/Image/default.jpg';" />
+                                </a>
+
+                                <!-- Huy hiệu điểm đánh giá (Góc trên phải) -->
+                                <div class="tm-rating-chip position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill shadow-sm">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <span class="fw-bold">@res.Rating.ToString("0.0")</span>
                                 </div>
-                                <h3 class="fw-bold mb-1 tm-section-title">
-                                    <i class="bi bi-star-fill text-warning me-2"></i>Quán Ăn Được Đánh Giá Cao
-                                </h3>
-                                <p class="text-muted mb-0 small">Những điểm đến ẩm thực chất lượng, được đông đảo thực khách và cộng
-                                    đồng du lịch bình chọn cao nhất</p>
+
+                                <!-- Huy hiệu danh mục ẩm thực (Góc trên trái) -->
+                                <div class="tm-cat-chip position-absolute top-0 start-0 m-2 px-2 py-1 rounded-pill shadow-sm">
+                                    <span>@res.CategoryName</span>
                                 </div>
-                                <div class="mt-3 mt-md-0">
-                                    <a href="#map-section"
-                                       class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 py-2 fw-semibold shadow-sm tm-btn-map-shortcut">
-                                        <i class="bi bi-map me-1 text-danger"></i>Xem vị trí trên bản đồ
+                            </div>
+
+                            <!-- Thân thẻ thông tin -->
+                            <div class="card-body p-3 d-flex flex-column">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="badge bg-light text-secondary border small">
+                                        <i class="bi bi-geo-alt me-1 text-danger"></i>@(res.AreaName ?? "Việt Nam")
+                                    </span>
+                                    <span class="tm-badge-highlight small">
+                                        @res.HighlightBadge
+                                    </span>
+                                </div>
+
+                                <h6 class="fw-bold mb-1 tm-card-title text-truncate" title="@res.Name">
+                                    <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
+                                       class="text-decoration-none text-dark">
+                                        @res.Name
+                                    </a>
+                                </h6>
+
+                                <p class="text-muted small mb-2 text-truncate" title="@res.Address">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>@(string.IsNullOrEmpty(res.Address) ? "Chưa cập nhật địa chỉ" : res.Address)
+                                </p>
+
+                                <!-- Dãy sao đánh giá trực quan & số lượng đánh giá -->
+                                <div class="d-flex align-items-center gap-1 mb-2 small">
+                                    <div class="tm-stars-row text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                    </div>
+                                    <span class="text-muted ms-1 small">(@res.ReviewCount đánh giá)</span>
+                                </div>
+
+                                <!-- Chân thẻ: Giá tham khảo & Nút xem chi tiết -->
+                                <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Mức giá tham khảo</div>
+                                        <div class="fw-bold tm-price-tag">@res.PriceRangeDisplay</div>
+                                    </div>
+                                    <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
+                                       class="btn btn-sm btn-outline-warning tm-btn-view rounded-pill px-3 py-1 fw-semibold"
+                                       title="Xem thực đơn và chi tiết quán">
+                                        Xem quán <i class="bi bi-arrow-right-short"></i>
                                     </a>
                                 </div>
                             </div>
-
-                            <!-- Danh sách dạng lưới 8 quán ăn (Responsive Grid) -->
-                            <div class="row g-4">
-                                @foreach (var res in topRatedList)
-                                {
-                                    <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                                        <div class="card h-100 border-0 shadow-sm rounded-4 tm-top-card position-relative overflow-hidden">
-                                            <!-- Khung ảnh quán -->
-                                            <div class="tm-top-card-img-wrap position-relative">
-                                                <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
-                                                   class="d-block overflow-hidden" title="Xem quán @res.Name">
-                                                    <img src="@res.ImageUrl" alt="@res.Name" class="w-100 tm-top-card-img"
-                                                         onerror="this.onerror=null; this.src='/Image/default.jpg';" />
-                                                </a>
-
-                                                <!-- Huy hiệu điểm đánh giá (Góc trên phải) -->
-                                                <div class="tm-rating-chip position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill shadow-sm">
-                                                    <i class="bi bi-star-fill text-warning me-1"></i>
-                                                    <span class="fw-bold">@res.Rating.ToString("0.0")</span>
-                                                </div>
-
-                                                <!-- Huy hiệu danh mục ẩm thực (Góc trên trái) -->
-                                                <div class="tm-cat-chip position-absolute top-0 start-0 m-2 px-2 py-1 rounded-pill shadow-sm">
-                                                    <span>@res.CategoryName</span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Thân thẻ thông tin -->
-                                            <div class="card-body p-3 d-flex flex-column">
-                                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                                    <span class="badge bg-light text-secondary border small">
-                                                        <i class="bi bi-geo-alt me-1 text-danger"></i>@(res.AreaName ?? "Việt Nam")
-                                                    </span>
-                                                    <span class="tm-badge-highlight small">
-                                                        @res.HighlightBadge
-                                                    </span>
-                                                </div>
-
-                                                <h6 class="fw-bold mb-1 tm-card-title text-truncate" title="@res.Name">
-                                                    <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
-                                                       class="text-decoration-none text-dark">
-                                                        @res.Name
-                                                    </a>
-                                                </h6>
-
-                                                <p class="text-muted small mb-2 text-truncate" title="@res.Address">
-                                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>@(string.IsNullOrEmpty(res.Address) ?
-                                                                                                                                                                                                                                                                                                                                              "Đang cập nhật địa chỉ" : res.Address)
-                                                </p>
-
-                                                <!-- Dãy sao đánh giá trực quan & số lượng đánh giá -->
-                                                <div class="d-flex align-items-center gap-1 mb-2 small">
-                                                    <div class="tm-stars-row text-warning">
-                                                        <i class="bi bi-star-fill"></i>
-                                                        <i class="bi bi-star-fill"></i>
-                                                        <i class="bi bi-star-fill"></i>
-                                                        <i class="bi bi-star-fill"></i>
-                                                        <i class="bi bi-star-half"></i>
-                                                    </div>
-                                                    <span class="text-muted ms-1 small">(@res.ReviewCount đánh giá)</span>
-                                                </div>
-
-                                                <!-- Chân thẻ: Giá tham khảo & Nút xem chi tiết -->
-                                                <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
-                                                    <div>
-                                                        <div class="text-muted" style="font-size: 0.72rem;">Mức giá tham khảo</div>
-                                                        <div class="fw-bold tm-price-tag">@res.PriceRangeDisplay</div>
-                                                    </div>
-                                                    <a asp-controller="Location" asp-action="Details" asp-route-id="@res.LocationId"
-                                                       class="btn btn-sm btn-outline-warning tm-btn-view rounded-pill px-3 py-1 fw-semibold"
-                                                       title="Xem thực đơn và chi tiết quán">
-                                                        Xem quán <i class="bi bi-arrow-right-short"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
                         </div>
-                    }
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
-                    <!-- 5. KHU VỰC TIỆN ÍCH KHÁCH DU LỊCH & ĐỒNG HÀNH CHỦ QUÁN -->
-                    <div class="row g-4 mb-4">
-                        <!-- Khối tính năng tiện ích dành cho Khách Du Lịch -->
-                        <div class="col-lg-8">
-                            <div class="card shadow-sm border-0 p-4 rounded-4 h-100 tm-tourist-feature-card">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <h4 class="fw-bold mb-0 text-dark">
-                                        <i class="bi bi-compass-fill text-warning me-2"></i>Dành Cho Khách Du Lịch
-                                    </h4>
-                                    <span
-                                        class="badge bg-warning bg-opacity-25 text-warning-emphasis rounded-pill px-3 py-1 fw-semibold small">
-                                        Hành trình trọn vẹn
-                                    </span>
-                                </div>
-                                <p class="text-muted small mb-3">TourisManager đồng hành cùng bạn khám phá tinh hoa ẩm thực địa phương
-                                    với những tiện ích thông minh và tiện lợi nhất:</p>
-                
-                                    <div class="row g-3 mt-auto">
-                                        <div class="col-md-4 col-sm-12">
-                                            <div class="tm-feature-item h-100">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <span class="badge bg-danger bg-opacity-10 text-danger p-2 rounded-circle">
-                                                        <i class="bi bi-map-fill fs-6"></i>
-                                                    </span>
-                                                    <h6 class="fw-bold mb-0 text-dark small">Bản đồ trực quan</h6>
-                                                </div>
-                                                <p class="text-muted small mb-0">Tìm quán ăn ngon quanh bạn theo bán kính GPS nhanh chóng và
-                                                    chính xác.</p>
-                                                </div>
-                                            </div>
+    <!-- 5. KHU VỰC TIỆN ÍCH KHÁCH DU LỊCH & ĐỒNG HÀNH CHỦ QUÁN -->
+    <div class="row g-4 mb-4">
+        <!-- Khối tính năng tiện ích dành cho Khách Du Lịch -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 p-4 rounded-4 h-100 tm-tourist-feature-card">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h4 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-compass-fill text-warning me-2"></i>Dành Cho Khách Du Lịch
+                    </h4>
+                    <span class="badge bg-warning bg-opacity-25 text-warning-emphasis rounded-pill px-3 py-1 fw-semibold small">
+                        Hành trình trọn vẹn
+                    </span>
+                </div>
+                <p class="text-muted small mb-3">TourisManager đồng hành cùng bạn khám phá tinh hoa ẩm thực địa phương với những tiện ích thông minh và tiện lợi nhất:</p>
 
-                                            <div class="col-md-4 col-sm-12">
-                                                <div class="tm-feature-item h-100">
-                                                    <div class="d-flex align-items-center gap-2 mb-2">
-                                                        <span class="badge bg-success bg-opacity-10 text-success p-2 rounded-circle">
-                                                            <i class="bi bi-journal-text fs-6"></i>
-                                                        </span>
-                                                        <h6 class="fw-bold mb-0 text-dark small">Thực đơn rõ ràng</h6>
-                                                    </div>
-                                                    <p class="text-muted small mb-0">Tham khảo món ăn, hình ảnh và giá niêm yết minh bạch trước
-                                                        khi đến quán.</p>
-                                                    </div>
-                                                </div>
+                <div class="row g-3 mt-auto">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="tm-feature-item h-100">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-danger bg-opacity-10 text-danger p-2 rounded-circle">
+                                    <i class="bi bi-map-fill fs-6"></i>
+                                </span>
+                                <h6 class="fw-bold mb-0 text-dark small">Bản đồ trực quan</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Tìm quán ăn ngon quanh bạn theo bán kính GPS nhanh chóng và chính xác.</p>
+                        </div>
+                    </div>
 
-                                                <div class="col-md-4 col-sm-12">
-                                                    <div class="tm-feature-item h-100">
-                                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                                            <span class="badge bg-warning bg-opacity-10 text-warning-emphasis p-2 rounded-circle">
-                                                                <i class="bi bi-chat-heart-fill fs-6"></i>
-                                                            </span>
-                                                            <h6 class="fw-bold mb-0 text-dark small">Đánh giá thực tế</h6>
-                                                        </div>
-                                                        <p class="text-muted small mb-0">Chia sẻ trải nghiệm và xem phản hồi tin cậy từ cộng đồng du
-                                                            khách.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="tm-feature-item h-100">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning bg-opacity-20 text-warning-emphasis p-2 rounded-circle">
+                                    <i class="bi bi-journal-text fs-6"></i>
+                                </span>
+                                <h6 class="fw-bold mb-0 text-dark small">Thực đơn rõ ràng</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Tham khảo món ăn, hình ảnh và giá niêm yết minh bạch trước khi đến quán.</p>
+                        </div>
+                    </div>
 
-                                        <!-- Phần dành cho Chủ quán quảng bá -->
-                                        <div class="col-lg-4">
-                                            <div class="card shadow-sm border-0 p-4 rounded-4 h-100 tm-seller-banner-card d-flex flex-column">
-                                                <!-- Xử lý hiển thị khối này tùy theo tài khoản -->
-                                                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Seller"))
-                                                {
-                                                    <div class="d-flex align-items-center gap-2 mb-2">
-                                                        <span class="badge bg-warning bg-opacity-25 text-warning-emphasis p-2 rounded-circle">
-                                                            <i class="bi bi-shop fs-5"></i>
-                                                        </span>
-                                                        <h4 class="fw-bold text-dark mb-0">Kênh của bạn</h4>
-                                                    </div>
-                                                    <p class="text-muted small mb-3">Truy cập trang quản trị để cập nhật thực đơn, tiếp nhận đơn đặt bàn và
-                                                        phát triển gian hàng ẩm thực trên hệ thống.</p>
-                                                        <a asp-area="Seller" asp-controller="Dashboard" asp-action="Index"
-                                                           class="btn tm-btn-seller w-100 py-2 mt-auto">
-                                                            <i class="bi bi-speedometer2 me-1"></i>Vào trang quản lý
-                                                        </a>
-                                                    }
+                    <div class="col-md-4 col-sm-12">
+                        <div class="tm-feature-item h-100">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-warning bg-opacity-20 text-warning-emphasis p-2 rounded-circle">
+                                    <i class="bi bi-chat-heart-fill fs-6"></i>
+                                </span>
+                                <h6 class="fw-bold mb-0 text-dark small">Đánh giá thực tế</h6>
+                            </div>
+                            <p class="text-muted small mb-0">Chia sẻ trải nghiệm và xem phản hồi tin cậy từ cộng đồng du khách.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phần dành cho Chủ quán quảng bá -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 p-4 rounded-4 h-100 tm-seller-banner-card d-flex flex-column">
+                <!-- Xử lý hiển thị khối này tùy theo tài khoản -->
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Seller"))
+                {
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-warning bg-opacity-25 text-warning-emphasis p-2 rounded-circle">
+                            <i class="bi bi-shop fs-5"></i>
+                        </span>
+                        <h4 class="fw-bold text-dark mb-0">Kênh của bạn</h4>
+                    </div>
+                    <p class="text-muted small mb-3">Truy cập trang quản trị để cập nhật thực đơn, tiếp nhận đơn đặt bàn và phát triển gian hàng ẩm thực trên hệ thống.</p>
+                    <a asp-area="Seller" asp-controller="Dashboard" asp-action="Index"
+                       class="btn tm-btn-seller w-100 py-2 mt-auto">
+                        <i class="bi bi-speedometer2 me-1"></i>Vào trang quản lý
+                    </a>
+                }
                 else
-                                                    {
-                                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                                            <span class="badge bg-warning bg-opacity-25 text-warning-emphasis p-2 rounded-circle">
-                                                                <i class="bi bi-shop fs-5"></i>
-                                                            </span>
-                                                            <h4 class="fw-bold text-dark mb-0">Bạn là chủ quán ăn?</h4>
-                                                        </div>
-                                                        <p class="text-muted small mb-3">Đăng ký đưa quán của bạn lên bản đồ ẩm thực du lịch, quản lý thực đơn
-                                                            trực tuyến và tiếp cận hàng ngàn du khách mỗi ngày.</p>
-                                                            <a asp-area="" asp-controller="Account" asp-action="Signup" asp-route-role="Seller" class="btn tm-btn-seller w-100 py-2 mt-auto text-decoration-none shadow-sm fw-semibold">
-                                                                <i class="bi bi-plus-circle me-1"></i>Đăng ký gian hàng ngay
-                                                            </a>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                {
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-warning bg-opacity-25 text-warning-emphasis p-2 rounded-circle">
+                            <i class="bi bi-shop fs-5"></i>
+                        </span>
+                        <h4 class="fw-bold text-dark mb-0">Bạn là chủ quán ăn?</h4>
+                    </div>
+                    <p class="text-muted small mb-3">Đăng ký đưa quán của bạn lên bản đồ ẩm thực du lịch, quản lý thực đơn trực tuyến và tiếp cận hàng ngàn du khách mỗi ngày.</p>
+                    <a asp-area="" asp-controller="Account" asp-action="Signup" asp-route-role="Seller"
+                       class="btn tm-btn-seller w-100 py-2 mt-auto text-decoration-none shadow-sm fw-semibold">
+                        <i class="bi bi-plus-circle me-1"></i>Đăng ký gian hàng ngay
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-                                        @section Scripts {
-                                            <script src="~/lib/leaflet/leaflet.js"></script>
-                                            <script src="~/lib/leaflet.markercluster/leaflet.markercluster.js"></script>
+@section Scripts {
+    <script src="~/lib/leaflet/leaflet.js"></script>
+    <script src="~/lib/leaflet.markercluster/leaflet.markercluster.js"></script>
 
-                                            <script>
-                                                document.addEventListener("DOMContentLoaded", function () {
-                                                    var locationsData = @Html.Raw(Json.Serialize(ViewBag.MapLocations ?? (Model != null ? Model.Select(x => new
-                                                        {
-                                                                                                                                                                                                                                                                                                                    name = x.Name,
-                                                                                                                                                                                                                                                                                                                    address = x.Address ?? "Chưa cập nhật địa chỉ",
-                                                                                                                                                                                                                                                                                                                    latitude = x.Latitude,
-                                                                                                                                                                                                                                                                                                                    longitude = x.Longitude,
-                                                                                                                                                                                                                                                                                                                    imageUrl = !string.IsNullOrEmpty(x.ImageUrl) ? x.ImageUrl : "/Image/default.jpg",
-                                                                                                                                                                                                                                                                                                                    locationId = x.LocationId
-                                                        }) : Enumerable.Empty<object>())));
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var locationsData = @Html.Raw(Json.Serialize(ViewBag.MapLocations ?? (Model != null ? Model.Select(x => new
+            {
+                name = x.Name,
+                address = x.Address ?? "Chưa cập nhật địa chỉ",
+                latitude = x.Latitude,
+                longitude = x.Longitude,
+                imageUrl = !string.IsNullOrEmpty(x.ImageUrl) ? x.ImageUrl : "/Image/default.jpg",
+                locationId = x.LocationId
+            }) : Enumerable.Empty<object>())));
 
-                                                    var map = L.map('map').setView([21.0285, 105.8542], 13);
+            var map = L.map('map').setView([21.0285, 105.8542], 13);
 
-                                                    // FIX: Dùng dữ liệu bản đồ của Google Maps để load siêu tốc và không bị lỗi nền xám
-                                                    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                                                        maxZoom: 20,
-                                                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                                                        attribution: 'Map data &copy; Google'
-                                                    }).addTo(map);
+            // FIX: Dùng dữ liệu bản đồ của Google Maps để load siêu tốc và không bị lỗi nền xám
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: 'Map data &copy; Google'
+            }).addTo(map);
 
-                                                    var markers = L.markerClusterGroup();
-                                                    var bounds = [];
-                                                    var markerLookup = {};
+            var markers = L.markerClusterGroup();
+            var bounds = [];
+            var markerLookup = {};
 
-                                                    if (locationsData && locationsData.length > 0) {
-                                                        locationsData.forEach(function (loc) {
-                                                            if (loc.latitude && loc.longitude) {
-                                                                var marker = L.marker([loc.latitude, loc.longitude]);
-                                                                var popupHtml = `
-                                                                                                                                                                                                                                                                                                    <div style="min-width: 190px; max-width: 230px; font-family: inherit;">
-                                                                                                                                                                                                                                                                                                        ${loc.imageUrl ? `<img src="${loc.imageUrl}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;" onerror="this.src='/Image/default.jpg';" />` : ''}
-                                                                                                                                                                                                                                                                                                        <strong style="font-size: 0.95rem; color: #198754; display: block; margin-bottom: 3px;">${loc.name}</strong>
-                                                                                                                                                                                                                                                                                                        <div style="font-size: 0.8rem; color: #6c757d; margin-bottom: 8px;">📍 ${loc.address}</div>
-                                                                                                                                                                                                                                                                                                        ${loc.locationId ? `<a href="/Location/Details/${loc.locationId}" class="btn btn-sm btn-outline-success w-100 py-1" style="font-size: 0.8rem; border-radius: 20px;">Xem chi tiết</a>` : ''}
-                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                `;
-                                                                marker.bindPopup(popupHtml);
-                                                                markers.addLayer(marker);
-                                                                bounds.push([loc.latitude, loc.longitude]);
-                                                                if (loc.locationId) {
-                                                                    markerLookup[loc.locationId] = marker;
-                                                                }
-                                                            }
-                                                        });
+            if (locationsData && locationsData.length > 0) {
+                locationsData.forEach(function (loc) {
+                    if (loc.latitude && loc.longitude) {
+                        var marker = L.marker([loc.latitude, loc.longitude]);
+                        var popupHtml = `
+                            <div style="min-width: 190px; max-width: 230px; font-family: inherit;">
+                                ${loc.imageUrl ? `<img src="${loc.imageUrl}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;" onerror="this.src='/Image/default.jpg';" />` : ''}
+                                <strong style="font-size: 0.95rem; color: #ea580c; display: block; margin-bottom: 3px;">${loc.name}</strong>
+                                <div style="font-size: 0.8rem; color: #6c757d; margin-bottom: 8px;">📍 ${loc.address}</div>
+                                ${loc.locationId ? `<a href="/Location/Details/${loc.locationId}" class="btn btn-sm btn-outline-warning text-dark w-100 py-1" style="font-size: 0.8rem; border-radius: 20px;">Xem chi tiết</a>` : ''}
+                            </div>
+                        `;
+                        marker.bindPopup(popupHtml);
+                        markers.addLayer(marker);
+                        bounds.push([loc.latitude, loc.longitude]);
+                        if (loc.locationId) {
+                            markerLookup[loc.locationId] = marker;
+                        }
+                    }
+                });
 
-                                                        map.addLayer(markers);
+                map.addLayer(markers);
 
-                                                        if (bounds.length === 1) {
-                                                            map.setView(bounds[0], 16);
-                                                        } else if (bounds.length > 1) {
-                                                            map.fitBounds(bounds, { padding: [30, 30] });
-                                                        }
-                                                    }
+                if (bounds.length === 1) {
+                    map.setView(bounds[0], 16);
+                } else if (bounds.length > 1) {
+                    map.fitBounds(bounds, { padding: [30, 30] });
+                }
+            }
 
-                                                    // Tự động cuộn đến khu vực kết quả nếu đang tìm kiếm hoặc lọc
-                                                    @if (ViewBag.IsFiltering == true)
-                                                        {
-                                                            <text>
-                                                                    setTimeout(function () {
-                                                                                                                                                                                                                                                                                                                                            var target = document.getElementById('map-section');
-                                                                    if (target) {
-                                                                        target.scrollIntoView({ behavior: 'smooth' });
-                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                        }, 250);
-                                                            </text>
-                                                    }
+            // Tự động cuộn đến khu vực kết quả nếu đang tìm kiếm hoặc lọc
+            @if (ViewBag.IsFiltering == true)
+            {
+                <text>
+                setTimeout(function () {
+                    var target = document.getElementById('map-section');
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 250);
+                </text>
+            }
 
-                                                                                                                                                                                                                                                                                    // Cuộn ngang danh mục đang chọn vào vị trí trung tâm để người dùng dễ nhìn
-                                                                                                                                                                                                                                                                                    var activeChip = document.querySelector('.tm-home-category-bar .tm-filter-chip.active');
-                                                    if (activeChip) {
-                                                        activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                                                    }
+            // Cuộn ngang danh mục đang chọn vào vị trí trung tâm để người dùng dễ nhìn
+            var activeChip = document.querySelector('.tm-home-category-bar .tm-filter-chip.active');
+            if (activeChip) {
+                activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
 
-                                                    // Bắt sự kiện bấm nút định vị quán trên bản đồ
-                                                    document.querySelectorAll('.btn-locate-restaurant').forEach(function (btn) {
-                                                        btn.addEventListener('click', function (e) {
-                                                            e.preventDefault();
-                                                            e.stopPropagation();
+            // Bắt sự kiện bấm nút định vị quán trên bản đồ
+            document.querySelectorAll('.btn-locate-restaurant').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                                                            var lat = parseFloat(btn.getAttribute('data-lat'));
-                                                            var lng = parseFloat(btn.getAttribute('data-lng'));
-                                                            var id = btn.getAttribute('data-id');
+                    var lat = parseFloat(btn.getAttribute('data-lat'));
+                    var lng = parseFloat(btn.getAttribute('data-lng'));
+                    var id = btn.getAttribute('data-id');
 
-                                                            if (lat && lng && map) {
-                                                                var targetMarker = markerLookup[id];
-                                                                if (targetMarker) {
-                                                                    markers.zoomToShowLayer(targetMarker, function () {
-                                                                        targetMarker.openPopup();
-                                                                    });
-                                                                } else {
-                                                                    map.setView([lat, lng], 17);
-                                                                }
+                    if (lat && lng && map) {
+                        var targetMarker = markerLookup[id];
+                        if (targetMarker) {
+                            markers.zoomToShowLayer(targetMarker, function () {
+                                targetMarker.openPopup();
+                            });
+                        } else {
+                            map.setView([lat, lng], 17);
+                        }
 
-                                                                // Cuộn nhẹ lên bản đồ nếu màn hình nhỏ
-                                                                var mapElem = document.getElementById('map-section');
-                                                                if (mapElem && window.innerWidth < 992) {
-                                                                    mapElem.scrollIntoView({ behavior: 'smooth' });
-                                                                }
-                                                            }
-                                                        });
-                                                    });
-                                                });
+                        // Cuộn nhẹ lên bản đồ nếu màn hình nhỏ
+                        var mapElem = document.getElementById('map-section');
+                        if (mapElem && window.innerWidth < 992) {
+                            mapElem.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        });
 
-                                                // Xử lý chọn / bỏ chọn danh mục quán ăn
-                                                function selectHomeCategory(categoryName) {
-                                                    var input = document.getElementById('homeSearchCategory');
-                                                    if (input) {
-                                                        if (input.value && input.value.trim().toLowerCase() === categoryName.trim().toLowerCase()) {
-                                                            input.value = ''; // Bấm lại vào danh mục đang chọn thì bỏ chọn
-                                                        } else {
-                                                            input.value = categoryName;
-                                                        }
-                                                        var form = document.getElementById('homeSearchForm');
-                                                        if (form) {
-                                                            form.submit();
-                                                        }
-                                                    }
-                                                }
-                                            </script>
-                                        }
+        // Xử lý chọn / bỏ chọn danh mục quán ăn
+        function selectHomeCategory(categoryName) {
+            var input = document.getElementById('homeSearchCategory');
+            if (input) {
+                if (input.value && input.value.trim().toLowerCase() === categoryName.trim().toLowerCase()) {
+                    input.value = ''; // Bấm lại vào danh mục đang chọn thì bỏ chọn
+                } else {
+                    input.value = categoryName;
+                }
+                var form = document.getElementById('homeSearchForm');
+                if (form) {
+                    form.submit();
+                }
+            }
+        }
+    </script>
+}
