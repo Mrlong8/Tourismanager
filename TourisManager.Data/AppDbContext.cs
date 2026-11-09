@@ -94,7 +94,7 @@ namespace TourisManager.Data
             // =========================================
             modelBuilder.Entity<Wallet>()
                 .HasOne(x => x.Account)
-                .WithOne()
+                .WithOne(x => x.Wallet)
                 .HasForeignKey<Wallet>(x => x.AccountId);
 
             modelBuilder.Entity<Wallet>()
@@ -115,7 +115,7 @@ namespace TourisManager.Data
             // =========================================
             modelBuilder.Entity<WalletTransaction>()
                .HasOne(x => x.Order)
-               .WithMany()
+               .WithMany( x => x.WalletTransactions)
                .HasForeignKey(x => x.OrderId)
                .IsRequired(false)
                .OnDelete(DeleteBehavior.SetNull);
@@ -125,7 +125,7 @@ namespace TourisManager.Data
             // =========================================
             modelBuilder.Entity<BankAccount>()
                 .HasOne(x => x.Account)
-                .WithMany()
+                .WithMany(x => x.BankAccounts)
                 .HasForeignKey(x => x.AccountId);
 
             // =========================================

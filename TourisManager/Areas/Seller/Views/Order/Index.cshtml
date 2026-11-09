@@ -30,15 +30,15 @@
         gap: 6px;
     }
     .filter-tab:hover {
-        background-color: #f8f9fa;
-        color: #00a65a;
-        border-color: #00a65a;
+        background-color: #fff7ed;
+        color: #ea580c;
+        border-color: #ea580c;
     }
     .filter-tab.active {
-        background-color: #00a65a;
+        background: linear-gradient(135deg, #ea580c, #f97316);
         color: #ffffff !important;
-        border-color: #00a65a;
-        box-shadow: 0 4px 10px rgba(0, 166, 90, 0.25);
+        border-color: #ea580c;
+        box-shadow: 0 4px 10px rgba(234, 88, 12, 0.25);
     }
     .filter-tab .badge {
         font-size: 0.75rem;
@@ -48,7 +48,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         color: #6c757d;
-        background-color: #f8fbf9;
+        background-color: #fffbf6;
     }
 </style>
 
@@ -82,7 +82,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
                     <h2 class="fw-bold text-dark mb-1">
-                        <i class="bi bi-receipt text-success me-2"></i>Quản lý đơn đặt hàng
+                        <i class="bi bi-receipt me-2" style="color: #ea580c;"></i>Quản lý đơn đặt hàng
                     </h2>
                     <p class="text-muted small mb-0">Tiếp nhận, xử lý và cập nhật tiến độ giao các món ăn của quán <strong>@(location?.Name ?? "")</strong></p>
                 </div>
@@ -147,7 +147,7 @@
                 </div>
 
                 <div class="col-xl-3 col-md-8 col-sm-12">
-                    <div class="card border-0 shadow-sm rounded-4 p-3 text-white h-100" style="background: linear-gradient(135deg, #107c41, #166534);">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 text-white h-100" style="background: linear-gradient(135deg, #ea580c, #f97316);">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <small class="text-white-50 fw-semibold text-uppercase">Doanh thu quán</small>
@@ -164,19 +164,19 @@
             <!-- Thanh điều hướng Tab lọc trạng thái đơn -->
             <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
                 <a asp-action="Index" asp-route-search="@Model.SearchTerm" class="filter-tab @(!Model.SelectedStatus.HasValue ? "active" : "")">
-                    Tất cả <span class="badge @(!Model.SelectedStatus.HasValue ? "bg-white text-success" : "bg-light text-dark")">@Model.TotalOrders</span>
+                    Tất cả <span class="badge @(!Model.SelectedStatus.HasValue ? "bg-white text-dark" : "bg-light text-dark")">@Model.TotalOrders</span>
                 </a>
                 <a asp-action="Index" asp-route-status="@OrderStatus.Pending" asp-route-search="@Model.SearchTerm" class="filter-tab @(Model.SelectedStatus == OrderStatus.Pending ? "active" : "")">
-                    <i class="bi bi-hourglass-split"></i> Chờ xác nhận <span class="badge @(Model.SelectedStatus == OrderStatus.Pending ? "bg-white text-success" : "bg-warning bg-opacity-25 text-dark")">@Model.PendingOrders</span>
+                    <i class="bi bi-hourglass-split"></i> Chờ xác nhận <span class="badge @(Model.SelectedStatus == OrderStatus.Pending ? "bg-white text-dark" : "bg-warning bg-opacity-25 text-dark")">@Model.PendingOrders</span>
                 </a>
                 <a asp-action="Index" asp-route-status="@OrderStatus.Shipping" asp-route-search="@Model.SearchTerm" class="filter-tab @(Model.SelectedStatus == OrderStatus.Shipping ? "active" : "")">
-                    <i class="bi bi-truck"></i> Đang giao <span class="badge @(Model.SelectedStatus == OrderStatus.Shipping ? "bg-white text-success" : "bg-primary bg-opacity-25 text-primary")">@Model.ShippingOrders</span>
+                    <i class="bi bi-truck"></i> Đang giao <span class="badge @(Model.SelectedStatus == OrderStatus.Shipping ? "bg-white text-dark" : "bg-primary bg-opacity-25 text-primary")">@Model.ShippingOrders</span>
                 </a>
                 <a asp-action="Index" asp-route-status="@OrderStatus.Completed" asp-route-search="@Model.SearchTerm" class="filter-tab @(Model.SelectedStatus == OrderStatus.Completed ? "active" : "")">
-                    <i class="bi bi-check-circle"></i> Đã hoàn thành <span class="badge @(Model.SelectedStatus == OrderStatus.Completed ? "bg-white text-success" : "bg-success bg-opacity-25 text-success")">@Model.CompletedOrders</span>
+                    <i class="bi bi-check-circle"></i> Đã hoàn thành <span class="badge @(Model.SelectedStatus == OrderStatus.Completed ? "bg-white text-dark" : "bg-success bg-opacity-25 text-success")">@Model.CompletedOrders</span>
                 </a>
                 <a asp-action="Index" asp-route-status="@OrderStatus.Cancelled" asp-route-search="@Model.SearchTerm" class="filter-tab @(Model.SelectedStatus == OrderStatus.Cancelled ? "active" : "")">
-                    <i class="bi bi-x-circle"></i> Đã hủy <span class="badge @(Model.SelectedStatus == OrderStatus.Cancelled ? "bg-white text-success" : "bg-secondary bg-opacity-25 text-dark")">@Model.CancelledOrders</span>
+                    <i class="bi bi-x-circle"></i> Đã hủy <span class="badge @(Model.SelectedStatus == OrderStatus.Cancelled ? "bg-white text-dark" : "bg-secondary bg-opacity-25 text-dark")">@Model.CancelledOrders</span>
                 </a>
             </div>
 
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-success rounded-pill px-3 flex-grow-1 shadow-sm">
+                        <button type="submit" class="btn rounded-pill px-3 flex-grow-1 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                             <i class="bi bi-search me-1"></i> Tìm đơn
                         </button>
                         @if (!string.IsNullOrEmpty(Model.SearchTerm))
@@ -220,12 +220,12 @@
                             <!-- Header của thẻ đơn -->
                             <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-success bg-opacity-10 text-success p-2 rounded-circle">
+                                    <div class="p-2 rounded-circle" style="background-color: #fff7ed; color: #ea580c;">
                                         <i class="bi bi-bag-check-fill fs-5"></i>
                                     </div>
                                     <div>
                                         <h6 class="fw-bold text-dark mb-0">
-                                            Mã đơn: <span class="text-success">#@shortOrderId</span>
+                                            Mã đơn: <span style="color: #ea580c;">#@shortOrderId</span>
                                             <span class="text-muted fw-normal small">(@order.OrderId)</span>
                                         </h6>
                                         <small class="text-muted">
@@ -365,7 +365,7 @@
                                             <input type="hidden" name="orderId" value="@order.OrderId" />
                                             <input type="hidden" name="newStatus" value="@OrderStatus.Shipping" />
                                             <input type="hidden" name="currentFilter" value="@Model.SelectedStatus" />
-                                            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                                            <button type="submit" class="btn rounded-pill px-4 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                                                 <i class="bi bi-check-lg me-1"></i> Xác nhận & Giao hàng
                                             </button>
                                         </form>
@@ -387,7 +387,7 @@
                                             <input type="hidden" name="orderId" value="@order.OrderId" />
                                             <input type="hidden" name="newStatus" value="@OrderStatus.Completed" />
                                             <input type="hidden" name="currentFilter" value="@Model.SelectedStatus" />
-                                            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold">
+                                            <button type="submit" class="btn rounded-pill px-4 shadow-sm fw-semibold text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                                                 <i class="bi bi-check2-circle me-1"></i> Giao thành công
                                             </button>
                                         </form>

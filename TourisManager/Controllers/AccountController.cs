@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
@@ -225,17 +225,26 @@ namespace TourisManager.Controllers
 
         [HttpGet]
         [Route("signup")]
+        [Route("signup-seller")]
+        [Route("/signup-seller")]
         public IActionResult Signup(string role = "User") // Nhận tham số từ URL, mặc định là User
         {
+            if (Request.Path.Value?.Contains("seller", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                role = "Seller";
+            }
+
             var model = new SignupViewModel
             {
-                Role = role // Gán vai trò ngay từ lúc mở form
+                Role = role // Gán vai trò ngay từ lúc mở form (User hoặc Seller)
             };
             return View(model);
         }
 
         [HttpPost]
         [Route("signup")]
+        [Route("signup-seller")]
+        [Route("/signup-seller")]
         public async Task<IActionResult> Signup(SignupViewModel model)
         {
             if (!ModelState.IsValid)

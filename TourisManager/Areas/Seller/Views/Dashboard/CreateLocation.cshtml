@@ -1,8 +1,8 @@
-﻿@model TourisManager.Core.Entities.Location
+@model TourisManager.Core.Entities.Location
 
 @{
     ViewData["Title"] = "Khởi tạo gian hàng";
-    Layout = null; // Tắt Layout chung nhưng tự nhúng CSS bên dưới
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -11,52 +11,114 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TourisManager</title>
-    <!-- Nhúng trực tiếp Bootstrap 5 và Icons vào đây để không bị mất giao diện -->
+    <!-- Nhúng Bootstrap 5 và Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" asp-append-version="true" />
 </head>
 <body class="bg-light">
 
-    <div class="container mt-5">
+    <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow border-0 rounded-4">
-                    <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
-                        <h4 class="mb-0"><i class="bi bi-shop me-2"></i>Thông tin nhà hàng của bạn</h4>
+            <div class="col-lg-9 col-md-10">
+                <div class="card shadow border-0 rounded-4 overflow-hidden">
+                    <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #ea580c, #f97316);">
+                        <h4 class="mb-1 fw-bold"><i class="bi bi-shop me-2"></i>Thông tin gian hàng của bạn</h4>
+                        <small class="text-white-50">Cung cấp tên quán, địa chỉ và ghim vị trí để thực khách dễ dàng tìm thấy bạn</small>
                     </div>
                     <div class="card-body p-4 p-md-5">
-                        <div class="alert alert-warning border-0 shadow-sm mb-4">
+                        <div class="alert alert-warning border-0 shadow-sm mb-4 rounded-3">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            Chào mừng bạn! Vui lòng cung cấp thông tin gian hàng/nhà hàng để bắt đầu kinh doanh.
+                            Chào mừng bạn! Vui lòng hoàn tất thông tin và ghim vị trí quán ăn để bắt đầu kinh doanh trên SuperFood.
                         </div>
 
-                        <form asp-action="CreateLocation" method="post">
+                        <form asp-action="CreateLocation" method="post" id="createLocationForm" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
                             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <input type="hidden" name="Latitude" id="createStoreLat" value="@(Model.Latitude != 0 ? Model.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture) : "21.028511")" />
+                            <input type="hidden" name="Longitude" id="createStoreLng" value="@(Model.Longitude != 0 ? Model.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture) : "105.854167")" />
 
                             <!-- Tên nhà hàng -->
                             <div class="mb-3">
                                 <label asp-for="Name" class="form-label fw-bold">Tên nhà hàng / Quán ăn <span class="text-danger">*</span></label>
-                                <input asp-for="Name" class="form-control form-control-lg" placeholder="Ví dụ: Phở bò gia truyền..." required />
+                                <input asp-for="Name" class="form-control form-control-lg rounded-3" placeholder="Ví dụ: Phở bò gia truyền, Bún chả Hà Nội..." required />
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
 
-                            <!-- Địa chỉ -->
+                            <!-- Hình ảnh đại diện Quán ăn -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Hình ảnh Quán ăn</label>
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="d-flex flex-column flex-sm-row align-items-center gap-3">
+                                        <div class="position-relative flex-shrink-0" style="width: 120px; height: 120px;">
+                                            <img id="createStoreImgPreview" 
+                                                 src="/Image/Upload/avatadefault.jpg" 
+                                                 onerror="this.onerror=null; this.src='/Image/Upload/avatadefault.jpg';"
+                                                 class="w-100 h-100 rounded-3 object-fit-cover border shadow-sm" 
+                                                 alt="Xem trước ảnh quán" />
+                                        </div>
+                                        <div class="flex-grow-1 w-100">
+                                            <label class="form-label fw-semibold small text-muted mb-1">
+                                                <i class="bi bi-cloud-arrow-up me-1" style="color: #ea580c;"></i>Tải ảnh quán từ thiết bị
+                                            </label>
+                                            <input type="file" name="imageFile" id="createStoreImgInput" class="form-control rounded-3 mb-2" accept="image/*" />
+                                            <input asp-for="ImageUrl" id="createStoreImageUrl" class="form-control rounded-3 form-control-sm" placeholder="Hoặc dán URL hình ảnh quán ăn..." />
+                                            <div class="form-text text-muted small mt-1" style="font-size: 0.8rem;">
+                                                <i class="bi bi-info-circle me-1"></i>Hỗ trợ JPG, PNG, WEBP. Ảnh quán giúp khách hàng dễ nhận diện thương hiệu của bạn.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Địa chỉ chi tiết kèm công cụ tìm kiếm và định vị GPS -->
                             <div class="mb-3">
                                 <label asp-for="Address" class="form-label fw-bold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
-                                <input asp-for="Address" class="form-control form-control-lg" placeholder="Số nhà, Tên đường, Quận/Huyện..." required />
+                                <div class="input-group">
+                                    <input asp-for="Address" id="createStoreAddress" class="form-control form-control-lg rounded-start-3" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." required />
+                                    <button type="button" class="btn px-3 fw-semibold" style="border: 1px solid #ea580c; color: #ea580c;" id="btnSearchCreateAddress" title="Tìm và nhảy đến vị trí trên bản đồ">
+                                        <i class="bi bi-search me-1"></i> Tìm vị trí
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary px-3" id="btnGetCreateLocation" title="Lấy tọa độ vị trí hiện tại của thiết bị">
+                                        <i class="bi bi-crosshair me-1"></i> Định vị tôi
+                                    </button>
+                                </div>
                                 <span asp-validation-for="Address" class="text-danger small"></span>
+                                <div id="createSearchStatus" class="small text-muted mt-1 d-none">
+                                    <span class="spinner-border spinner-border-sm me-1" style="color: #ea580c;"></span>
+                                    <span id="createSearchText">Đang tìm vị trí trên bản đồ...</span>
+                                </div>
+                            </div>
+
+                            <!-- KHUNG BẢN ĐỒ GHIM VỊ TRÍ -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold mb-0" style="color: #ea580c;">
+                                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> Ghim vị trí quán trên bản đồ
+                                    </label>
+                                    <span class="badge rounded-pill px-3 py-1 fw-semibold small" style="background-color: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;" id="createCoordsDisplay">
+                                        Tọa độ: 21.028511, 105.854167
+                                    </span>
+                                </div>
+                                <small class="text-muted d-block mb-2">
+                                    <i class="bi bi-hand-index-thumb text-primary me-1"></i> 
+                                    Nhấp trực tiếp lên bản đồ hoặc kéo ghim màu <i class="bi bi-geo-alt-fill text-primary"></i> để ghim chính xác vị trí quán.
+                                </small>
+                                <div id="createStoreMap" style="height: 320px; width: 100%; border-radius: 12px; z-index: 1;" class="border shadow-sm"></div>
                             </div>
 
                             <!-- Mô tả -->
                             <div class="mb-4">
-                                <label asp-for="Description" class="form-label fw-bold">Mô tả ngắn</label>
-                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Giới thiệu vài nét đặc sắc về quán của bạn..."></textarea>
+                                <label asp-for="Description" class="form-label fw-bold">Mô tả ngắn về quán</label>
+                                <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Giới thiệu vài nét đặc sắc về các món ăn, không gian quán của bạn..."></textarea>
                                 <span asp-validation-for="Description" class="text-danger small"></span>
                             </div>
 
                             <!-- Nút Submit -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm">
+                            <div class="d-grid pt-2">
+                                <button type="submit" class="btn btn-lg fw-bold py-3 rounded-pill shadow-sm text-white" style="background: linear-gradient(135deg, #ea580c, #f97316); border: none;">
                                     <i class="bi bi-check-circle-fill me-2"></i> Hoàn tất & Vào trang quản lý
                                 </button>
                             </div>
@@ -67,7 +129,212 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
+
+    <script>
+        let createMap, createMarker;
+        let reverseTimeout = null;
+
+        const defaultLat = parseFloat($('#createStoreLat').val()) || 21.028511;
+        const defaultLng = parseFloat($('#createStoreLng').val()) || 105.854167;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initCreateMap(defaultLat, defaultLng);
+        });
+
+        function initCreateMap(lat, lng) {
+            if (typeof L === 'undefined') return;
+
+            if (L.Icon && L.Icon.Default) {
+                delete L.Icon.Default.prototype._getIconUrl;
+                L.Icon.Default.mergeOptions({
+                    iconRetinaUrl: '/lib/leaflet/images/marker-icon-2x.png',
+                    iconUrl: '/lib/leaflet/images/marker-icon.png',
+                    shadowUrl: '/lib/leaflet/images/marker-shadow.png'
+                });
+            }
+
+            createMap = L.map('createStoreMap', { zoomControl: true, scrollWheelZoom: true })
+                .setView([lat, lng], 14);
+
+            const googleLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps'
+            });
+
+            const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            });
+
+            googleLayer.on('tileerror', function () {
+                createMap.removeLayer(googleLayer);
+                osmLayer.addTo(createMap);
+            });
+            googleLayer.addTo(createMap);
+
+            createMarker = L.marker([lat, lng], { draggable: true }).addTo(createMap);
+            createMarker.bindPopup('<strong><i class="bi bi-geo-alt-fill text-danger"></i> Vị trí quán của bạn</strong><br/><small class="text-muted">Kéo ghim hoặc bấm vào bản đồ để đổi vị trí</small>').openPopup();
+
+            createMarker.on('dragend', function () {
+                const pos = createMarker.getLatLng();
+                updateCreateCoords(pos.lat, pos.lng, true);
+            });
+
+            createMap.on('click', function (e) {
+                createMarker.setLatLng(e.latlng);
+                updateCreateCoords(e.latlng.lat, e.latlng.lng, true);
+                createMarker.openPopup();
+            });
+
+            setTimeout(function () {
+                createMap.invalidateSize();
+            }, 300);
+        }
+
+        function updateCreateCoords(lat, lng, fetchAddress) {
+            $('#createStoreLat').val(lat.toFixed(6));
+            $('#createStoreLng').val(lng.toFixed(6));
+            $('#createCoordsDisplay').html('<i class="bi bi-check-circle-fill me-1" style="color: #ea580c;"></i>Tọa độ: ' + lat.toFixed(6) + ', ' + lng.toFixed(6));
+
+            if (fetchAddress) {
+                clearTimeout(reverseTimeout);
+                reverseTimeout = setTimeout(function () {
+                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&accept-language=vi&lat=${lat}&lon=${lng}`;
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.display_name) {
+                                const addrInput = $('#createStoreAddress');
+                                if (!addrInput.val() || addrInput.val().trim() === '') {
+                                    addrInput.val(data.display_name);
+                                }
+                            }
+                        })
+                        .catch(err => console.warn(err));
+                }, 400);
+            }
+        }
+
+        $('#btnSearchCreateAddress').on('click', function () {
+            searchCreateAddress();
+        });
+
+        $('#createStoreAddress').on('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchCreateAddress();
+            }
+        });
+
+        function searchCreateAddress() {
+            const query = $('#createStoreAddress').val().trim();
+            if (!query) {
+                alert('Vui lòng nhập địa chỉ cần tìm kiếm!');
+                return;
+            }
+
+            const statusDiv = $('#createSearchStatus');
+            const statusText = $('#createSearchText');
+            statusDiv.removeClass('d-none');
+            statusText.text('Đang tìm vị trí: ' + query + '...');
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&accept-language=vi&countrycodes=vn&limit=1&q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(results => {
+                    statusDiv.addClass('d-none');
+                    if (results && results.length > 0) {
+                        const lat = parseFloat(results[0].lat);
+                        const lng = parseFloat(results[0].lon);
+
+                        if (createMap && createMarker) {
+                            createMap.setView([lat, lng], 17);
+                            createMarker.setLatLng([lat, lng]);
+                            createMarker.bindPopup('<strong>' + (results[0].display_name || query) + '</strong>').openPopup();
+                        }
+                        updateCreateCoords(lat, lng, false);
+                    } else {
+                        // Tìm Photon
+                        fetch(`https://photon.komoot.io/api/?limit=1&lat=21.0285&lon=105.8048&q=${encodeURIComponent(query)}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                const feat = data && data.features && data.features[0];
+                                if (feat && feat.geometry && feat.geometry.coordinates) {
+                                    const lng = feat.geometry.coordinates[0];
+                                    const lat = feat.geometry.coordinates[1];
+                                    if (createMap && createMarker) {
+                                        createMap.setView([lat, lng], 17);
+                                        createMarker.setLatLng([lat, lng]);
+                                        createMarker.bindPopup('<strong>' + query + '</strong>').openPopup();
+                                    }
+                                    updateCreateCoords(lat, lng, false);
+                                } else {
+                                    alert('Không tìm thấy vị trí. Vui lòng thử từ khóa ngắn gọn hơn hoặc bấm trực tiếp trên bản đồ.');
+                                }
+                            })
+                            .catch(() => alert('Không tìm thấy vị trí. Vui lòng bấm trực tiếp trên bản đồ.'));
+                    }
+                })
+                .catch(err => {
+                    statusDiv.addClass('d-none');
+                    console.warn(err);
+                });
+        }
+
+        $('#btnGetCreateLocation').on('click', function () {
+            if (!navigator.geolocation) {
+                alert('Trình duyệt không hỗ trợ định vị GPS.');
+                return;
+            }
+
+            const btn = $(this);
+            const originalHtml = btn.html();
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Đang định vị...');
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    btn.prop('disabled', false).html(originalHtml);
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    if (createMap && createMarker) {
+                        createMap.setView([lat, lng], 17);
+                        createMarker.setLatLng([lat, lng]);
+                        createMarker.bindPopup('<strong><i class="bi bi-geo-alt-fill text-primary"></i> Vị trí GPS của bạn</strong>').openPopup();
+                    }
+                    updateCreateCoords(lat, lng, true);
+                },
+                function (error) {
+                    btn.prop('disabled', false).html(originalHtml);
+                    alert('Không thể lấy vị trí GPS. Vui lòng cấp quyền vị trí trên trình duyệt hoặc ghim vị trí trên bản đồ.');
+                },
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+            );
+        });
+
+        // Xem trước ảnh quán khi chọn file từ máy tính
+        $('#createStoreImgInput').on('change', function () {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#createStoreImgPreview').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Xem trước ảnh quán khi dán URL
+        $('#createStoreImageUrl').on('input', function () {
+            var url = $(this).val().trim();
+            if (url) {
+                $('#createStoreImgPreview').attr('src', url);
+            }
+        });
+    </script>
 </body>
 </html>

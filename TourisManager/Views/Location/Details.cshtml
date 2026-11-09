@@ -244,7 +244,8 @@
 </div>
 <a id="mobile-cart" class="ld-mobile-cart" href="#restaurant-cart" hidden><span>Giỏ món · <span id="mobile-cart-count">0</span> món</span><strong id="mobile-cart-total">0 đ</strong><span aria-hidden="true">↑</span></a>
 </div>
-<script type="application/json" id="restaurant-menu-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MenuGroups.SelectMany(g => g.Items).Where(i => i.CanOrder).Select(i => new { id = i.Id, name = i.Name, price = i.Price, unit = i.Unit, imageUrl = Url.Content(i.ImageUrl) })))</script>
+@* <script type="application/json" id="restaurant-menu-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MenuGroups.SelectMany(g => g.Items).Where(i => i.CanOrder).Select(i => new { id = i.Id, name = i.Name, price = i.Price, unit = i.Unit, imageUrl = Url.Content(i.ImageUrl) })))</script> *@
+<script type="application/json" id="restaurant-menu-data">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MenuGroups.SelectMany(g => g.Items).Where(i => i.CanOrder).Select(i => new { id = i.Id, foodId = i.FoodId, name = i.Name, price = i.Price, unit = i.Unit, imageUrl = Url.Content(i.ImageUrl) })))</script>
 @section Scripts {
     <script src="~/js/location/details.js" asp-append-version="true"></script>
     <script src="~/js/location/cart.js" asp-append-version="true"></script>

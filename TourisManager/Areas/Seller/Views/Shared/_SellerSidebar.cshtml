@@ -4,7 +4,7 @@
 }
 
 <style>
-    /* CSS cho Sidebar phong cách nền trắng, gạch chân xanh thương hiệu */
+    /* CSS cho Sidebar Kênh Người Bán đồng bộ màu cam thương hiệu */
     .seller-sidebar { 
         background-color: #ffffff; 
         border-right: 1px solid #e0e0e0;
@@ -15,21 +15,21 @@
         padding: 12px 15px; 
         font-weight: 500; 
         transition: 0.2s all ease;
-        border-bottom: 2px solid transparent; /* Chuẩn bị sẵn viền dưới trong suốt */
+        border-bottom: 2px solid transparent;
         border-radius: 0; 
         margin-bottom: 5px;
         display: flex;
         align-items: center;
     }
     .seller-sidebar .nav-link:hover { 
-        color: #00a65a; /* Đổi màu chữ xanh khi di chuột */
-        background-color: #f8fbf9;
+        color: #ea580c; 
+        background-color: #fff7ed;
     }
     .seller-sidebar .nav-link.active { 
-        color: #00a65a; 
-        border-bottom: 2px solid #00a65a; /* Hiệu ứng gạch chân màu xanh khi active */
+        color: #ea580c; 
+        border-bottom: 2px solid #ea580c; 
         font-weight: bold;
-        background-color: #f4faf6;
+        background-color: #fff7ed;
     }
     .seller-sidebar .nav-link i { 
         margin-right: 10px; 
@@ -37,11 +37,23 @@
         text-align: center; 
         font-size: 1.15rem;
     }
+    .btn-seller-return-home {
+        border: 1px solid #ea580c;
+        color: #ea580c;
+        background: transparent;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    .btn-seller-return-home:hover {
+        background-color: #ea580c;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+    }
 </style>
 
 <div class="seller-sidebar p-3 d-flex flex-column">
-    <h4 class="text-success text-center fw-bold mb-4 mt-2">
-        Kênh Người Bán
+    <h4 class="text-center fw-bold mb-4 mt-2" style="color: #ea580c;">
+        <i class="bi bi-shop me-2"></i>Kênh Người Bán
     </h4>
     <ul class="nav flex-column mb-auto">
         <li class="nav-item">
@@ -77,9 +89,8 @@
     </ul>
     <hr class="text-secondary opacity-25">
     <div class="text-center mt-2">
-        <a href="/" class="btn btn-outline-success w-100">
+        <a href="/" class="btn btn-seller-return-home w-100 rounded-pill py-2">
             <i class="bi bi-box-arrow-left me-2"></i> Trở về Trang chủ
         </a>
     </div>
 </div>
-

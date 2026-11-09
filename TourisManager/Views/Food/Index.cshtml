@@ -22,9 +22,22 @@
 
 @section Scripts {
     <script>
-        // Mảng lưu danh sách các loại món được chọn (hỗ trợ lọc nhiều)
         var selectedTypeIds = [];
         var currentPage = 1;
+
+        var currentSearchKeyword = "";
+        var searchTimeout = null;
+
+        // tìm kiếm
+        $(document).on('input', '#foodSearchInput', function () {
+            clearTimeout(searchTimeout); 
+            currentSearchKeyword = $(this).val().trim();
+
+            searchTimeout = setTimeout(function () {
+                currentPage = 1; // Reset về trang 1 khi tìm kiếm mới
+                loadFoods(1);
+            }, 500);
+        });
 
         // 1. Click vào từng thẻ lọc loại món
         $(document).on('click', '.btn-food-filter-chip', function (e) {
@@ -68,6 +81,10 @@
             $('.btn-food-filter-chip').removeClass('active');
             $('.btn-food-filter-chip[data-id=""]').addClass('active');
             $(this).hide();
+
+            $('#foodSearchInput').val('');
+            currentSearchKeyword = "";
+
             currentPage = 1;
             loadFoods(1);
         });
@@ -83,10 +100,11 @@
         });
 
         // Hàm gọi AJAX tải dữ liệu
+              // Hàm gọi AJAX tải dữ liệu thực đơn mượt mà, không hiển thị alert nếu gặp lỗi
         function loadFoods(pageIndex) {
-            // Chuẩn bị dữ liệu gửi đi
             var requestData = {
-                pageIndex: pageIndex
+                pageIndex: pageIndex,
+                keyword: currentSearchKeyword
             };
 
             if (selectedTypeIds.length > 0) {
@@ -94,28 +112,25 @@
             }
 
             $.ajax({
-                url: '@Url.Action("FilterFoodsByType", "Food")',
+                url: '/Food/FilterFoodsByType',
                 type: 'GET',
-                traditional: true, // Cho phép truyền mảng typeIds lên action của ASP.NET Core MVC
+                traditional: true,
                 data: requestData,
                 success: function (html) {
                     $('#food-container').html(html);
-                    // Cuộn danh sách lên đầu
                     $('.food-scroll-container').scrollTop(0);
                 },
-                error: function () {
-                    alert('Có lỗi xảy ra khi tải dữ liệu thực đơn.');
+                error: function (xhr) {
+                    console.log("Lỗi tải dữ liệu: ", xhr.responseText);
                 }
             });
-        }   
-        // hàm thêm giỏ hàng
-           function addToCart(foodId) {
+        }
+                   function addToCart(foodId) {
             if (!foodId) {
                 alert('Mã món ăn không hợp lệ!');
                 return;
             }
 
-            // Lấy CSRF token từ form (nếu trong trang có @Html.AntiForgeryToken() hoặc form ASP.NET Core)
             var token = $('input[name="__RequestVerificationToken"]').val();
 
             $.ajax({
@@ -139,6 +154,6 @@
             });
         }
     </script>
-        <script src="~/js/FoodOrder/QuickOrder.js"></script>
+    <script src="~/js/FoodOrder/QuickOrder.js" asp-append-version="true"></script>
 
 }

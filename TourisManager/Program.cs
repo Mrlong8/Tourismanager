@@ -21,7 +21,7 @@ namespace TourisManager
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("TourisManagerDb")));
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // FIX 1: Cấu hình Data Protection để lưu Key mã hóa Cookie cố định
             builder.Services.AddDataProtection()
@@ -34,9 +34,11 @@ namespace TourisManager
             builder.Services.AddScoped<ITypeOfFoodService, TypeOfFoodService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ChatAutoReplyService>();
+            builder.Services.AddScoped<IWalletService, WalletService>();
 
             builder.Services
                  .AddAuthentication(options =>
@@ -58,6 +60,14 @@ namespace TourisManager
                      options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
                      options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
                  });
+
+            builder.Services.AddHttpClient("VietQRClient", (serviceProvider, client) =>
+            {
+                var config = serviceProvider.GetRequiredService<IConfiguration>();
+
+                client.DefaultRequestHeaders.Add("x-client-id", config["VietQR:ClientId"]);
+                client.DefaultRequestHeaders.Add("x-api-key", config["VietQR:ApiKey"]);
+            });
 
             var app = builder.Build();
 

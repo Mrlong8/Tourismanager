@@ -383,6 +383,9 @@ namespace TourisManager.Data.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("DeliveryFee")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("LocationId")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
@@ -691,7 +694,7 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.BankAccount", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Account", "Account")
-                        .WithMany()
+                        .WithMany("BankAccounts")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -961,7 +964,7 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.Wallet", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Account", "Account")
-                        .WithOne()
+                        .WithOne("Wallet")
                         .HasForeignKey("TourisManager.Core.Entities.Wallet", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -972,7 +975,7 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.WalletTransaction", b =>
                 {
                     b.HasOne("TourisManager.Core.Entities.Order", "Order")
-                        .WithMany()
+                        .WithMany("WalletTransactions")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -989,6 +992,8 @@ namespace TourisManager.Data.Migrations
 
             modelBuilder.Entity("TourisManager.Core.Entities.Account", b =>
                 {
+                    b.Navigation("BankAccounts");
+
                     b.Navigation("DetailAccount");
 
                     b.Navigation("Favorites");
@@ -1004,6 +1009,8 @@ namespace TourisManager.Data.Migrations
                     b.Navigation("RoomChats");
 
                     b.Navigation("SavedFoods");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.Area", b =>
@@ -1049,6 +1056,8 @@ namespace TourisManager.Data.Migrations
             modelBuilder.Entity("TourisManager.Core.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("WalletTransactions");
                 });
 
             modelBuilder.Entity("TourisManager.Core.Entities.PaymentMethod", b =>
