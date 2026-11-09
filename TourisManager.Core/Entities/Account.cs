@@ -30,6 +30,8 @@ namespace TourisManager.Core.Entities
         public ICollection<RoomChat> RoomChats { get; set; } = new List<RoomChat>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<BankAccount> BankAccounts { get; set; }
+        //    public virtual ICollection<BankAccount> BankAccounts { get; set; }
+        //= new List<BankAccount>();
 
 
 
