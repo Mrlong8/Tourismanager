@@ -49,21 +49,10 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link fw-medium @(currentController == "Chat" ? "active" : "")"
-                           asp-area="" asp-controller="Chat" asp-action="Index">
-                            Chat
-                        </a>
-                    </li>
+   
 
-                    <li class="nav-item">
-                        <a class="nav-link fw-medium @(currentController == "Shop" ? "active" : "")"
-                           asp-area="" asp-controller="Shop" asp-action="Invoice">
-                            Hóa Đơn
-                        </a>
-                    </li>
 
-                    @* Chỉ hiển thị Kênh Chủ Quán cho tài khoản có vai trò Seller hoặc Admin *@
+                    @* Chỉ hiển thị Kênh Chủ Quán cho tài khoản có vai trò Seller hoặc Admin
                     @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Seller") || User.IsInRole("Admin")))
                     {
                         <li class="nav-item mx-2">
@@ -72,7 +61,7 @@
                                 Kênh Chủ Quán
                             </a>
                         </li>
-                    }
+                    } *@
                 </ul>
 
                 <ul class="navbar-nav align-items-center gap-2">

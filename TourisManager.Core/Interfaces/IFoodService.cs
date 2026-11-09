@@ -23,6 +23,7 @@ namespace TourisManager.Core.Interfaces
         Task<Order?> GetOrderStartsWithAsync(string shortOrderId);
         // Thêm vào IFoodService.cs
         Task<Order?> CreateOrderFromCartAsync(string accountId, CartCheckoutRequest request);
-
+        // Định nghĩa phương thức lấy danh sách món ăn có lọc, tìm kiếm và phân trang
+        Task<(List<Food> Foods, int TotalPages, int CurrentPage)> GetFilteredAndPagedFoodsAsync(int pageIndex, int pageSize, List<string>? typeIds, string keyword);
     }
 }

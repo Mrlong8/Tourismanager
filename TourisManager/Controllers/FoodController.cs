@@ -61,35 +61,35 @@ namespace TourisManager.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> FilterFoodsByType(string? typeId, List<string>? typeIds, int? pageIndex)
-        {
-            await SetUserLocationToViewBag();
+        //[HttpGet]
+        //public async Task<IActionResult> FilterFoodsByType(string? typeId, List<string>? typeIds, int? pageIndex)
+        //{
+        //    await SetUserLocationToViewBag();
 
-            List<string> selectedTypes = new List<string>();
-            if (typeIds != null && typeIds.Any())
-            {
-                selectedTypes.AddRange(typeIds.Where(t => !string.IsNullOrWhiteSpace(t)));
-            }
-            else if (!string.IsNullOrWhiteSpace(typeId))
-            {
-                selectedTypes.Add(typeId);
-            }
+        //    List<string> selectedTypes = new List<string>();
+        //    if (typeIds != null && typeIds.Any())
+        //    {
+        //        selectedTypes.AddRange(typeIds.Where(t => !string.IsNullOrWhiteSpace(t)));
+        //    }
+        //    else if (!string.IsNullOrWhiteSpace(typeId))
+        //    {
+        //        selectedTypes.Add(typeId);
+        //    }
 
-            var allFood = selectedTypes.Any()
-                ? await _foodService.FilterFoodsByMultiTypeAsync(selectedTypes)
-                : await _foodService.GetListFoodAsync();
+        //    var allFood = selectedTypes.Any()
+        //        ? await _foodService.FilterFoodsByMultiTypeAsync(selectedTypes)
+        //        : await _foodService.GetListFoodAsync();
 
-            int page = (pageIndex == null || pageIndex <= 0) ? 1 : pageIndex.Value;
-            int pageNum = (int)Math.Ceiling(allFood.Count() / (float)pageSize);
+        //    int page = (pageIndex == null || pageIndex <= 0) ? 1 : pageIndex.Value;
+        //    int pageNum = (int)Math.Ceiling(allFood.Count() / (float)pageSize);
 
-            ViewBag.pageNum = pageNum;
-            ViewBag.pageIndex = page;
-            ViewBag.typeId = selectedTypes.Count == 1 ? selectedTypes.First() : null;
-            ViewBag.typeIds = selectedTypes;
-            var result = allFood.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-            return PartialView("_FoodGridPartial", result);
-        }
+        //    ViewBag.pageNum = pageNum;
+        //    ViewBag.pageIndex = page;
+        //    ViewBag.typeId = selectedTypes.Count == 1 ? selectedTypes.First() : null;
+        //    ViewBag.typeIds = selectedTypes;
+        //    var result = allFood.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+        //    return PartialView("_FoodGridPartial", result);
+        //}
 
 
         [HttpGet]
@@ -222,5 +222,19 @@ namespace TourisManager.Controllers
             });
         }
 
+        // Nhận request lọc món ăn từ giao diện, gọi service lấy dữ liệu và trả về PartialView
+        [HttpGet]
+        public async Task<IActionResult> FilterFoodsByType(int pageIndex = 1, List<string>? typeIds = null, string keyword = "")
+        {
+            await SetUserLocationToViewBag();
+
+            var result = await _foodService.GetFilteredAndPagedFoodsAsync(pageIndex, pageSize, typeIds, keyword);
+
+            ViewBag.pageIndex = result.CurrentPage;
+            ViewBag.pageNum = result.TotalPages;
+            ViewBag.typeIds = typeIds;
+
+            return PartialView("_FoodGridPartial", result.Foods);
+        }
     }
 }
